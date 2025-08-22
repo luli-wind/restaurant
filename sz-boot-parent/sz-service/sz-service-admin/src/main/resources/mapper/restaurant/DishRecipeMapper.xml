@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.admin.restaurant.mapper.DishRecipeMapper">
+    <!-- 通用映射 -->
+    <resultMap id="BaseResultMap" type="com.sz.admin.restaurant.pojo.po.DishRecipe">
+        <id column="id" property="id"/>
+        <result column="dish_id" property="dishId"/>
+        <result column="material_id" property="materialId"/>
+        <result column="material_quantity" property="materialQuantity"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dish_id, material_id, material_quantity
+    </sql>
+
+</mapper>

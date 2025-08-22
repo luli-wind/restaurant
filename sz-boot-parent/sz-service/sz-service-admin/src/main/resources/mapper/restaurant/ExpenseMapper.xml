@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.admin.restaurant.mapper.ExpenseMapper">
+    <!-- 通用映射 -->
+    <resultMap id="BaseResultMap" type="com.sz.admin.restaurant.pojo.po.Expense">
+        <id column="expense_id" property="expenseId"/>
+        <result column="expense_category" property="expenseCategory"/>
+        <result column="amount" property="amount"/>
+        <result column="expense_date" property="expenseDate"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        expense_id, expense_category, amount, expense_date, description
+    </sql>
+
+</mapper>

@@ -1,0 +1,19 @@
+server:
+  port: 9993
+  shutdown: graceful
+
+spring:
+  threads:
+    virtual:
+      # 启用虚拟线程
+      enabled: true
+  profiles:
+    active: local
+  config:
+    import:
+      - file:config/${spring.profiles.active}/redis.yml
+      - file:config/${spring.profiles.active}/sa-token.yml
+  application:
+    name: websocket-service
+app:
+  version: @project.version@

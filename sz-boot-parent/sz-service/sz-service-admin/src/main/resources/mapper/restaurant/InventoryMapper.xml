@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.admin.restaurant.mapper.InventoryMapper">
+    <!-- 通用映射 -->
+    <resultMap id="BaseResultMap" type="com.sz.admin.restaurant.pojo.po.Inventory">
+        <id column="material_id" property="materialId"/>
+        <result column="material_name" property="materialName"/>
+        <result column="current_stock" property="currentStock"/>
+        <result column="min_stock" property="minStock"/>
+        <result column="unit" property="unit"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        material_id, material_name, current_stock, min_stock, unit
+    </sql>
+
+</mapper>
