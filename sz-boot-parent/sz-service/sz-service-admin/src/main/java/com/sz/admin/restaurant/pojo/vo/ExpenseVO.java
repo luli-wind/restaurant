@@ -19,6 +19,9 @@ import com.sz.excel.annotation.DictFormat;
 @Data
 @Schema(description = "Expense返回vo")
 public class ExpenseVO {
+    @ExcelProperty(value = "费用Id")
+    @Schema(description =  "费用Id")
+    private Long expenseId;
 
     @ExcelProperty(value = "费用种类")
     @DictFormat(dictType = "expense_category")

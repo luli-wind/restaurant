@@ -16,6 +16,9 @@ import cn.idev.excel.annotation.ExcelProperty;
 @Data
 @Schema(description = "Inventory返回vo")
 public class InventoryVO {
+    @ExcelProperty(value = "材料i=Id")
+    @Schema(description =  "材料Id")
+    private Long materialId;
 
     @ExcelProperty(value = "材料名")
     @Schema(description =  "材料名")

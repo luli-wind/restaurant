@@ -19,6 +19,7 @@ export type ExpenseForm = {
 
 // list或detail返回结构
 export type ExpenseRow = {
+    expenseId?: number;
     expenseCategory?: number;
     amount?: number;
     expenseDate?: string;

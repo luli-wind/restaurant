@@ -17,6 +17,9 @@ import com.sz.excel.annotation.DictFormat;
 @Data
 @Schema(description = "DiningTable返回vo")
 public class DiningTableVO {
+    @ExcelProperty(value = "桌子Id")
+    @Schema(description =  "桌子Id")
+    private String tabelId;
 
     @ExcelProperty(value = "餐桌编号")
     @Schema(description =  "餐桌编号")

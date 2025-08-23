@@ -16,6 +16,7 @@ export type DiningTableForm = {
 
 // list或detail返回结构
 export type DiningTableRow = {
+    tableId?: number;
     tableName?: string;
     capacity?: number;
     status?: string;
