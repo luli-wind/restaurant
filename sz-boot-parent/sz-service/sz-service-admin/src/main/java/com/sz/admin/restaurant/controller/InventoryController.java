@@ -21,6 +21,8 @@ import com.sz.admin.restaurant.pojo.vo.InventoryVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 库存表 Controller
@@ -59,6 +61,14 @@ public class InventoryController  {
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         inventoryService.remove(dto);
         return ApiResult.success();
+    }
+
+    @Operation(summary = "全部列表")
+    @SaCheckPermission(value = "inventory.all_list")
+    @GetMapping("/all")
+    public ApiResult<List<InventoryVO>> getAllList() {
+        InventoryListDTO dto = new InventoryListDTO();
+        return ApiResult.success(inventoryService.list(dto));
     }
 
     @Operation(summary = "列表查询")

@@ -10,12 +10,20 @@ import type {UploadRawFile} from "element-plus";
 import type { AxiosRequestConfig } from 'axios';
 
 /**
-* 查询列表
-* @param params
-* @returns {*}
-*/
+ * 查询列表
+ * @param params
+ * @returns {*}
+ */
 export const getInventoryListApi = (params: InventoryQuery) => {
   return http.get<IPage<InventoryRow>>(ADMIN_MODULE + `/inventory`, params);
+};
+
+/**
+ * 获取全部库存列表
+ * @returns {*}
+ */
+export const getAllInventoryListApi = () => {
+  return http.get<InventoryRow[]>(ADMIN_MODULE + `/inventory/all`);
 };
 
 /**

@@ -103,6 +103,12 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         ExcelUtils.exportExcel(list, "库存管理", InventoryVO.class, os);
     }
 
+    @Override
+    public List<InventoryVO> getAllList() {
+        List<InventoryVO> list = listAs(buildQueryWrapper(null), InventoryVO.class);
+        return list;
+    }
+
     private static QueryWrapper buildQueryWrapper(InventoryListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(Inventory.class);
         if (Utils.isNotNull(dto.getMaterialName())) {

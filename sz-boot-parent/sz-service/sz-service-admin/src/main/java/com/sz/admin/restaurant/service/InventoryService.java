@@ -37,4 +37,6 @@ public interface InventoryService extends IService<Inventory> {
     void importExcel(ImportExcelDTO dto);
 
     void exportExcel(InventoryListDTO dto, HttpServletResponse response);
+
+    List<InventoryVO> getAllList();
 }

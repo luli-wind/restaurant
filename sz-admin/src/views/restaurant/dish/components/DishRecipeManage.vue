@@ -33,7 +33,7 @@
           :model="recipeForm"
         >
           <el-form-item label="原材料" prop="materialId">
-            <el-select v-model="recipeForm.materialId" placeholder="请选择原材料" clearable>
+            <el-select v-model="recipeForm.materialId" placeholder="请选择原材料" filterable clearable>
               <el-option
                 v-for="item in materialOptions"
                 :key="item.materialId"
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive } from 'vue';
 import { type ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import {
   getDishRecipeByDishIdApi,
@@ -68,7 +68,7 @@ import {
   updateDishRecipeApi,
   removeDishRecipeApi
 } from '@/api/modules/restaurant/dishRecipe';
-import { getInventoryListApi } from '@/api/modules/restaurant/inventory';
+import { getAllInventoryListApi } from '@/api/modules/restaurant/inventory';
 
 defineOptions({
   name: 'DishRecipeManage'
@@ -116,6 +116,7 @@ const acceptParams = (params: any) => {
 const loadRecipeList = async () => {
   try {
     const res = await getDishRecipeByDishIdApi(paramsProps.value.dishId);
+    console.log('配方列表数据:', res);
     recipeList.value = res.data || [];
   } catch (error) {
     console.error('加载配方列表失败:', error);
@@ -126,10 +127,15 @@ const loadRecipeList = async () => {
 // 加载原材料选项
 const loadMaterialOptions = async () => {
   try {
-    const res = await getInventoryListApi({});
-    materialOptions.value = res.data?.records || [];
+    const res = await getAllInventoryListApi();
+    // 处理返回的全部库存数据
+    if (res.data && Array.isArray(res.data)) {
+      materialOptions.value = res.data;
+    } else {
+      materialOptions.value = [];
+    }
+
   } catch (error) {
-    console.error('加载原材料选项失败:', error);
     materialOptions.value = [];
   }
 };
@@ -138,7 +144,7 @@ const loadMaterialOptions = async () => {
 const addRecipe = async () => {
   if (!recipeFormRef.value) return;
   
-  await recipeFormRef.value.validate(async (valid) => {
+  await recipeFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return;
     
     try {
