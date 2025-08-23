@@ -45,6 +45,9 @@ public class Orders implements Serializable {
     private LocalDateTime createTime;
 
     @Schema(description ="")
+    private String payStatus;
+
+    @Schema(description ="")
     private LocalDateTime payTime;
 
 }

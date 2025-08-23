@@ -140,7 +140,6 @@ const columns: ColumnProps<DishRow>[] = [
     ])
   },
   { prop: 'dishName', label: '菜品名称' },
-  { prop: 'dishId', label: 'ID' },
   {
     prop: 'category',
     label: '分类',

@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 public class TakeawayOrdersCreateDTO {
 
    @Schema(description =  "")
-   private Integer orderId;
+   private Long orderId;
 
    @Schema(description =  "")
    private String customerPhone;
@@ -33,5 +33,30 @@ public class TakeawayOrdersCreateDTO {
 
    @Schema(description =  "")
    private String remark;
+
+   @Schema(description = "订单号")
+   private String orderNumber;
+
+
+   @Schema(description = "订单类型")
+   private String orderType;
+
+   @Schema(description = "总金额")
+   private Double totalAmount;
+
+
+   @Schema(description = "状态")
+   private String status;
+
+
+   @Schema(description = "创建时间")
+   private java.time.LocalDateTime createTime;
+
+
+   @Schema(description ="支付状态")
+   private String payStatus;
+
+   @Schema(description = "支付时间")
+   private java.time.LocalDateTime payTime;
 
 }

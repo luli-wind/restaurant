@@ -1,11 +1,16 @@
 package com.sz.admin.restaurant.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.pojo.po.DiningTable;
+import com.sz.admin.restaurant.service.DiningTableService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.sz.admin.restaurant.service.DineInOrdersService;
 import com.sz.admin.restaurant.pojo.po.DineInOrders;
 import com.sz.admin.restaurant.mapper.DineInOrdersMapper;
+import com.sz.admin.restaurant.service.OrdersService;
+import com.sz.admin.restaurant.pojo.po.Orders;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryChain;
@@ -41,38 +46,114 @@ import com.sz.admin.restaurant.pojo.vo.DineInOrdersVO;
 @Service
 @RequiredArgsConstructor
 public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, DineInOrders> implements DineInOrdersService {
+    private final OrdersService ordersService;
+    private final DiningTableService diningTableService;
     @Override
     public void create(DineInOrdersCreateDTO dto){
+        // 创建基本订单记录
+        Orders orders = new Orders();
+        BeanUtils.copyProperties(dto, orders);
+
+        // 这里可以根据需要设置其他订单字段
+        ordersService.save(orders);
+        
+        // 创建堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
+        // 设置订单ID
+        dineInOrders.setOrderId(Math.toIntExact(orders.getOrderId()));
         save(dineInOrders);
     }
 
     @Override
     public void update(DineInOrdersUpdateDTO dto){
-        DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
-        QueryWrapper wrapper;
         // id有效性校验
-        wrapper = QueryWrapper.create()
+        QueryWrapper wrapper = QueryWrapper.create()
             .eq(DineInOrders::getId, dto.getId());
-        CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) <= 0);
+        CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) > 0);
 
+        // 更新堂食订单扩展记录
+        DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
         saveOrUpdate(dineInOrders);
+        
+        // 更新基本订单记录（如果需要）
+        // 这里可以根据实际需求更新Orders表中的字段
+        // 例如，如果dto中包含了需要更新的订单字段，可以这样处理：
+        Orders orders = ordersService.getById(dineInOrders.getOrderId());
+        if (orders != null) {
+            // 更新订单相关字段
+            BeanUtils.copyProperties(dto, orders);
+            ordersService.updateById(orders);
+        }
+        DiningTable table = diningTableService.getById(dineInOrders.getTableId());
+        if (table != null) {
+            BeanUtils.copyProperties(dto, table);
+            diningTableService.updateById(table);
+        }
+
     }
 
     @Override
     public PageResult<DineInOrdersVO> page(DineInOrdersListDTO dto){
-        Page<DineInOrdersVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), DineInOrdersVO.class);
-        return PageUtils.getPageResult(page);
+        Page<DineInOrders> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), DineInOrders.class);
+        Page<DineInOrdersVO> voPage = new Page<>(page.getPageNumber(), page.getPageSize());
+        voPage.setTotalRow(page.getTotalRow());
+        
+        // 转换为VO对象并关联查询Orders表的信息
+        List<DineInOrdersVO> voList = page.getRecords().stream().map(dineInOrders -> {
+            // 查询对应的基本订单记录
+            Orders orders = ordersService.getById(dineInOrders.getOrderId());
+            DiningTable table = diningTableService.getById(dineInOrders.getTableId());
+            // 将两个记录的信息合并到VO对象中
+            DineInOrdersVO vo = BeanCopyUtils.copy(dineInOrders, DineInOrdersVO.class);
+            if (orders != null) {
+                vo.setOrderId(orders.getOrderId());
+                vo.setOrderNumber(orders.getOrderNumber());
+                vo.setOrderType(orders.getOrderType());
+                vo.setTotalAmount(orders.getTotalAmount());
+                vo.setStatus(orders.getStatus());
+                vo.setCreateTime(orders.getCreateTime());
+                vo.setPayStatus(orders.getPayStatus());
+                vo.setPayTime(orders.getPayTime());
+                vo.setTableName(table.getTableName());
+            }
+            
+            return vo;
+        }).toList();
+        
+        voPage.setRecords(voList);
+        return PageUtils.getPageResult(voPage);
     }
 
     @Override
     public List<DineInOrdersVO> list(DineInOrdersListDTO dto){
-        return listAs(buildQueryWrapper(dto), DineInOrdersVO.class);
+        List<DineInOrders> dineInOrdersList = listAs(buildQueryWrapper(dto), DineInOrders.class);
+        
+        // 转换为VO对象并关联查询Orders表的信息
+        return dineInOrdersList.stream().map(dineInOrders -> {
+            // 查询对应的基本订单记录
+            Orders orders = ordersService.getById(dineInOrders.getOrderId());
+            DiningTable table = diningTableService.getById(dineInOrders.getTableId());
+            // 将两个记录的信息合并到VO对象中
+            DineInOrdersVO vo = BeanCopyUtils.copy(dineInOrders, DineInOrdersVO.class);
+            if (orders != null) {
+                vo.setOrderId(orders.getOrderId());
+                vo.setOrderNumber(orders.getOrderNumber());
+                vo.setOrderType(orders.getOrderType());
+                vo.setTotalAmount(orders.getTotalAmount());
+                vo.setStatus(orders.getStatus());
+                vo.setCreateTime(orders.getCreateTime());
+                vo.setPayStatus(orders.getPayStatus());
+                vo.setPayTime(orders.getPayTime());
+                vo.setTableName(table.getTableName());
+            }
+            
+            return vo;
+        }).toList();
     }
 
     @Override
     public void remove(SelectIdsDTO dto){
-        CommonResponseEnum.INVALID_ID.assertTrue(dto.getIds().isEmpty());
+        CommonResponseEnum.INVALID_ID.assertTrue(!dto.getIds().isEmpty());
         removeByIds(dto.getIds());
     }
 
@@ -80,7 +161,25 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     public DineInOrdersVO detail(Object id){
         DineInOrders dineInOrders = getById((Serializable) id);
         CommonResponseEnum.INVALID_ID.assertNull(dineInOrders);
-        return BeanCopyUtils.copy(dineInOrders, DineInOrdersVO.class);
+        
+        // 查询对应的基本订单记录
+        Orders orders = ordersService.getById(dineInOrders.getOrderId());
+        DiningTable table = diningTableService.getById(dineInOrders.getTableId());
+        // 将两个记录的信息合并到VO对象中
+        DineInOrdersVO vo = BeanCopyUtils.copy(dineInOrders, DineInOrdersVO.class);
+        if (orders != null) {
+            vo.setOrderId(orders.getOrderId());
+            vo.setOrderNumber(orders.getOrderNumber());
+            vo.setOrderType(orders.getOrderType());
+            vo.setTotalAmount(orders.getTotalAmount());
+            vo.setStatus(orders.getStatus());
+            vo.setCreateTime(orders.getCreateTime());
+            vo.setPayStatus(orders.getPayStatus());
+            vo.setPayTime(orders.getPayTime());
+            vo.setTableName(table.getTableName());
+        }
+        
+        return vo;
     }
 
     @SneakyThrows

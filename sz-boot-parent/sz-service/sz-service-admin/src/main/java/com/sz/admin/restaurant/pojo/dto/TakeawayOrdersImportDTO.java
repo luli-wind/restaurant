@@ -19,7 +19,7 @@ public class TakeawayOrdersImportDTO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
-    private Integer orderId;
+    private Long orderId;
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
@@ -40,5 +40,37 @@ public class TakeawayOrdersImportDTO {
     @ExcelProperty(value = "")
     @Schema(description =  "")
     private String remark;
+
+    @Schema(description = "订单号")
+    @ExcelProperty(value = "")
+    private String orderNumber;
+
+
+    @Schema(description = "订单类型")
+    @ExcelProperty(value = "")
+    private String orderType;
+
+    @Schema(description = "总金额")
+    @ExcelProperty(value = "")
+    private Double totalAmount;
+
+
+    @Schema(description = "状态")
+    @ExcelProperty(value = "")
+    private String status;
+
+
+    @Schema(description = "创建时间")
+    @ExcelProperty(value = "")
+    private java.time.LocalDateTime createTime;
+
+
+    @Schema(description ="支付状态")
+    @ExcelProperty(value = "")
+    private String payStatus;
+
+    @Schema(description = "支付时间")
+    @ExcelProperty(value = "")
+    private java.time.LocalDateTime payTime;
 
 }

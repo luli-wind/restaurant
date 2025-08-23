@@ -9,12 +9,13 @@
         <result column="total_amount" property="totalAmount"/>
         <result column="status" property="status"/>
         <result column="create_time" property="createTime"/>
+        <result column="pay_status" property="payStatus"/>
         <result column="pay_time" property="payTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        order_id, order_number, order_type, total_amount, status, create_time, pay_time
+        order_id, order_number, order_type, total_amount, status, create_time,pay_status, pay_time
     </sql>
 
 </mapper>

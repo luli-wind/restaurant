@@ -1,13 +1,13 @@
 <template>
   <div class="main-box">
-    <DeptTree
-      label="name"
-      title="部门列表"
-      :request-api="getUserDeptTree"
-      :default-value="initParam.deptId"
-      @change="changeDeptTree"
-      ref="deptTreeRef"
-    />
+<!--    <DeptTree-->
+<!--      label="name"-->
+<!--      title="部门列表"-->
+<!--      :request-api="getUserDeptTree"-->
+<!--      :default-value="initParam.deptId"-->
+<!--      @change="changeDeptTree"-->
+<!--      ref="deptTreeRef"-->
+<!--    />-->
     <div class="table-box">
       <ProTable
         ref="proTableRef"
@@ -178,10 +178,10 @@ const columns: ColumnProps<RoleInfo>[] = [
   { prop: 'username', label: '账户', width: 150, align: 'left' },
   { prop: 'nickname', label: '昵称', width: 150, align: 'left' },
   { prop: 'phone', label: '手机号', width: 120 },
-  {
-    prop: 'deptInfo',
-    label: '部门'
-  },
+  // {
+  //   prop: 'deptInfo',
+  //   label: '部门'
+  // },
   {
     prop: 'roleInfo',
     label: '角色'
@@ -201,13 +201,13 @@ const columns: ColumnProps<RoleInfo>[] = [
 const searchColumns: SearchProps[] = [
   { prop: 'username', label: '账户', el: 'input' },
   { prop: 'phone', label: '手机号', el: 'input' },
-  {
-    prop: 'isThisDeep',
-    label: '直属部门',
-    el: 'checkbox',
-    defaultValue: true,
-    tooltip: '直属部门只展示当前节点直接下级用户，不包含其后代'
-  }
+  // {
+  //   prop: 'isThisDeep',
+  //   label: '直属部门',
+  //   el: 'checkbox',
+  //   defaultValue: true,
+  //   tooltip: '直属部门只展示当前节点直接下级用户，不包含其后代'
+  // }
 ];
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）

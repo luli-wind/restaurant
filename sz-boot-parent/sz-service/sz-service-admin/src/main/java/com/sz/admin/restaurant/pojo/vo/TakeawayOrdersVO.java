@@ -24,7 +24,7 @@ public class TakeawayOrdersVO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
-    private Integer orderId;
+    private Long orderId;
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
@@ -45,5 +45,31 @@ public class TakeawayOrdersVO {
     @ExcelProperty(value = "")
     @Schema(description =  "")
     private String remark;
+
+    @ExcelProperty(value = "")
+    @Schema(description = "订单号")
+    private String orderNumber;
+
+    @ExcelProperty(value = "")
+    @Schema(description = "订单类型")
+    private String orderType;
+    @ExcelProperty(value = "")
+    @Schema(description = "总金额")
+    private Double totalAmount;
+
+    @ExcelProperty(value = "")
+    @Schema(description = "状态")
+    private String status;
+
+    @ExcelProperty(value = "")
+    @Schema(description = "创建时间")
+    private java.time.LocalDateTime createTime;
+
+    @ExcelProperty(value = "")
+    @Schema(description ="支付状态")
+    private String payStatus;
+    @ExcelProperty(value = "")
+    @Schema(description = "支付时间")
+    private java.time.LocalDateTime payTime;
 
 }

@@ -16,9 +16,8 @@ import com.sz.core.common.entity.PageQuery;
 public class DineInOrdersListDTO extends PageQuery {
 
     @Schema(description =  "")
-    private Integer orderId;
+    private Long orderId;
 
     @Schema(description =  "")
-    private Integer tableId;
-
+    private Long tableId;
 }

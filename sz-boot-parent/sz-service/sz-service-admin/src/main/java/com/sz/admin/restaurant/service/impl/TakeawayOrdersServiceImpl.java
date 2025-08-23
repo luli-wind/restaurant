@@ -1,14 +1,16 @@
 package com.sz.admin.restaurant.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.pojo.po.Orders;
+import com.sz.admin.restaurant.service.OrdersService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.sz.admin.restaurant.service.TakeawayOrdersService;
 import com.sz.admin.restaurant.pojo.po.TakeawayOrders;
 import com.sz.admin.restaurant.mapper.TakeawayOrdersMapper;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.QueryChain;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.util.PageUtils;
 import com.sz.core.util.BeanCopyUtils;
@@ -41,8 +43,16 @@ import com.sz.admin.restaurant.pojo.vo.TakeawayOrdersVO;
 @Service
 @RequiredArgsConstructor
 public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper, TakeawayOrders> implements TakeawayOrdersService {
+    private final OrdersService ordersService;
     @Override
     public void create(TakeawayOrdersCreateDTO dto){
+        // 创建基本订单记录
+        Orders orders = new Orders();
+        BeanUtils.copyProperties(dto, orders);
+
+        // 这里可以根据需要设置其他订单字段
+        ordersService.save(orders);
+
         TakeawayOrders takeawayOrders = BeanCopyUtils.copy(dto, TakeawayOrders.class);
         save(takeawayOrders);
     }
@@ -57,17 +67,65 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) <= 0);
 
         saveOrUpdate(takeawayOrders);
+
+        Orders orders = ordersService.getById(takeawayOrders.getOrderId());
+        if (orders != null) {
+            // 更新订单相关字段
+            BeanUtils.copyProperties(dto, orders);
+            ordersService.updateById(orders);
+        }
     }
 
     @Override
     public PageResult<TakeawayOrdersVO> page(TakeawayOrdersListDTO dto){
-        Page<TakeawayOrdersVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), TakeawayOrdersVO.class);
-        return PageUtils.getPageResult(page);
+        Page<TakeawayOrders> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), TakeawayOrders.class);
+        Page<TakeawayOrdersVO> voPage = new Page<>(page.getPageNumber(),page.getPageSize());
+        voPage.setTotalRow(page.getTotalRow());
+        // 转换为VO对象并关联查询Orders表的信息
+        List<TakeawayOrdersVO> voList = page.getRecords().stream().map(TakeawayOrders -> {
+            // 查询对应的基本订单记录
+            Orders orders = ordersService.getById(TakeawayOrders.getOrderId());
+            // 将两个记录的信息合并到VO对象中
+            TakeawayOrdersVO vo = BeanCopyUtils.copy(TakeawayOrders, TakeawayOrdersVO.class);
+            if (orders != null) {
+                vo.setOrderId(orders.getOrderId());
+                vo.setOrderNumber(orders.getOrderNumber());
+                vo.setOrderType(orders.getOrderType());
+                vo.setTotalAmount(orders.getTotalAmount());
+                vo.setStatus(orders.getStatus());
+                vo.setCreateTime(orders.getCreateTime());
+                vo.setPayStatus(orders.getPayStatus());
+                vo.setPayTime(orders.getPayTime());
+            }
+
+            return vo;
+        }).toList();
+
+        voPage.setRecords(voList);
+        return PageUtils.getPageResult(voPage);
     }
 
     @Override
     public List<TakeawayOrdersVO> list(TakeawayOrdersListDTO dto){
-        return listAs(buildQueryWrapper(dto), TakeawayOrdersVO.class);
+        List<TakeawayOrders> list = listAs(buildQueryWrapper(dto), TakeawayOrders.class);
+        return list.stream().map(TakeawayOrders -> {
+            // 查询对应的基本订单记录
+            Orders orders = ordersService.getById(TakeawayOrders.getOrderId());
+            // 将两个记录的信息合并到VO对象中
+            TakeawayOrdersVO vo = BeanCopyUtils.copy(TakeawayOrders, TakeawayOrdersVO.class);
+            if (orders != null) {
+                vo.setOrderId(orders.getOrderId());
+                vo.setOrderNumber(orders.getOrderNumber());
+                vo.setOrderType(orders.getOrderType());
+                vo.setTotalAmount(orders.getTotalAmount());
+                vo.setStatus(orders.getStatus());
+                vo.setCreateTime(orders.getCreateTime());
+                vo.setPayStatus(orders.getPayStatus());
+                vo.setPayTime(orders.getPayTime());
+            }
+
+            return vo;
+        }).toList();
     }
 
     @Override
@@ -80,7 +138,20 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
     public TakeawayOrdersVO detail(Object id){
         TakeawayOrders takeawayOrders = getById((Serializable) id);
         CommonResponseEnum.INVALID_ID.assertNull(takeawayOrders);
-        return BeanCopyUtils.copy(takeawayOrders, TakeawayOrdersVO.class);
+
+        Orders orders = ordersService.getById(takeawayOrders.getOrderId());
+        TakeawayOrdersVO vo =BeanCopyUtils.copy(takeawayOrders, TakeawayOrdersVO.class);
+        if (orders != null) {
+            vo.setOrderId(orders.getOrderId());
+            vo.setOrderNumber(orders.getOrderNumber());
+            vo.setOrderType(orders.getOrderType());
+            vo.setTotalAmount(orders.getTotalAmount());
+            vo.setStatus(orders.getStatus());
+            vo.setCreateTime(orders.getCreateTime());
+            vo.setPayStatus(orders.getPayStatus());
+            vo.setPayTime(orders.getPayTime());
+        }
+        return vo;
     }
 
     @SneakyThrows
