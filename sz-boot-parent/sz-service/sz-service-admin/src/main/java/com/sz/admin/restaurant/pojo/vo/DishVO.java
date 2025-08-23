@@ -21,6 +21,10 @@ public class DishVO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
+    private Long dishId;
+
+    @ExcelProperty(value = "")
+    @Schema(description =  "")
     private String imageUrl;
 
     @ExcelProperty(value = "")

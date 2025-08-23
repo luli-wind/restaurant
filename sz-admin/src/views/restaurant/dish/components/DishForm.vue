@@ -15,7 +15,20 @@
       @submit.enter.prevent="handleSubmit"
     >
       <el-form-item label="" prop="imageUrl">
-        <el-input v-model="paramsProps.row.imageUrl" placeholder="请填写" clearable></el-input>
+        <UploadImg
+            v-model:image-url="paramsProps.row.imageUrl"
+            @change="fileChange"
+            dir="user"
+            width="135px"
+            height="135px"
+            border-radius="50%"
+        >
+          <template #empty>
+            <el-icon><Picture /></el-icon>
+            <span>请上传图片</span>
+          </template>
+          <template #tip> 图片大小不能超过 3M </template>
+        </UploadImg>
       </el-form-item>
       <el-form-item label="" prop="dishName">
         <el-input v-model="paramsProps.row.dishName" placeholder="请填写" clearable></el-input>
@@ -48,6 +61,9 @@
 import { ref, reactive } from 'vue';
 import { type ElForm, ElMessage } from 'element-plus';
 import { useOptionsStore } from '@/stores/modules/options';
+import UploadImg from "@/components/Upload/Img.vue";
+import {Picture} from "@element-plus/icons-vue";
+import type {IUploadResult} from "@/api/types/system/upload";
 
 defineOptions({
     name: 'DishForm'
@@ -93,6 +109,10 @@ const handleSubmit = () => {
 defineExpose({
   acceptParams
 });
+// 获取文件变更事件
+const fileChange = (data: IUploadResult) => {
+  console.log(data);
+};
 </script>
 
 <style scoped lang="scss"></style>

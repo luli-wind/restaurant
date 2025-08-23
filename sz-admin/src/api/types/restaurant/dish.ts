@@ -10,6 +10,7 @@ export type DishQuery = IPageQuery & {
 
 // 编辑form表单
 export type DishForm = {
+    dishId?: number;
     imageUrl?: string;
     dishName?: string;
     category?: string;
@@ -19,6 +20,7 @@ export type DishForm = {
 
 // list或detail返回结构
 export type DishRow = {
+    dishId:number;
     imageUrl?: string;
     dishName?: string;
     category?: string;

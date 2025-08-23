@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref,h } from 'vue';
 import {
   CirclePlus,
   Delete,
@@ -110,8 +110,25 @@ const proTableRef = ref<ProTableInstance>();
 // 表格配置项
 const columns: ColumnProps<DishRow>[] = [
   { type: 'selection', width: 80 },
-  { prop: 'imageUrl', label: '' },
+  { prop: 'imageUrl', label: '',
+    // 使用默认插槽自定义内容
+    render: (scope) => h('div', {
+      class: 'image-container' // 添加容器类名
+    }, [
+      h('img', {
+        style: 'width: 50px; height: 50px; object-fit: cover; border-radius: 4px;',
+        src: scope.row.imageUrl,
+        onError: (e) => {
+        }
+      }),
+      h('span', {
+        style: 'display: none; font-size: 12px; color: #999;',
+        class: 'image-fallback'
+      }, '加载失败')
+    ])
+  },
   { prop: 'dishName', label: '' },
+  { prop: 'dishId', label: 'ID' },
   {
     prop: 'category',
     label: '',
