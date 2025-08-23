@@ -6,8 +6,6 @@ import type {
   InventoryRow,
   InventoryForm
 } from '@/api/types/restaurant/inventory';
-import type { UploadRawFile } from "element-plus/es/components/upload/src/upload";
-import type { AxiosRequestConfig } from 'axios';
 
 /**
 * 查询列表
@@ -53,14 +51,6 @@ export const removeInventoryApi = (params: { ids: (string | number)[] }) => {
 export const getInventoryDetailApi = (params: { id: number }) => {
   const { id } = params;
   return http.get<InventoryRow>(ADMIN_MODULE + `/inventory/${id}`);
-};
-
-/**
-* 导入excel
-* @param params
-*/
-export const importInventoryExcelApi = (params : UploadRawFile, config?: AxiosRequestConfig<any> | undefined) => {
-  return http.upload(ADMIN_MODULE + `/inventory/import`, params, config);
 };
 
 /**

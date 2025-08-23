@@ -58,6 +58,15 @@
           编辑
         </el-button>
         <el-button
+          v-auth="'dish.recipe'"
+          type="primary"
+          link
+          :icon="List"
+          @click="openRecipeManage(row)"
+        >
+          配方
+        </el-button>
+        <el-button
             v-auth="'dish.remove'"
           type="primary"
           link
@@ -69,6 +78,7 @@
       </template>
     </ProTable>
     <DishForm ref="dishRef" />
+    <DishRecipeManage ref="dishRecipeRef" />
     <ImportExcel ref="ImportExcelRef" />
   </div>
 </template>
@@ -81,6 +91,7 @@ import {
   EditPen,
   Upload,
   Download,
+  List
 } from '@element-plus/icons-vue';
 import ProTable from '@/components/ProTable/index.vue';
 import {
@@ -94,6 +105,7 @@ import {
 } from '@/api/modules/restaurant/dish';
 import { useHandleData } from '@/hooks/useHandleData';
 import DishForm from '@/views/restaurant/dish/components/DishForm.vue';
+import DishRecipeManage from '@/views/restaurant/dish/components/DishRecipeManage.vue';
 import { useDictOptions } from '@/hooks/useDictOptions';
 import type { ColumnProps, ProTableInstance, SearchProps } from '@/components/ProTable/interface';
 import type { DishQuery, DishRow } from '@/api/types/restaurant/dish';
@@ -110,7 +122,7 @@ const proTableRef = ref<ProTableInstance>();
 // 表格配置项
 const columns: ColumnProps<DishRow>[] = [
   { type: 'selection', width: 80 },
-  { prop: 'imageUrl', label: '',
+  { prop: 'imageUrl', label: '图片',
     // 使用默认插槽自定义内容
     render: (scope) => h('div', {
       class: 'image-container' // 添加容器类名
@@ -127,11 +139,11 @@ const columns: ColumnProps<DishRow>[] = [
       }, '加载失败')
     ])
   },
-  { prop: 'dishName', label: '' },
+  { prop: 'dishName', label: '菜品名称' },
   { prop: 'dishId', label: 'ID' },
   {
     prop: 'category',
-    label: '',
+    label: '分类',
     tag: true,
     enum: useDictOptions('dish_category'),
     fieldNames: {
@@ -140,16 +152,16 @@ const columns: ColumnProps<DishRow>[] = [
       tagType: 'callbackShowStyle'
     }
   },
-  { prop: 'price', label: '' },
-  { prop: 'description', label: '' },
-  { prop: 'operation', label: '操作', width: 250, fixed: 'right' }
+  { prop: 'price', label: '价格' },
+  { prop: 'description', label: '描述' },
+  { prop: 'operation', label: '操作', width: 300, fixed: 'right' }
 ];
 // 搜索条件项
 const searchColumns: SearchProps[] = [
-  { prop: 'dishName', label: '', el: 'input' },
+  { prop: 'dishName', label: '菜品名称', el: 'input' },
   {
     prop: 'category',
-    label: '',
+    label: '分类',
     el: 'select',
     enum: useDictOptions('dish_category'),
     fieldNames: {
@@ -158,7 +170,7 @@ const searchColumns: SearchProps[] = [
       tagType: 'callbackShowStyle'
     },
   },
-  { prop: 'price', label: '', el: 'input' },
+  { prop: 'price', label: '价格', el: 'input' },
 ];
 // 获取table列表
 const getTableList = (params: DishQuery) => {
@@ -189,6 +201,16 @@ const openAddEdit = async(title: string, row: any = {}, isAdd = true) => {
     getTableList: proTableRef.value?.getTableList
   };
   dishRef.value?.acceptParams(params);
+}
+// 打开配方管理
+const dishRecipeRef = ref<InstanceType<typeof DishRecipeManage>>();
+const openRecipeManage = async(row: any) => {
+  const params = {
+    title: '配方管理',
+    dishId: row?.dishId,
+    dishName: row?.dishName
+  };
+  dishRecipeRef.value?.acceptParams(params);
 }
 // 删除信息
 const deleteInfo = async (params: DishRow) => {

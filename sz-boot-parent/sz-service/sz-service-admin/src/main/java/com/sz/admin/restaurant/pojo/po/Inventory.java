@@ -24,19 +24,20 @@ public class Inventory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id(keyType = KeyType.Auto)
-    @Schema(description ="")
+    @Schema(description = "材料ID")
     private Long materialId;
 
-    @Schema(description ="材料名")
+    @Schema(description = "材料名")
     private String materialName;
 
-    @Schema(description ="当前容量")
+    @Schema(description = "当前容量")
     private Integer currentStock;
 
-    @Schema(description ="最小容量")
+    @Schema(description = "最小容量")
     private Integer minStock;
 
-    @Schema(description ="计量单位")
+    @Schema(description = "计量单位")
     private String unit;
+
 
 }

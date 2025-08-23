@@ -25,22 +25,24 @@ public class Dish implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id(keyType = KeyType.Auto)
-    @Schema(description ="")
+    @Schema(description = "菜品ID")
     private Long dishId;
 
-    @Schema(description ="")
+    @Schema(description = "图片URL")
     private String imageUrl;
 
-    @Schema(description ="")
+    @Schema(description = "菜品名称")
     private String dishName;
 
-    @Schema(description ="")
+    @Schema(description = "分类")
     private String category;
 
-    @Schema(description ="")
+    @Schema(description = "价格")
     private BigDecimal price;
 
-    @Schema(description ="")
+    @Schema(description = "描述")
     private String description;
+
+
 
 }
