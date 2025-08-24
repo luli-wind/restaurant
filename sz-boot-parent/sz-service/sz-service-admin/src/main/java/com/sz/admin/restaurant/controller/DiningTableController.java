@@ -64,7 +64,6 @@ public class DiningTableController  {
     }
 
     @Operation(summary = "获取所有桌子")
-    @SaCheckPermission(value = "dining.table.query_table")
     @GetMapping("/all")
     public ApiResult<List<DiningTableVO>> getAllList() {
         DiningTableListDTO dto = new DiningTableListDTO();

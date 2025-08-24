@@ -1,9 +1,14 @@
 package com.sz.admin.restaurant.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.mapper.DiningTableMapper;
+import com.sz.admin.restaurant.mapper.OrdersMapper;
 import com.sz.admin.restaurant.pojo.dto.*;
 import com.sz.admin.restaurant.pojo.po.DiningTable;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import com.sz.admin.restaurant.service.DiningTableService;
+import com.sz.admin.restaurant.service.OrderDetailService;
+import com.sz.utils.RestaurantOrderNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,7 @@ import com.sz.core.util.Utils;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sz.core.common.entity.ImportExcelDTO;
@@ -46,20 +52,45 @@ import com.sz.admin.restaurant.pojo.vo.DineInOrdersVO;
 public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, DineInOrders> implements DineInOrdersService {
     private final OrdersService ordersService;
     private final DiningTableService diningTableService;
+    private final OrderDetailService orderDetailService;
     @Override
     public void create(DineInOrdersCreateDTO dto){
         // 创建基本订单记录
         Orders orders = new Orders();
         BeanUtils.copyProperties(dto, orders);
+        orders.setOrderNumber(RestaurantOrderNumberGenerator.generateOrderNo());
+        orders.setOrderType("堂食");
+        orders.setStatus("2004001");//已下单
+        orders.setPayStatus("2006002");//未支付
+        orders.setCreateTime(LocalDateTime.now());
+        Double totalAmount = 0.0;
+        List<OrderDetail> detailList = dto.getOrderItems();
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+            totalAmount +=orderDetail.getAmount()*orderDetail.getNumber();
+        }
 
-        // 这里可以根据需要设置其他订单字段
+        orders.setTotalAmount(totalAmount);
         ordersService.save(orders);
-        
+        //将餐桌设为已占用状态
+        DiningTable diningTable = diningTableService.getById(dto.getTableId());
+        if(diningTable != null){
+            diningTable.setStatus("2001002");
+        }
+
         // 创建堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
         // 设置订单ID
         dineInOrders.setOrderId(Math.toIntExact(orders.getOrderId()));
         save(dineInOrders);
+
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+        }
+
+
+        orderDetailService.saveBatch(detailList);
+
     }
 
     @Override

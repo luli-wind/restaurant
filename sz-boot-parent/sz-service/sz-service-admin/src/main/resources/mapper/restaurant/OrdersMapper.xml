@@ -16,7 +16,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        order_id, order_number, order_type, total_amount, status, create_time,pay_status, pay_time
+        order_id, order_number, order_type, total_amount, status, create_time,pay_status, pay_time,refund_reason
     </sql>
 
 </mapper>

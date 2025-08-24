@@ -13,91 +13,82 @@ import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.constant.GlobalConstant;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
-import com.sz.admin.restaurant.service.DishService;
-import com.sz.admin.restaurant.pojo.dto.DishCreateDTO;
-import com.sz.admin.restaurant.pojo.dto.DishUpdateDTO;
-import com.sz.admin.restaurant.pojo.dto.DishListDTO;
-import com.sz.admin.restaurant.pojo.vo.DishVO;
+import com.sz.admin.restaurant.service.OrderDetailService;
+import com.sz.admin.restaurant.pojo.dto.OrderDetailCreateDTO;
+import com.sz.admin.restaurant.pojo.dto.OrderDetailUpdateDTO;
+import com.sz.admin.restaurant.pojo.dto.OrderDetailListDTO;
+import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.List;
-
 /**
  * <p>
- * 菜品表 Controller
+ * 订单明细表 Controller
  * </p>
  *
  * @author sz-admin
- * @since 2025-08-22
+ * @since 2025-08-24
  */
-@Tag(name =  "菜品表")
+@Tag(name =  "订单明细表")
 @RestController
-@RequestMapping("dish")
+@RequestMapping("order-detail")
 @RequiredArgsConstructor
-public class DishController  {
+public class OrderDetailController  {
 
-    private final DishService dishService;
+    private final OrderDetailService orderDetailService;
 
     @Operation(summary = "新增")
-    @SaCheckPermission(value = "dish.create")
+    @SaCheckPermission(value = "order.detail.create")
     @PostMapping
-    public ApiResult<Void> create(@RequestBody DishCreateDTO dto) {
-        dishService.create(dto);
+    public ApiResult<Void> create(@RequestBody OrderDetailCreateDTO dto) {
+        orderDetailService.create(dto);
         return ApiResult.success();
     }
 
     @Operation(summary = "修改")
-    @SaCheckPermission(value = "dish.update")
+    @SaCheckPermission(value = "order.detail.update")
     @PutMapping
-    public ApiResult<Void> update(@RequestBody DishUpdateDTO dto) {
-        dishService.update(dto);
+    public ApiResult<Void> update(@RequestBody OrderDetailUpdateDTO dto) {
+        orderDetailService.update(dto);
         return ApiResult.success();
     }
 
     @Operation(summary = "删除")
-    @SaCheckPermission(value = "dish.remove")
+    @SaCheckPermission(value = "order.detail.remove")
     @DeleteMapping
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
-        dishService.remove(dto);
+        orderDetailService.remove(dto);
         return ApiResult.success();
     }
 
-    @Operation(summary = "全部列表")
-    @GetMapping("/all")
-    public ApiResult<List<DishVO>> getAllList() {
-        DishListDTO dto = new DishListDTO();
-        return ApiResult.success(dishService.list(dto));
-    }
-
     @Operation(summary = "列表查询")
-    @SaCheckPermission(value = "dish.query_table")
+    @SaCheckPermission(value = "order.detail.query_table")
     @GetMapping
-    public ApiResult<PageResult<DishVO>> list(DishListDTO dto) {
-        return ApiPageResult.success(dishService.page(dto));
+    public ApiResult<PageResult<OrderDetailVO>> list(OrderDetailListDTO dto) {
+        return ApiPageResult.success(orderDetailService.page(dto));
     }
 
     @Operation(summary = "详情")
-    @SaCheckPermission(value = "dish.query_table")
+    @SaCheckPermission(value = "order.detail.query_table")
     @GetMapping("/{id}")
-    public ApiResult<DishVO> detail(@PathVariable Object id) {
-        return ApiResult.success(dishService.detail(id));
+    public ApiResult<OrderDetailVO> detail(@PathVariable Object id) {
+        return ApiResult.success(orderDetailService.detail(id));
     }
 
     @Operation(summary = "导入")
     @Parameters({
       @Parameter(name = "file", description = "上传文件", schema = @Schema(type = "string", format = "binary"), required = true),
     })
-    @SaCheckPermission(value = "dish.import")
+    @SaCheckPermission(value = "order.detail.import")
     @PostMapping("/import")
     public void importExcel(@ModelAttribute ImportExcelDTO dto) {
-        dishService.importExcel(dto);
+        orderDetailService.importExcel(dto);
     }
 
     @Operation(summary = "导出")
-    @SaCheckPermission(value = "dish.export")
+    @SaCheckPermission(value = "order.detail.export")
     @PostMapping("/export")
-    public void exportExcel(@RequestBody DishListDTO dto, HttpServletResponse response) {
-        dishService.exportExcel(dto, response);
+    public void exportExcel(@RequestBody OrderDetailListDTO dto, HttpServletResponse response) {
+        orderDetailService.exportExcel(dto, response);
     }
 }

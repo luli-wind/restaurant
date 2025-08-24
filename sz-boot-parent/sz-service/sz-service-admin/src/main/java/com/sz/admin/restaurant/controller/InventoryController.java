@@ -64,7 +64,6 @@ public class InventoryController  {
     }
 
     @Operation(summary = "全部列表")
-    @SaCheckPermission(value = "inventory.all_list")
     @GetMapping("/all")
     public ApiResult<List<InventoryVO>> getAllList() {
         InventoryListDTO dto = new InventoryListDTO();

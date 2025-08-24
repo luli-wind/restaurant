@@ -145,11 +145,11 @@
             >
               <div class="item-info">
                 <div class="item-name">{{ item.dishName }}</div>
-                <div class="item-price">¥{{ item.price }} × {{ item.quantity }}</div>
+                <div class="item-price">¥{{ item.amount }} × {{ item.number }}</div>
               </div>
               <div class="item-actions">
                 <el-input-number
-                  v-model="item.quantity"
+                  v-model="item.number"
                   :min="1"
                   size="small"
                   controls-position="right"
@@ -251,8 +251,9 @@ const orderForm = ref({
 const orderItems = ref<Array<{
   dishId: number
   dishName: string
-  price: number
-  quantity: number
+  imageUrl:string
+  amount: number
+  number: number
 }>>([])
 
 // 默认菜品图片
@@ -282,7 +283,7 @@ const filteredDishes = computed(() => {
 
 const totalAmount = computed(() => {
   return orderItems.value.reduce((total, item) => {
-    return total + (item.price * item.quantity)
+    return total + (item.number * item.amount)
   }, 0)
 })
 
@@ -301,13 +302,14 @@ const addToOrder = (dish: DishRow) => {
   // 检查菜品是否已存在于订单中
   const existingItem = orderItems.value.find(item => item.dishId === dish.dishId)
   if (existingItem) {
-    existingItem.quantity++
+    existingItem.number++
   } else {
     orderItems.value.push({
       dishId: dish.dishId,
       dishName: dish.dishName || '',
-      price: dish.price || 0,
-      quantity: 1
+      imageUrl: dish.imageUrl || '',
+      amount: dish.price || 0,
+      number: 1
     })
   }
 }
@@ -317,7 +319,7 @@ const updateItemQuantity = (index: number, value: number | null) => {
   if (value === 0) {
     removeFromOrder(index)
   } else {
-    orderItems.value[index].quantity = value
+    orderItems.value[index].number = value
   }
 }
 
@@ -356,8 +358,10 @@ const submitOrder = async () => {
       remark: orderForm.value.remark,
       orderItems: orderItems.value.map(item => ({
         dishId: item.dishId,
-        quantity: item.quantity,
-        price: item.price
+        dishName: item.dishName || '',
+        imageUrl: item.imageUrl || '',
+        number: item.number,
+        amount: item.amount
       }))
     }
 
@@ -389,11 +393,11 @@ const initTables = async () => {
 const initDishes = async () => {
   try {
     const res = await getAllDishListApi()
-    console.log(res)
+    // console.log(res)
     dishes.value = res.data || []
     
     // 设置默认分类为第一个分类
-    if (dishCategories.value.length > 0 && !activeCategory.value) {
+    if (dishCategories.value && dishCategories.value.length > 0 && !activeCategory.value) {
       activeCategory.value = dishCategories.value[0].id
     }
   } catch (error) {

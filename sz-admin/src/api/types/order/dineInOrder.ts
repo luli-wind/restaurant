@@ -3,8 +3,10 @@ import type { IPageQuery } from '@/api/types';
 // 订单项类型
 export type DineInOrderItem = {
   dishId: number;
-  quantity: number;
-  price: number;
+  dishName: string;
+  imageUrl: string;
+  number: number;
+  amount: number;
 };
 
 // 查询条件
@@ -46,4 +48,5 @@ export type DineInOrderRow = {
    payStatus?:string;
    payTime?:string;
    orderItems?: DineInOrderItem[];
+   refundReason?: string;
 };
