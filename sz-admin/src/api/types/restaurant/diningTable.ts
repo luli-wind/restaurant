@@ -9,6 +9,7 @@ export type DiningTableQuery = IPageQuery & {
 
 // 编辑form表单
 export type DiningTableForm = {
+    tableId?: number;
     tableName?: string;
     capacity?: number;
     status?: string;

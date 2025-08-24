@@ -19,7 +19,7 @@ import com.sz.excel.annotation.DictFormat;
 public class DiningTableVO {
     @ExcelProperty(value = "桌子Id")
     @Schema(description =  "桌子Id")
-    private String tabelId;
+    private String tableId;
 
     @ExcelProperty(value = "餐桌编号")
     @Schema(description =  "餐桌编号")

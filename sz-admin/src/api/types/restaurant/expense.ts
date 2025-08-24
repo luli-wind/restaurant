@@ -11,6 +11,7 @@ export type ExpenseQuery = IPageQuery & {
 
 // 编辑form表单
 export type ExpenseForm = {
+    expenseId?: number;
     expenseCategory?: number;
     amount?: number;
     expenseDate?: string;

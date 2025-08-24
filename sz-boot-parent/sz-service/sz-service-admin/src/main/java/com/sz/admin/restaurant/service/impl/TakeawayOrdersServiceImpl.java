@@ -176,8 +176,11 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
 
     private static QueryWrapper buildQueryWrapper(TakeawayOrdersListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(TakeawayOrders.class);
-        if (Utils.isNotNull(dto.getOrderId())) {
-            wrapper.eq(TakeawayOrders::getOrderId, dto.getOrderId());
+        if (Utils.isNotNull(dto.getStatus())) {
+            wrapper.eq(TakeawayOrders::getOrderId, dto.getStatus());
+        }
+        if (Utils.isNotNull(dto.getPayStatus())) {
+            wrapper.eq(TakeawayOrders::getOrderId, dto.getPayStatus());
         }
         if (Utils.isNotNull(dto.getCustomerPhone())) {
             wrapper.like(TakeawayOrders::getCustomerPhone, dto.getCustomerPhone());

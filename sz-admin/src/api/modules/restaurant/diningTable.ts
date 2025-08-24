@@ -18,6 +18,15 @@ export const getDiningTableListApi = (params: DiningTableQuery) => {
   return http.get<IPage<DiningTableRow>>(ADMIN_MODULE + `/dining-table`, params);
 };
 
+
+/**
+ * 获取全部列表
+ * @returns {*}
+ */
+export const getAllDiningTableListApi = () => {
+  return http.get<[DiningTableRow]>(ADMIN_MODULE + `/dining-table/all`);
+};
+
 /**
 * 添加
 * @param params

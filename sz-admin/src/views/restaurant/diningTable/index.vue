@@ -154,7 +154,11 @@ const formatParams = (params: DiningTableQuery) =>{
 const diningTableRef = ref<InstanceType<typeof DiningTableForm>>();
 const openAddEdit = async(title: string, row: any = {}, isAdd = true) => {
   if (!isAdd) {
-    const record = await getDiningTableDetailApi({ id: row?.tableId });
+    if (!row?.tableId) {
+      console.error('Invalid tableId:', row);
+      return;
+    }
+    const record = await getDiningTableDetailApi({ id: row.tableId });
     row = record?.data;
   }
   const params = {

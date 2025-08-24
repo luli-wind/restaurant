@@ -108,8 +108,8 @@ public class DiningTableServiceImpl extends ServiceImpl<DiningTableMapper, Dinin
         if (Utils.isNotNull(dto.getTableName())) {
             wrapper.like(DiningTable::getTableName, dto.getTableName());
         }
-        if (Utils.isNotNull(dto.getCapacity())) {
-            wrapper.ge(DiningTable::getCapacity, dto.getCapacity());
+        if (Utils.isNotNull(dto.getPayStatus())) {
+            wrapper.ge(DiningTable::getCapacity, dto.getPayStatus());
         }
         if (Utils.isNotNull(dto.getStatus())) {
             wrapper.eq(DiningTable::getStatus, dto.getStatus());

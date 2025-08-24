@@ -21,6 +21,8 @@ import com.sz.admin.restaurant.pojo.vo.DiningTableVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 餐桌表 Controller
@@ -60,6 +62,15 @@ public class DiningTableController  {
         diningTableService.remove(dto);
         return ApiResult.success();
     }
+
+    @Operation(summary = "获取所有桌子")
+    @SaCheckPermission(value = "dining.table.query_table")
+    @GetMapping("/all")
+    public ApiResult<List<DiningTableVO>> getAllList() {
+        DiningTableListDTO dto = new DiningTableListDTO();
+        return ApiResult.success(diningTableService.list(dto));
+    }
+
 
     @Operation(summary = "列表查询")
     @SaCheckPermission(value = "dining.table.query_table")

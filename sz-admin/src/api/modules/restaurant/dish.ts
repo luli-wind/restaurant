@@ -10,6 +10,15 @@ import type { UploadRawFile } from "element-plus/es/components/upload/src/upload
 import type { AxiosRequestConfig } from 'axios';
 
 /**
+ * 获取全部列表
+ * @returns {*}
+ */
+export const getAllDishListApi = () => {
+  return http.get<[DishRow]>(ADMIN_MODULE + `/dish/all`);
+};
+
+
+/**
 * 查询列表
 * @param params
 * @returns {*}

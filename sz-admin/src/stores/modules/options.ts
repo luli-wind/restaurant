@@ -21,6 +21,12 @@ export const useOptionsStore = defineStore(
       return dictOptions.value[type] || [];
     }
 
+    function getDictNameById(type: string, id: string): string {
+      const dictList = dictOptions.value[type] || [];
+      const dict = dictList.find(item => item.id === id);
+      return dict ? dict.codeName : '';
+    }
+
     function setReloadOptions() {
       isLoaded.value = false;
     }
@@ -38,7 +44,8 @@ export const useOptionsStore = defineStore(
       getAllDictList,
       getDictOptions,
       setReloadOptions,
-      getDictByCodes
+      getDictByCodes,
+      getDictNameById
     };
   },
   {

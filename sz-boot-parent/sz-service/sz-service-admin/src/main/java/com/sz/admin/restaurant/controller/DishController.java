@@ -21,6 +21,8 @@ import com.sz.admin.restaurant.pojo.vo.DishVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜品表 Controller
@@ -59,6 +61,14 @@ public class DishController  {
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         dishService.remove(dto);
         return ApiResult.success();
+    }
+
+    @Operation(summary = "全部列表")
+    @SaCheckPermission(value = "dish.query_table")
+    @GetMapping("/all")
+    public ApiResult<List<DishVO>> getAllList() {
+        DishListDTO dto = new DishListDTO();
+        return ApiResult.success(dishService.list(dto));
     }
 
     @Operation(summary = "列表查询")

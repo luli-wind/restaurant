@@ -1,5 +1,12 @@
 import type { IPageQuery } from '@/api/types';
 
+// 订单项类型
+export type DineInOrderItem = {
+  dishId: number;
+  quantity: number;
+  price: number;
+};
+
 // 查询条件
 export type DineInOrderQuery = IPageQuery & {
     tableName?: string;
@@ -9,6 +16,7 @@ export type DineInOrderQuery = IPageQuery & {
 
 // 编辑form表单
 export type DineInOrderForm = {
+    tableId?: number;
     tableName?: string;
     numberOfGuests?: number;
     remark?: string;
@@ -18,7 +26,8 @@ export type DineInOrderForm = {
     status?: string;
     createTime?: string;
     payStatus?:string;
-    payTime?:string
+    payTime?:string;
+    orderItems?: DineInOrderItem[];
 };
 
 // list或detail返回结构
@@ -34,8 +43,7 @@ export type DineInOrderRow = {
    totalAmount?: number;
    status?: string;
    createTime?: string;
-   payStatus?:string
-   payTime?:string
+   payStatus?:string;
+   payTime?:string;
+   orderItems?: DineInOrderItem[];
 };
-
-
