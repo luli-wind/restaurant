@@ -50,4 +50,7 @@ public class Orders implements Serializable {
     @Schema(description ="")
     private LocalDateTime payTime;
 
+    @Schema(description ="退款原因")
+    private String refundReason;
+
 }

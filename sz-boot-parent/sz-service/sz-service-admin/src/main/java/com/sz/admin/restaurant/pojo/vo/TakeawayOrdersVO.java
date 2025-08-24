@@ -72,4 +72,8 @@ public class TakeawayOrdersVO {
     @Schema(description = "支付时间")
     private java.time.LocalDateTime payTime;
 
+    @ExcelProperty(value = "")
+    @Schema(description ="退款原因")
+    private String refundReason;
+
 }

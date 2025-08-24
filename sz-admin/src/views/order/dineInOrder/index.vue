@@ -55,7 +55,10 @@
         <el-form-item label="人数:"><span>{{ currentOrder.numberOfGuests }}</span></el-form-item>
         <el-form-item label="金额:"><span>¥{{ currentOrder.totalAmount }}</span></el-form-item>
         <el-form-item label="状态:">
-
+          <span>{{ getStatusName(currentOrder.status) }}</span>
+        </el-form-item>
+        <el-form-item label="支付状态:">
+          <span>{{ getPayStatusName(currentOrder.payStatus) }}</span>
         </el-form-item>
         <el-form-item label="下单时间:"><span>{{ currentOrder.createTime }}</span></el-form-item>
         <el-form-item v-if="currentOrder.payTime" label="完成时间:"><span>{{ currentOrder.payTime }}</span></el-form-item>
@@ -64,6 +67,26 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">关闭</el-button>
+          <el-button v-if="currentOrder.status !== '2004004'" type="warning" @click="updateStatus(currentOrder, {status: '2004004'})">取消订单</el-button>
+          <el-button v-if="currentOrder.status === '2004001'" type="primary" @click="updateStatus(currentOrder, {status: '2004002'})">开始制作</el-button>
+          <el-button v-if="currentOrder.status === '2004002'" type="success" @click="updateStatus(currentOrder, {status: '2004003'})">完成制作</el-button>
+          <el-button v-if="currentOrder.payStatus === '2006001'" type="danger" @click="openRefundDialog(currentOrder)">申请退款</el-button>
+          <el-button v-if="currentOrder.payStatus !== '2006001'" type="primary" @click="updateStatus(currentOrder, {payStatus: '2006001'})">标记为已支付</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    
+    <!-- 退款申请对话框 -->
+    <el-dialog v-model="refundDialogVisible" title="申请退款" width="500px">
+      <el-form :model="refundForm" label-width="100px">
+        <el-form-item label="退款原因:">
+          <el-input v-model="refundForm.refundReason" type="textarea" placeholder="请输入退款原因" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="refundDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitRefund">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -84,30 +107,62 @@ import {getDineInOrderListApi,
         removeDineInOrderApi,
         getDineInOrderDetailApi,
         exportDineInOrderExcelApi,
-        importDineInOrderExcelApi
+        importDineInOrderExcelApi,
 } from "@/api/modules/order/dineInOrders";
-import {CirclePlus, Delete, Download, Upload} from "@element-plus/icons-vue";
+import {Delete, Download, Upload} from "@element-plus/icons-vue";
 import {useHandleData} from "@/hooks/useHandleData";
-import {importDishExcelApi, removeDishApi} from "@/api/modules/restaurant/dish";
 import type ImportExcel from "@/components/ImportExcel/index.vue";
 import {downloadTemplate} from "@/api/modules/system/common";
 import {useDownload} from "@/hooks/useDownload";
-import type {DiningTableQuery} from "@/api/types/restaurant/diningTable";
 
 useDict(['dine_in_order_status']);
+useDict(['pay_status'])
+// 获取字典选项
+const dineInOrderStatusOptions = useDictOptions('dine_in_order_status');
+const payStatusOptions = useDictOptions('pay_status');
+// 获取状态名称
+const getStatusName = (status: string | undefined) => {
+  if (!status) return '';
+  const statusItem = dineInOrderStatusOptions.value.find(item => item.id === status);
+  return statusItem ? statusItem.codeName : '';
+};
+
+// 获取支付状态名称
+const getPayStatusName = (payStatus: string | undefined) => {
+  if (!payStatus) return '';
+  const payStatusItem = payStatusOptions.value.find(item => item.id === payStatus);
+  return payStatusItem ? payStatusItem.codeName : '';
+};
+
 // 定义响应式数据
 const dialogVisible = ref(false)
 const currentOrder = ref<DineInOrderRow>({})
+const refundDialogVisible = ref(false)
+const refundForm = ref({
+  id: 0,
+  refundReason: ''
+})
 const proTableRef = ref()
 
 // 搜索条件项
 const searchColumns: SearchProps[] = [
-  { prop: 'tableName', label: '桌子编号', el: 'input' },
+  { prop: 'tableName', label: '桌子编号', el: 'input',},
   {
     prop: 'status',
     label: '状态',
     el: 'select',
-    enum: useDictOptions('dine_in_order_status'),
+    enum: dineInOrderStatusOptions.value,
+    fieldNames: {
+      label: 'codeName',
+      value: 'id',
+      tagType: 'callbackShowStyle'
+    }
+  },
+  {
+    prop: 'payStatus',
+    label: '支付状态',
+    el: 'select',
+    enum: payStatusOptions.value,
     fieldNames: {
       label: 'codeName',
       value: 'id',
@@ -121,15 +176,15 @@ const columns: ColumnProps[] = [
   { prop: 'orderNumber', label: '订单号' },
   { prop: 'tableName', label: '桌号' },
   { prop: 'numberOfGuests', label: '人数' },
-  { 
-    prop: 'totalAmount', 
+  {
+    prop: 'totalAmount',
     label: '金额',
     render: ({ row }) => `¥${row.totalAmount}`
   },
   {
     prop: 'status',
     label: '状态',
-    enum: useDictOptions('dine_in_order_status'),
+    enum: dineInOrderStatusOptions.value,
     fieldNames: {
       label: 'codeName',
       value: 'id',
@@ -137,8 +192,8 @@ const columns: ColumnProps[] = [
     }
   },
   { prop: 'createTime', label: '下单时间' },
-  {prop:'payStatus', label:'支付状态'},
-  {prop:'payTime',label:'支付时间'},
+  { prop: 'payStatus', label: '支付状态' },
+  { prop: 'payTime', label: '支付时间' },
   { prop: 'operation', label: '操作' }
 ]
 
@@ -154,25 +209,33 @@ const viewOrder = (row: DineInOrderRow) => {
   dialogVisible.value = true
 }
 
+// 统一更新状态方法
+const updateStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
+  const params = {
+    id: row.id,
+    ...statusData
+  };
+  await useHandleData(updateDineInOrderApi, params, `更新订单状态`);
+  if (proTableRef.value) {
+    proTableRef.value.getTableList();
+  }
+  dialogVisible.value = false;
+}
 
+// 打开退款对话框
+const openRefundDialog = (row: DineInOrderRow) => {
+  refundForm.value.id = row.id;
+  refundForm.value.refundReason = '';
+  refundDialogVisible.value = true;
+}
 
-// 取消订单
-const cancelOrder = (row: DineInOrderRow) => {
-  ElMessageBox.confirm('确认取消该订单吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    // 这里应该调用实际的API接口取消订单
-    row.status = '已取消'
-    ElMessage.success('订单已取消')
-    // 刷新表格数据
-    if (proTableRef.value) {
-      proTableRef.value.getTableList()
-    }
-  }).catch(() => {
-    // 用户取消操作
-  })
+// 提交退款申请
+const submitRefund = async () => {
+  await updateStatus({id: refundForm.value.id} as DineInOrderRow, {refundReason: refundForm.value.refundReason});
+  if (proTableRef.value) {
+    proTableRef.value.getTableList();
+  }
+  refundDialogVisible.value = false;
 }
 
 // 组件挂载时获取数据

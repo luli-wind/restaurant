@@ -1,5 +1,6 @@
 package com.sz.admin.restaurant.pojo.dto;
 
+import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -58,5 +59,9 @@ public class TakeawayOrdersCreateDTO {
 
    @Schema(description = "支付时间")
    private java.time.LocalDateTime payTime;
+
+
+   @Schema(description ="退款原因")
+   private String refundReason;
 
 }

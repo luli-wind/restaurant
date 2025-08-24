@@ -39,4 +39,7 @@ public class DineInOrders implements Serializable {
     @Schema(description ="")
     private String remark;
 
+    @Schema(description ="退款原因")
+    private String refundReason;
+
 }

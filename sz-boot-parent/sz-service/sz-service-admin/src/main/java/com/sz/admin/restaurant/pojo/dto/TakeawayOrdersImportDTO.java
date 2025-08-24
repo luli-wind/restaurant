@@ -73,4 +73,8 @@ public class TakeawayOrdersImportDTO {
     @ExcelProperty(value = "")
     private java.time.LocalDateTime payTime;
 
+    @Schema(description ="退款原因")
+    @ExcelProperty(value = "")
+    private String refundReason;
+
 }

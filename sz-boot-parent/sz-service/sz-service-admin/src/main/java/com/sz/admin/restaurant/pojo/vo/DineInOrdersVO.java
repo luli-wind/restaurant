@@ -37,6 +37,9 @@ public class DineInOrdersVO {
     @Schema(description =  "")
     private String remark;
 
+    @ExcelProperty(value = "退款原因")
+    @Schema(description = "退款原因")
+    private String refundReason;
     //订单字段
     @ExcelProperty(value = "订单号")
     @Schema(description = "订单号")

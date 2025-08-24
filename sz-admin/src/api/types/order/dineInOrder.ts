@@ -3,6 +3,7 @@ import type { IPageQuery } from '@/api/types';
 // 查询条件
 export type DineInOrderQuery = IPageQuery & {
     tableName?: string;
+    payStatus?:string;
     status?: string;
 };
 
@@ -16,7 +17,7 @@ export type DineInOrderForm = {
     totalAmount?: number;
     status?: string;
     createTime?: string;
-    payStatus?:string
+    payStatus?:string;
     payTime?:string
 };
 

@@ -18,8 +18,8 @@ public class DiningTableListDTO extends PageQuery {
     @Schema(description =  "餐桌编号")
     private String tableName;
 
-    @Schema(description =  "容量")
-    private Integer capacity;
+    @Schema(description =  "支付状态")
+    private String payStatus;
 
     @Schema(description =  "状态")
     private String status;

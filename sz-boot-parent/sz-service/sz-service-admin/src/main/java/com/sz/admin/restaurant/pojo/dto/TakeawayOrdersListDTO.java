@@ -17,7 +17,10 @@ import java.math.BigDecimal;
 public class TakeawayOrdersListDTO extends PageQuery {
 
     @Schema(description =  "")
-    private Integer orderId;
+    private String status;
+
+    @Schema(description = "")
+    private String payStatus;
 
     @Schema(description =  "")
     private String customerPhone;

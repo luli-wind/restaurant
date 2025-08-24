@@ -1,13 +1,12 @@
 package com.sz.admin.restaurant.service;
 
 import com.mybatisflex.core.service.IService;
+import com.sz.admin.restaurant.pojo.dto.*;
 import com.sz.admin.restaurant.pojo.po.DineInOrders;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.entity.PageResult;
 import java.util.List;
-import com.sz.admin.restaurant.pojo.dto.DineInOrdersCreateDTO;
-import com.sz.admin.restaurant.pojo.dto.DineInOrdersUpdateDTO;
-import com.sz.admin.restaurant.pojo.dto.DineInOrdersListDTO;
+
 import com.sz.admin.restaurant.pojo.vo.DineInOrdersVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,4 +36,5 @@ public interface DineInOrdersService extends IService<DineInOrders> {
     void importExcel(ImportExcelDTO dto);
 
     void exportExcel(DineInOrdersListDTO dto, HttpServletResponse response);
+
 }

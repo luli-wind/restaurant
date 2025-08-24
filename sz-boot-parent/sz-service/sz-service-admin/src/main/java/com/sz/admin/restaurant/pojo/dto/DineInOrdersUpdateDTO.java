@@ -61,5 +61,7 @@ public class DineInOrdersUpdateDTO {
     @Schema(description = "桌子编号")
     private String tableName;
 
+    @Schema(description = "退款原因")
+    private String refundReason;
 
 }
