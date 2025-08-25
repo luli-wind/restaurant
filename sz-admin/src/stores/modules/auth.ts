@@ -85,48 +85,48 @@ export const useAuthStore = defineStore('auth', () => {
     authMenuList.value.unshift(...beforeMenuList);
 
     const afterMenuList: Menu.MenuOptions[] = [
-      {
-        id: 'c6328b228c2c4e6bb5b1beb83110dcfa',
-        pid: '0',
-        path: '/demo',
-        name: 'demo',
-        sort: 500,
-        component: '/demo/index',
-        meta: {
-          icon: 'Flag',
-          title: '功能演示',
-          isLink: '',
-          isHidden: 'F',
-          isFull: 'F',
-          isAffix: 'F',
-          isKeepAlive: 'F',
-          useDataScope: 'F'
-        },
-        children: [],
-        permissions: '',
-        menuTypeCd: '1002002'
-      },
-      {
-        id: 'c0a0eba2922346b0b8ae9d4dd951498e',
-        pid: '0',
-        path: '/about/index',
-        name: 'about',
-        sort: 600,
-        component: '/about/index',
-        meta: {
-          icon: 'InfoFilled',
-          title: '关于项目',
-          isLink: '',
-          isHidden: 'F',
-          isFull: 'F',
-          isAffix: 'F',
-          isKeepAlive: 'F',
-          useDataScope: 'F'
-        },
-        children: [],
-        permissions: '',
-        menuTypeCd: '1002002'
-      }
+      // {
+      //   id: 'c6328b228c2c4e6bb5b1beb83110dcfa',
+      //   pid: '0',
+      //   path: '/demo',
+      //   name: 'demo',
+      //   sort: 500,
+      //   component: '/demo/index',
+      //   meta: {
+      //     icon: 'Flag',
+      //     title: '功能演示',
+      //     isLink: '',
+      //     isHidden: 'F',
+      //     isFull: 'F',
+      //     isAffix: 'F',
+      //     isKeepAlive: 'F',
+      //     useDataScope: 'F'
+      //   },
+      //   children: [],
+      //   permissions: '',
+      //   menuTypeCd: '1002002'
+      // },
+      // {
+      //   id: 'c0a0eba2922346b0b8ae9d4dd951498e',
+      //   pid: '0',
+      //   path: '/about/index',
+      //   name: 'about',
+      //   sort: 600,
+      //   component: '/about/index',
+      //   meta: {
+      //     icon: 'InfoFilled',
+      //     title: '关于项目',
+      //     isLink: '',
+      //     isHidden: 'F',
+      //     isFull: 'F',
+      //     isAffix: 'F',
+      //     isKeepAlive: 'F',
+      //     useDataScope: 'F'
+      //   },
+      //   children: [],
+      //   permissions: '',
+      //   menuTypeCd: '1002002'
+      // }
     ];
     authMenuList.value.push(...afterMenuList);
   }

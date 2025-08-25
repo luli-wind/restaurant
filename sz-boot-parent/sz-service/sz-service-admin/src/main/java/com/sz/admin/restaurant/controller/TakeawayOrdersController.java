@@ -1,5 +1,6 @@
 package com.sz.admin.restaurant.controller;
 
+import com.sz.admin.restaurant.pojo.dto.DineInOrdersUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +43,22 @@ public class TakeawayOrdersController  {
     @PostMapping
     public ApiResult<Void> create(@RequestBody TakeawayOrdersCreateDTO dto) {
         takeawayOrdersService.create(dto);
+        return ApiResult.success();
+    }
+
+    @Operation(summary = "修改订单状态")
+    @SaCheckPermission(value = "takeaway.orders.update")
+    @PutMapping("/status")
+    public ApiResult<Void> updateStatus(@RequestBody TakeawayOrdersUpdateDTO dto) {
+        takeawayOrdersService.updateStatus(dto);
+        return ApiResult.success();
+    }
+
+    @Operation(summary = "修改支付状态")
+    @SaCheckPermission(value = "takeaway.orders.update")
+    @PutMapping("/payStatus")
+    public ApiResult<Void> updatePayStatus(@RequestBody TakeawayOrdersUpdateDTO dto) {
+        takeawayOrdersService.updatePayStatus(dto);
         return ApiResult.success();
     }
 

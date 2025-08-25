@@ -1,8 +1,11 @@
 package com.sz.admin.restaurant.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import com.sz.admin.restaurant.pojo.po.Orders;
+import com.sz.admin.restaurant.service.OrderDetailService;
 import com.sz.admin.restaurant.service.OrdersService;
+import com.sz.utils.RestaurantOrderNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import com.sz.core.util.Utils;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import com.sz.admin.restaurant.pojo.dto.TakeawayOrdersCreateDTO;
 import com.sz.admin.restaurant.pojo.dto.TakeawayOrdersUpdateDTO;
@@ -44,17 +48,39 @@ import com.sz.admin.restaurant.pojo.vo.TakeawayOrdersVO;
 @RequiredArgsConstructor
 public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper, TakeawayOrders> implements TakeawayOrdersService {
     private final OrdersService ordersService;
+    private final OrderDetailService orderDetailService;
     @Override
     public void create(TakeawayOrdersCreateDTO dto){
         // 创建基本订单记录
         Orders orders = new Orders();
         BeanUtils.copyProperties(dto, orders);
-
-        // 这里可以根据需要设置其他订单字段
+        orders.setOrderType("外卖");
+        orders.setOrderNumber(RestaurantOrderNumberGenerator.generateOrderNo());
+        orders.setCreateTime(LocalDateTime.now());
+        orders.setStatus("2005001");
+        orders.setPayStatus("2006001");//已支付
+        orders.setPayTime(LocalDateTime.now());
+        Double totalAmount = 0.0;
+        List<OrderDetail> detailList = dto.getOrderItems();
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+            totalAmount +=orderDetail.getAmount()*orderDetail.getNumber();
+        }
+        totalAmount +=dto.getPackagingFee();
+        totalAmount +=dto.getDeliveryFee();
+        orders.setTotalAmount(totalAmount);
         ordersService.save(orders);
-
+        //处理外卖订单扩展字段
         TakeawayOrders takeawayOrders = BeanCopyUtils.copy(dto, TakeawayOrders.class);
+        takeawayOrders.setOrderId(Math.toIntExact(orders.getOrderId()));
         save(takeawayOrders);
+        //处理订单详情
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+        }
+
+
+        orderDetailService.saveBatch(detailList);
     }
 
     @Override
@@ -96,6 +122,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
                 vo.setCreateTime(orders.getCreateTime());
                 vo.setPayStatus(orders.getPayStatus());
                 vo.setPayTime(orders.getPayTime());
+                vo.setRefundReason(orders.getRefundReason());
             }
 
             return vo;
@@ -122,6 +149,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
                 vo.setCreateTime(orders.getCreateTime());
                 vo.setPayStatus(orders.getPayStatus());
                 vo.setPayTime(orders.getPayTime());
+                vo.setRefundReason(orders.getRefundReason());
             }
 
             return vo;
@@ -150,6 +178,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
             vo.setCreateTime(orders.getCreateTime());
             vo.setPayStatus(orders.getPayStatus());
             vo.setPayTime(orders.getPayTime());
+            vo.setRefundReason(orders.getRefundReason());
         }
         return vo;
     }
@@ -172,6 +201,26 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         String fileName = "外卖订单模板";
         OutputStream os = FileUtils.getOutputStream(response, fileName + ".xlsx");
         ExcelUtils.exportExcel(list, "外卖订单", TakeawayOrdersVO.class, os);
+    }
+
+    @Override
+    public void updateStatus(TakeawayOrdersUpdateDTO dto) {
+        Orders orders = ordersService.getById(dto.getOrderId());
+        orders.setStatus(dto.getStatus());
+        ordersService.updateById(orders);
+    }
+
+    @Override
+    public void updatePayStatus(TakeawayOrdersUpdateDTO dto) {
+        Orders orders = ordersService.getById(dto.getOrderId());
+        orders.setPayStatus(dto.getPayStatus());
+        if(dto.getPayStatus().equals("2006001")){
+            orders.setPayTime(LocalDateTime.now());
+        }
+        if(dto.getPayStatus().equals("2006003")){
+            orders.setRefundReason(dto.getRefundReason());
+        }
+        ordersService.updateById(orders);
     }
 
     private static QueryWrapper buildQueryWrapper(TakeawayOrdersListDTO dto) {

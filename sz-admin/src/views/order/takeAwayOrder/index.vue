@@ -4,7 +4,7 @@
           ref="proTableRef"
           :columns="columns"
           :indent="20"
-          :request-api="getDineInOrderListApi"
+          :request-api="getTakeAwayOrderListApi"
           :search-columns="searchColumns"
           :data-callback="dataCallback"
           row-key="id"
@@ -42,7 +42,6 @@
           </template>
           <!-- 自定义操作列 -->
           <template #operation="{ row }">
-            <el-button type="primary" :icon="List"  link>加单</el-button>
             <el-button type="primary" :icon="EditPen" link @click="viewOrderDetail(row)">订单详情</el-button>
           </template>
         </ProTable>
@@ -66,34 +65,34 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import ProTable from '@/components/ProTable/index.vue'
 import OrderDetail from './components/orderDetail.vue'
 import { useDictOptions } from '@/hooks/useDictOptions';
-import type {DineInOrderQuery, DineInOrderRow} from '@/api/types/order/dineInOrder'
+import type {TakeAwayOrderQuery, TakeAwayOrderRow} from '@/api/types/order/takeAwayOrder'
 import type { ColumnProps,ProTableInstance, SearchProps } from '@/components/ProTable/interface'
 import { useDict } from '@/hooks/useDict';
-import {getDineInOrderListApi,
-        createDineInOrderApi,
-        updateDineInOrderApi,
-        removeDineInOrderApi,
-        getDineInOrderDetailApi,
-        exportDineInOrderExcelApi,
-        importDineInOrderExcelApi,
-        updateDineInOrderPayStatusApi,
-        updateDineInOrderStatusApi
-} from "@/api/modules/order/dineInOrders";
-import {Delete, Download, EditPen, Upload,List} from "@element-plus/icons-vue";
+import {getTakeAwayOrderListApi,
+        createTakeAwayOrderApi,
+        updateTakeAwayOrderApi,
+        removeTakeAwayOrderApi,
+        getTakeAwayOrderDetailApi,
+        exportTakeAwayOrderExcelApi,
+        importTakeAwayOrderExcelApi,
+        updateTakeAwayOrderPayStatusApi,
+        updateTakeAwayOrderStatusApi
+} from "@/api/modules/order/takeAwayOrder";
+import {Delete, Download, EditPen, Upload} from "@element-plus/icons-vue";
 import {useHandleData} from "@/hooks/useHandleData";
 import type ImportExcel from "@/components/ImportExcel/index.vue";
 import {downloadTemplate} from "@/api/modules/system/common";
 import {useDownload} from "@/hooks/useDownload";
 
-useDict(['dine_in_order_status']);
+useDict(['take_away_order_status']);
 useDict(['pay_status'])
 // 获取字典选项
-const dineInOrderStatusOptions = useDictOptions('dine_in_order_status');
+const takeAwayOrderStatusOptions = useDictOptions('take_away_order_status');
 const payStatusOptions = useDictOptions('pay_status');
 // 获取状态名称
 const getStatusName = (status: string | undefined) => {
   if (!status) return '';
-  const statusItem = dineInOrderStatusOptions.value.find(item => item.id === status);
+  const statusItem = takeAwayOrderStatusOptions.value.find(item => item.id === status);
   return statusItem ? statusItem.codeName : '';
 };
 
@@ -107,41 +106,33 @@ const getPayStatusName = (payStatus: string | undefined) => {
 // 定义响应式数据
 const dialogVisible = ref(false)
 const orderDetailVisible = ref(false)
-const currentOrder = ref<DineInOrderRow>({})
+const currentOrder = ref<TakeAwayOrderRow>({})
 const proTableRef = ref()
 
 // 搜索条件项
 const searchColumns: SearchProps[] = [
-  { prop: 'tableName', label: '桌子编号', el: 'input',},
+  { prop: 'customerName', label: '客户姓名', el: 'input',},
+  { prop: 'customerPhone', label: '客户电话', el: 'input',},
   {
     prop: 'status',
     label: '状态',
     el: 'select',
-    enum: dineInOrderStatusOptions.value,
-    fieldNames: {
-      label: 'codeName',
-      value: 'id',
-      tagType: 'callbackShowStyle'
-    }
-  },
-  {
-    prop: 'payStatus',
-    label: '支付状态',
-    el: 'select',
-    enum: payStatusOptions.value,
+    enum: takeAwayOrderStatusOptions.value,
     fieldNames: {
       label: 'codeName',
       value: 'id',
       tagType: 'callbackShowStyle'
     }
   }
+
 ];
 
 // 表格列配置
 const columns: ColumnProps[] = [
   { prop: 'orderNumber', label: '订单号' },
-  { prop: 'tableName', label: '桌号' },
-  { prop: 'numberOfGuests', label: '人数' },
+  { prop: 'customerName', label: '客户姓名' },
+  { prop: 'customerPhone', label: '客户电话' },
+  { prop: 'deliveryAddress', label: '配送地址' },
   {
     prop: 'totalAmount',
     label: '金额',
@@ -151,7 +142,7 @@ const columns: ColumnProps[] = [
     prop: 'status',
     label: '状态',
     tag: true,
-    enum: dineInOrderStatusOptions.value,
+    enum: takeAwayOrderStatusOptions.value,
     fieldNames: {
       label: 'codeName',
       value: 'id',
@@ -159,17 +150,8 @@ const columns: ColumnProps[] = [
     }
   },
   { prop: 'createTime', label: '下单时间' },
-  { prop: 'payStatus',
-    label: '支付状态',
-    enum: payStatusOptions.value,
-    tag: true,
-    fieldNames:{
-      label: 'codeName',
-      value: 'id',
-      tagType: 'callbackShowStyle'
-    }
-  },
-  { prop: 'payTime', label: '支付时间' },
+
+
   { prop: 'operation', label: '操作' }
 ]
 
@@ -181,32 +163,31 @@ const dataCallback = (data: any) => {
 
 
 // 查看订单详情（新组件）
-const viewOrderDetail = (row: DineInOrderRow) => {
+const viewOrderDetail = (row: TakeAwayOrderRow) => {
   currentOrder.value = { ...row }
   orderDetailVisible.value = true
 }
 // 统一更新状态方法
-const updateStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
+const updateStatus = async (row: TakeAwayOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
   const params = {
     id: row.id,
     orderId: row.orderId,
-    tableId: row.tableId,
     ...statusData
   };
-  await useHandleData(updateDineInOrderStatusApi, params, `更新订单状态`);
+  await useHandleData(updateTakeAwayOrderStatusApi, params, `更新订单状态`);
   if (proTableRef.value) {
     proTableRef.value.getTableList();
   }
   dialogVisible.value = false;
 }
 
-const updatePayStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
+const updatePayStatus = async (row: TakeAwayOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
   const params = {
     id: row.id,
     orderId: row.orderId,
     ...statusData
   };
-  await useHandleData(updateDineInOrderPayStatusApi, params, `更新订单支付状态`);
+  await useHandleData(updateTakeAwayOrderPayStatusApi, params, `更新订单支付状态`);
   if (proTableRef.value) {
     proTableRef.value.getTableList();
   }
@@ -222,19 +203,19 @@ onMounted(() => {
   }
 })
 
-const formatParams = (params: DineInOrderQuery) =>{
+const formatParams = (params: TakeAwayOrderQuery) =>{
   let newParams = JSON.parse(JSON.stringify(params));
   return newParams;
 };
 
 // 删除信息
-const deleteInfo = async (params:DineInOrderRow ) => {
-  await useHandleData(removeDineInOrderApi, { ids: [params.id] }, `删除【${params.id}】堂食订单`);
+const deleteInfo = async (params:TakeAwayOrderRow ) => {
+  await useHandleData(removeTakeAwayOrderApi, { ids: [params.id] }, `删除【${params.id}】外卖订单`);
   proTableRef.value?.getTableList();
 }
 // 批量删除信息
 const batchDelete = async (ids: (string | number)[]) => {
-  await useHandleData(removeDineInOrderApi, { ids }, '删除所选堂食订单');
+  await useHandleData(removeTakeAwayOrderApi, { ids }, '删除所选外卖订单');
   proTableRef.value?.clearSelection();
   proTableRef.value?.getTableList();
 }
@@ -242,18 +223,18 @@ const batchDelete = async (ids: (string | number)[]) => {
 const ImportExcelRef = ref<InstanceType<typeof ImportExcel>>();
 const importData = () => {
   const params = {
-    title: '堂食订单',
-    templateName: '堂食订单',
+    title: '外卖订单',
+    templateName: '外卖订单',
     tempApi: downloadTemplate,
-    importApi: importDineInOrderExcelApi,
+    importApi: importTakeAwayOrderExcelApi,
     getTableList: proTableRef.value?.getTableList
   };
   ImportExcelRef.value?.acceptParams(params);
 };
 // 导出
 const downloadFile = async () => {
-  let newParams = formatParams(proTableRef.value?.searchParam as DineInOrderQuery);
-  useDownload(exportDineInOrderExcelApi, "堂食订单", newParams);
+  let newParams = formatParams(proTableRef.value?.searchParam as TakeAwayOrderQuery);
+  useDownload(exportTakeAwayOrderExcelApi, "外卖订单", newParams);
 };
 </script>
 

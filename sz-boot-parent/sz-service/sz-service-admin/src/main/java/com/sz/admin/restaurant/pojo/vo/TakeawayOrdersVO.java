@@ -28,6 +28,10 @@ public class TakeawayOrdersVO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
+    private String customerName;
+
+    @ExcelProperty(value = "")
+    @Schema(description =  "")
     private String customerPhone;
 
     @ExcelProperty(value = "")
@@ -36,11 +40,11 @@ public class TakeawayOrdersVO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
-    private BigDecimal packagingFee;
+    private Double packagingFee;
 
     @ExcelProperty(value = "配送费")
     @Schema(description =  "配送费")
-    private BigDecimal deliveryFee;
+    private Double deliveryFee;
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
@@ -68,6 +72,8 @@ public class TakeawayOrdersVO {
     @ExcelProperty(value = "")
     @Schema(description ="支付状态")
     private String payStatus;
+
+
     @ExcelProperty(value = "")
     @Schema(description = "支付时间")
     private java.time.LocalDateTime payTime;

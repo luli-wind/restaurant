@@ -5,6 +5,7 @@
     <resultMap id="BaseResultMap" type="com.sz.admin.restaurant.pojo.po.TakeawayOrders">
         <id column="id" property="id"/>
         <result column="order_id" property="orderId"/>
+        <result column="customer_name" property="customerName"/>
         <result column="customer_phone" property="customerPhone"/>
         <result column="delivery_address" property="deliveryAddress"/>
         <result column="packaging_fee" property="packagingFee"/>
@@ -14,7 +15,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_id, customer_phone, delivery_address, packaging_fee, delivery_fee, remark
+        id, order_id,customer_name, customer_phone, delivery_address, packaging_fee, delivery_fee, remark
     </sql>
 
 </mapper>

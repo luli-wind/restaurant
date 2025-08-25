@@ -32,16 +32,19 @@ public class TakeawayOrders implements Serializable {
     private Integer orderId;
 
     @Schema(description ="")
+    private String customerName;
+
+    @Schema(description ="")
     private String customerPhone;
 
     @Schema(description ="")
     private String deliveryAddress;
 
     @Schema(description ="")
-    private BigDecimal packagingFee;
+    private Double packagingFee;
 
     @Schema(description ="配送费")
-    private BigDecimal deliveryFee;
+    private Double deliveryFee;
 
     @Schema(description ="")
     private String remark;

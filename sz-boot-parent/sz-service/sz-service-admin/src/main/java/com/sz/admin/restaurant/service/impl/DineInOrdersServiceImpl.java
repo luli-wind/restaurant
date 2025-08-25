@@ -233,6 +233,12 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     public void updateStatus(DineInOrdersUpdateDTO dto) {
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setStatus(dto.getStatus());
+        //用户完成用餐，将餐桌设置为空闲状态
+        if(dto.getStatus().equals("2004005")){
+            DiningTable table = diningTableService.getById(dto.getTableId());
+            table.setStatus("2001001");
+            diningTableService.updateById(table);
+        }
         ordersService.updateById(orders);
     }
 

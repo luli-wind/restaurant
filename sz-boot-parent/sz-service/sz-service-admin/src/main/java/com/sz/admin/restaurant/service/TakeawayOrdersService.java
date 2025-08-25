@@ -1,6 +1,7 @@
 package com.sz.admin.restaurant.service;
 
 import com.mybatisflex.core.service.IService;
+import com.sz.admin.restaurant.pojo.dto.DineInOrdersUpdateDTO;
 import com.sz.admin.restaurant.pojo.po.TakeawayOrders;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.entity.PageResult;
@@ -37,4 +38,8 @@ public interface TakeawayOrdersService extends IService<TakeawayOrders> {
     void importExcel(ImportExcelDTO dto);
 
     void exportExcel(TakeawayOrdersListDTO dto, HttpServletResponse response);
+
+    void updateStatus(TakeawayOrdersUpdateDTO dto);
+
+    void updatePayStatus(TakeawayOrdersUpdateDTO dto);
 }

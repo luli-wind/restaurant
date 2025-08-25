@@ -23,6 +23,9 @@ public class TakeawayOrdersUpdateDTO {
     @Schema(description =  "")
     private Long orderId;
 
+    @Schema(description = "")
+    private String customerName;
+
     @Schema(description =  "")
     private String customerPhone;
 
@@ -30,10 +33,10 @@ public class TakeawayOrdersUpdateDTO {
     private String deliveryAddress;
 
     @Schema(description =  "")
-    private BigDecimal packagingFee;
+    private Double packagingFee;
 
     @Schema(description =  "配送费")
-    private BigDecimal deliveryFee;
+    private Double deliveryFee;
 
     @Schema(description =  "")
     private String remark;

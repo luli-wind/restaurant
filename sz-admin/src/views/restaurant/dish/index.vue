@@ -58,7 +58,7 @@
           编辑
         </el-button>
         <el-button
-          v-auth="'dish.recipe'"
+          v-auth="'dish.update'"
           type="primary"
           link
           :icon="List"

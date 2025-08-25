@@ -1,9 +1,11 @@
 package com.sz.admin.restaurant.pojo.dto;
 
 import cn.idev.excel.annotation.ExcelProperty;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -20,6 +22,9 @@ public class TakeawayOrdersCreateDTO {
    @Schema(description =  "")
    private Long orderId;
 
+   @Schema(description = "")
+   private String customerName;
+
    @Schema(description =  "")
    private String customerPhone;
 
@@ -27,10 +32,10 @@ public class TakeawayOrdersCreateDTO {
    private String deliveryAddress;
 
    @Schema(description =  "")
-   private BigDecimal packagingFee;
+   private Double packagingFee;
 
    @Schema(description =  "配送费")
-   private BigDecimal deliveryFee;
+   private Double deliveryFee;
 
    @Schema(description =  "")
    private String remark;
@@ -63,5 +68,9 @@ public class TakeawayOrdersCreateDTO {
 
    @Schema(description ="退款原因")
    private String refundReason;
+
+   // 订单项列表
+   @Schema(description = "订单项列表")
+   private List<OrderDetail> orderItems;
 
 }

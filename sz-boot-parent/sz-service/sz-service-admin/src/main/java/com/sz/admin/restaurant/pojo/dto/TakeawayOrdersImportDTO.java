@@ -21,6 +21,11 @@ public class TakeawayOrdersImportDTO {
     @Schema(description =  "")
     private Long orderId;
 
+
+    @ExcelProperty(value = "")
+    @Schema(description = "")
+    private String customerName;
+
     @ExcelProperty(value = "")
     @Schema(description =  "")
     private String customerPhone;
@@ -31,11 +36,11 @@ public class TakeawayOrdersImportDTO {
 
     @ExcelProperty(value = "")
     @Schema(description =  "")
-    private BigDecimal packagingFee;
+    private Double packagingFee;
 
     @ExcelProperty(value = "配送费")
     @Schema(description =  "配送费")
-    private BigDecimal deliveryFee;
+    private Double deliveryFee;
 
     @ExcelProperty(value = "")
     @Schema(description =  "")

@@ -23,14 +23,32 @@
           </el-col>
           <el-col :span="12">
             <div class="info-item">
-              <span class="info-label">桌号：</span>
-              <span class="info-value">{{ orderData.tableName }}</span>
+              <span class="info-label">客户姓名：</span>
+              <span class="info-value">{{ orderData.customerName }}</span>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="info-item">
-              <span class="info-label">用餐人数：</span>
-              <span class="info-value">{{ orderData.numberOfGuests }}人</span>
+              <span class="info-label">客户电话：</span>
+              <span class="info-value">{{ orderData.customerPhone }}</span>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="info-item">
+              <span class="info-label">配送地址：</span>
+              <span class="info-value">{{ orderData.deliveryAddress }}</span>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="info-item">
+              <span class="info-label">包装费：</span>
+              <span class="info-value">¥{{ orderData.packagingFee }}</span>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="info-item">
+              <span class="info-label">配送费：</span>
+              <span class="info-value">¥{{ orderData.deliveryFee }}</span>
             </div>
           </el-col>
           <el-col :span="12">
@@ -119,32 +137,39 @@
       <div class="dialog-footer">
         <el-button @click="handleClose">关闭</el-button>
         <el-button
-          v-if="orderData.status !== '2004005'"
+          v-if="orderData.status !== '2005005'"
           type="warning"
           @click="handleCancelOrder"
         >
           取消订单
         </el-button>
         <el-button
-          v-if="orderData.status === '2004001'"
+          v-if="orderData.status === '2005001'"
           type="primary"
           @click="handleStartCooking"
         >
-          开始制作
+          接单
         </el-button>
         <el-button
-          v-if="orderData.status === '2004002'"
+          v-if="orderData.status === '2005002'"
           type="success"
           @click="handleFinishCooking"
         >
           完成制作
         </el-button>
         <el-button
-            v-if="orderData.status === '2004003'"
-            type="success"
-            @click="handleFinish"
+          v-if="orderData.status === '2005003'"
+          type="success"
+          @click="handleDelivery"
         >
-          用餐完毕
+          开始配送
+        </el-button>
+        <el-button
+          v-if="orderData.status === '2005004'"
+          type="success"
+          @click="handleFinish"
+        >
+          完成订单
         </el-button>
         <el-button
           v-if="orderData.payStatus === '2006001'"
@@ -152,13 +177,6 @@
           @click="handleRefund"
         >
           申请退款
-        </el-button>
-        <el-button
-          v-if="orderData.payStatus == '2006002'"
-          type="primary"
-          @click="handleMarkAsPaid"
-        >
-          标记为已支付
         </el-button>
       </div>
     </template>
@@ -194,12 +212,12 @@ import { ref, reactive, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getOrderDetailListApi } from '@/api/modules/order/orderDetail'
 import type { OrderDetailRow } from '@/api/types/order/orderDetail'
-import type { DineInOrderRow } from '@/api/types/order/dineInOrder'
+import type { TakeAwayOrderRow } from '@/api/types/order/takeAwayOrder'
 
 // 定义组件属性
 const props = defineProps<{
   modelValue: boolean
-  orderData: DineInOrderRow
+  orderData: TakeAwayOrderRow
   getStatusName: (status: string | undefined) => string
   getPayStatusName: (payStatus: string | undefined) => string
 }>()
@@ -207,8 +225,8 @@ const props = defineProps<{
 // 定义事件
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'updateStatus', order: DineInOrderRow, statusData: { status?: string; }): void
-  (e: 'updatePayStatus', order: DineInOrderRow, statusData: {  payStatus?: string;refundReason?:string}): void
+  (e: 'updateStatus', order: TakeAwayOrderRow, statusData: { status?: string; }): void
+  (e: 'updatePayStatus', order: TakeAwayOrderRow, statusData: {  payStatus?: string;refundReason?:string}): void
 }>()
 
 // 响应式数据
@@ -266,15 +284,15 @@ const calculateTotalAmount = () => {
 // 获取订单状态类型
 const getStatusType = (status: string | undefined) => {
   switch (status) {
-    case '2004001': // 已下单
+    case '2005001': // 已下单
       return 'default'
-    case '2004002': // 制作中
+    case '2005002': // 制作中
       return 'info'
-    case '2004003': // 制作已完成
+    case '2005003': // 制作已完成/配送中
       return 'success'
-    case '2004004': // 已取消
+    case '2005004': // 已取消
       return 'warning'
-    case '2004005': // 已完成用餐
+    case '2005005': // 已完成
       return 'success'
     default:
       return 'info'
@@ -302,25 +320,31 @@ const handleClose = () => {
 
 // 取消订单
 const handleCancelOrder = () => {
-  emit('updateStatus', props.orderData, { status: '2004004' })
+  emit('updateStatus', props.orderData, { status: '2005004' })
   handleClose()
 }
 
 // 开始制作
 const handleStartCooking = () => {
-  emit('updateStatus', props.orderData, { status: '2004002' })
+  emit('updateStatus', props.orderData, { status: '2005002' })
   handleClose()
 }
 
 // 完成制作
 const handleFinishCooking = () => {
-  emit('updateStatus', props.orderData, { status: '2004003' })
+  emit('updateStatus', props.orderData, { status: '2005003' })
   handleClose()
 }
 
-//完成用餐
-const handleFinish = () =>{
-  emit('updateStatus', props.orderData, { status: '2004005' })
+// 开始配送
+const handleDelivery = () => {
+  emit('updateStatus', props.orderData, { status: '2005004' })
+  handleClose()
+}
+
+// 完成订单
+const handleFinish = () => {
+  emit('updateStatus', props.orderData, { status: '2005005' })
   handleClose()
 }
 

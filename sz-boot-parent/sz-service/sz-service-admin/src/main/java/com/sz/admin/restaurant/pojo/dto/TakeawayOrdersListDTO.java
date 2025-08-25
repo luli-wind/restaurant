@@ -20,6 +20,9 @@ public class TakeawayOrdersListDTO extends PageQuery {
     private String status;
 
     @Schema(description = "")
+    private String customerName;
+
+    @Schema(description = "")
     private String payStatus;
 
     @Schema(description =  "")

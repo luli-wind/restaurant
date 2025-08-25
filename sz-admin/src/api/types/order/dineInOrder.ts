@@ -1,7 +1,7 @@
 import type { IPageQuery } from '@/api/types';
 
 // 订单项类型
-export type DineInOrderItem = {
+export type OrderItem = {
   dishId: number;
   dishName: string;
   imageUrl: string;
@@ -31,7 +31,7 @@ export type DineInOrderForm = {
     createTime?: string;
     payStatus?:string;
     payTime?:string;
-    orderItems?: DineInOrderItem[];
+    orderItems?: OrderItem[];
     refundReason?: string;
 };
 
@@ -50,6 +50,6 @@ export type DineInOrderRow = {
    createTime?: string;
    payStatus?:string;
    payTime?:string;
-   orderItems?: DineInOrderItem[];
+   orderItems?: OrderItem[];
    refundReason?: string;
 };

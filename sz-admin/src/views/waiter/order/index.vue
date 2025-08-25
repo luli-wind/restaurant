@@ -194,63 +194,6 @@
         </el-card>
       </el-col>
     </el-row>
-    <!-- 订单列表区域 -->
-    <el-card class="order-list-card" style="margin-top: 20px;">
-      <template #header>
-        <div class="card-header">
-          <span>订单列表</span>
-        </div>
-      </template>
-      <el-table :data="orders" style="width: 100%" v-loading="loading">
-        <el-table-column prop="orderNumber" label="订单号" />
-        <el-table-column prop="tableName" label="桌号" />
-        <el-table-column prop="numberOfGuests" label="人数" />
-        <el-table-column prop="totalAmount" label="金额">
-          <template #default="scope">
-            ¥{{ scope.row.totalAmount }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态">
-          <template #default="scope">
-            <el-tag :type="getStatusTagType(scope.row.status)">{{ getStatusName(scope.row.status) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="payStatus" label="支付状态">
-          <template #default="scope">
-            <el-tag :type="getPayStatusTagType(scope.row.payStatus)">{{ getPayStatusName(scope.row.payStatus) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createTime" label="下单时间" />
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button 
-              v-if="scope.row.status === '2004001'" 
-              type="primary" 
-              size="small" 
-              @click="updateOrderStatus(scope.row, '2004002')"
-            >
-              开始制作
-            </el-button>
-            <el-button 
-              v-if="scope.row.status === '2004002'" 
-              type="success" 
-              size="small" 
-              @click="updateOrderStatus(scope.row, '2004003')"
-            >
-              完成制作
-            </el-button>
-            <el-button 
-              v-if="scope.row.payStatus === '2006001'" 
-              type="danger" 
-              size="small" 
-              @click="updatePayStatus(scope.row, '2006002')"
-            >
-              标记已支付
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
   </div>
 </template>
 
@@ -287,59 +230,6 @@
   import { useOptionsStore } from '@/stores/modules/options'
   import {useDict} from "@/hooks/useDict";
   import { useHandleData } from '@/hooks/useHandleData'
-  import { useHandleData } from '@/hooks/useHandleData'
-  import { useDictOptions } from '@/hooks/useDictOptions'
-  import { useDict } from '@/hooks/useDict'
-  
-  // 获取字典选项
-  useDict(['dine_in_order_status'])
-  useDict(['pay_status'])
-  const dineInOrderStatusOptions = useDictOptions('dine_in_order_status')
-  const payStatusOptions = useDictOptions('pay_status')
-  
-  // 获取状态名称
-  const getStatusName = (status: string | undefined) => {
-    if (!status) return ''
-    const statusItem = dineInOrderStatusOptions.value.find(item => item.id === status)
-    return statusItem ? statusItem.codeName : ''
-  }
-  
-  // 获取支付状态名称
-  const getPayStatusName = (payStatus: string | undefined) => {
-    if (!payStatus) return ''
-    const payStatusItem = payStatusOptions.value.find(item => item.id === payStatus)
-    return payStatusItem ? payStatusItem.codeName : ''
-  }
-  
-  // 获取状态标签类型
-  const getStatusTagType = (status: string | undefined) => {
-    switch (status) {
-      case '2004001': // 已下单
-        return 'info'
-      case '2004002': // 制作中
-        return 'warning'
-      case '2004003': // 已完成
-        return 'success'
-      case '2004004': // 已取消
-        return 'danger'
-      default:
-        return 'info'
-    }
-  }
-  
-  // 获取支付状态标签类型
-  const getPayStatusTagType = (payStatus: string | undefined) => {
-    switch (payStatus) {
-      case '2006001': // 未支付
-        return 'info'
-      case '2006002': // 已支付
-        return 'success'
-      case '2006003': // 已退款
-        return 'warning'
-      default:
-        return 'info'
-    }
-  }
 
 const optionsStore = useOptionsStore()
 
@@ -489,8 +379,6 @@ const submitOrder = async () => {
     ElMessage.success('订单提交成功')
     // 清空订单
     orderItems.value = []
-    // 重新加载订单列表
-    loadOrders()
   } catch (error) {
     ElMessage.error('订单提交失败')
     console.error(error)
@@ -499,52 +387,6 @@ const submitOrder = async () => {
 
 const handleCategoryChange = (name: string) => {
   activeCategory.value = name
-}
-
-// 订单列表相关方法
-const loadOrders = async () => {
-  loading.value = true
-  try {
-    const res = await getDineInOrderListApi({})
-    orders.value = res.data?.records || []
-  } catch (error) {
-    ElMessage.error('获取订单列表失败')
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 更新订单状态
-const updateOrderStatus = async (order: DineInOrderRow, status: string) => {
-  try {
-    const params = {
-      id: order.id,
-      status: status
-    }
-    await useHandleData(updateDineInOrderStatusApi, params, '更新订单状态')
-    // 重新加载订单列表
-    loadOrders()
-  } catch (error) {
-    ElMessage.error('更新订单状态失败')
-    console.error(error)
-  }
-}
-
-// 更新支付状态
-const updatePayStatus = async (order: DineInOrderRow, payStatus: string) => {
-  try {
-    const params = {
-      id: order.id,
-      payStatus: payStatus
-    }
-    await useHandleData(updateDineInOrderPayStatusApi, params, '更新支付状态')
-    // 重新加载订单列表
-    loadOrders()
-  } catch (error) {
-    ElMessage.error('更新支付状态失败')
-    console.error(error)
-  }
 }
 
 // 初始化数据
@@ -578,7 +420,6 @@ const initDishes = async () => {
 onMounted(() => {
   initTables()
   initDishes()
-  loadOrders()
 })
 </script>
 

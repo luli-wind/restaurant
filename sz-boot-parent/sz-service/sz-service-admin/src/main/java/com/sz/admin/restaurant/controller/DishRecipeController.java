@@ -35,7 +35,7 @@ public class DishRecipeController {
     private final DishRecipeService dishRecipeService;
 
     @Operation(summary = "新增")
-    @SaCheckPermission(value = "dishRecipe.create")
+    @SaCheckPermission(value = "dish.query_table")
     @PostMapping
     public ApiResult<Void> create(@RequestBody DishRecipeCreateDTO dto) {
         dishRecipeService.create(dto);
@@ -43,7 +43,7 @@ public class DishRecipeController {
     }
 
     @Operation(summary = "修改")
-    @SaCheckPermission(value = "dishRecipe.update")
+    @SaCheckPermission(value = "dish.query_table")
     @PutMapping
     public ApiResult<Void> update(@RequestBody DishRecipeUpdateDTO dto) {
         dishRecipeService.update(dto);
@@ -51,7 +51,7 @@ public class DishRecipeController {
     }
 
     @Operation(summary = "删除")
-    @SaCheckPermission(value = "dishRecipe.remove")
+    @SaCheckPermission(value = "dish.query_table")
     @DeleteMapping
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         dishRecipeService.remove(dto);
@@ -59,28 +59,28 @@ public class DishRecipeController {
     }
 
     @Operation(summary = "列表查询")
-    @SaCheckPermission(value = "dishRecipe.query_table")
+    @SaCheckPermission(value = "dish.query_table")
     @GetMapping
     public ApiResult<PageResult<DishRecipeVO>> list(DishRecipeListDTO dto) {
         return ApiPageResult.success(dishRecipeService.page(dto));
     }
 
     @Operation(summary = "详情")
-    @SaCheckPermission(value = "dishRecipe.query_table")
+    @SaCheckPermission(value = "dish.query_table")
     @GetMapping("/{id}")
     public ApiResult<DishRecipeVO> detail(@PathVariable Object id) {
         return ApiResult.success(dishRecipeService.detail(id));
     }
 
     @Operation(summary = "根据菜品ID查询配方列表")
-    @SaCheckPermission(value = "dishRecipe.query_table")
+    @SaCheckPermission(value = "dish.query_table")
     @GetMapping("/byDishId/{dishId}")
     public ApiResult<List<DishRecipeVO>> listByDishId(@PathVariable Long dishId) {
         return ApiResult.success(dishRecipeService.listByDishId(dishId));
     }
 
     @Operation(summary = "导出")
-    @SaCheckPermission(value = "dishRecipe.export")
+    @SaCheckPermission(value = "dish.query_table")
     @PostMapping("/export")
     public void exportExcel(@RequestBody DishRecipeListDTO dto, HttpServletResponse response) {
         dishRecipeService.exportExcel(dto, response);
