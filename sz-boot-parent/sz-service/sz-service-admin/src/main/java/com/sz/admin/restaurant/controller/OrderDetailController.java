@@ -21,6 +21,8 @@ import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 订单明细表 Controller
@@ -38,7 +40,6 @@ public class OrderDetailController  {
     private final OrderDetailService orderDetailService;
 
     @Operation(summary = "新增")
-    @SaCheckPermission(value = "order.detail.create")
     @PostMapping
     public ApiResult<Void> create(@RequestBody OrderDetailCreateDTO dto) {
         orderDetailService.create(dto);
@@ -46,7 +47,6 @@ public class OrderDetailController  {
     }
 
     @Operation(summary = "修改")
-    @SaCheckPermission(value = "order.detail.update")
     @PutMapping
     public ApiResult<Void> update(@RequestBody OrderDetailUpdateDTO dto) {
         orderDetailService.update(dto);
@@ -54,7 +54,6 @@ public class OrderDetailController  {
     }
 
     @Operation(summary = "删除")
-    @SaCheckPermission(value = "order.detail.remove")
     @DeleteMapping
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         orderDetailService.remove(dto);
@@ -62,31 +61,33 @@ public class OrderDetailController  {
     }
 
     @Operation(summary = "列表查询")
-    @SaCheckPermission(value = "order.detail.query_table")
     @GetMapping
     public ApiResult<PageResult<OrderDetailVO>> list(OrderDetailListDTO dto) {
         return ApiPageResult.success(orderDetailService.page(dto));
     }
 
-    @Operation(summary = "详情")
-    @SaCheckPermission(value = "order.detail.query_table")
-    @GetMapping("/{id}")
-    public ApiResult<OrderDetailVO> detail(@PathVariable Object id) {
-        return ApiResult.success(orderDetailService.detail(id));
+    @Operation(summary = "根据OrderId获取订单明细")
+    @GetMapping("/{orderId}")
+    public ApiResult<List<OrderDetailVO>> getOrderDetailList(@PathVariable Object orderId) {
+        return ApiResult.success(orderDetailService.getListByOrderId(orderId));
     }
+
+//    @Operation(summary = "详情")
+//    @GetMapping("/{id}")
+//    public ApiResult<OrderDetailVO> detail(@PathVariable Object id) {
+//        return ApiResult.success(orderDetailService.detail(id));
+//    }
 
     @Operation(summary = "导入")
     @Parameters({
       @Parameter(name = "file", description = "上传文件", schema = @Schema(type = "string", format = "binary"), required = true),
     })
-    @SaCheckPermission(value = "order.detail.import")
     @PostMapping("/import")
     public void importExcel(@ModelAttribute ImportExcelDTO dto) {
         orderDetailService.importExcel(dto);
     }
 
     @Operation(summary = "导出")
-    @SaCheckPermission(value = "order.detail.export")
     @PostMapping("/export")
     public void exportExcel(@RequestBody OrderDetailListDTO dto, HttpServletResponse response) {
         orderDetailService.exportExcel(dto, response);

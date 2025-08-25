@@ -52,6 +52,22 @@ public class DineInOrdersController  {
         return ApiResult.success();
     }
 
+    @Operation(summary = "修改订单状态")
+    @SaCheckPermission(value = "dine.in.orders.update")
+    @PutMapping("/status")
+    public ApiResult<Void> updateStatus(@RequestBody DineInOrdersUpdateDTO dto) {
+        dineInOrdersService.updateStatus(dto);
+        return ApiResult.success();
+    }
+
+    @Operation(summary = "修改支付状态")
+    @SaCheckPermission(value = "dine.in.orders.update")
+    @PutMapping("/payStatus")
+    public ApiResult<Void> updatePayStatus(@RequestBody DineInOrdersUpdateDTO dto) {
+        dineInOrdersService.updatePayStatus(dto);
+        return ApiResult.success();
+    }
+
     @Operation(summary = "删除")
     @SaCheckPermission(value = "dine.in.orders.remove")
     @DeleteMapping

@@ -19,9 +19,9 @@ public class OrderDetailListDTO extends PageQuery {
     private String dishName;
 
     @Schema(description =  "订单ID")
-    private Integer orderId;
+    private Long orderId;
 
     @Schema(description =  "菜品ID")
-    private Integer dishId;
+    private Long dishId;
 
 }

@@ -42,54 +42,21 @@
           </template>
           <!-- 自定义操作列 -->
           <template #operation="{ row }">
-            <el-button size="small" @click="viewOrder(row)">查看</el-button>
+            <el-button type="primary" :icon="List"  link>加单</el-button>
+            <el-button type="primary" :icon="EditPen" link @click="viewOrderDetail(row)">订单详情</el-button>
           </template>
         </ProTable>
 
     
-    <!-- 订单详情对话框 -->
-    <el-dialog v-model="dialogVisible" title="订单详情" width="600px">
-      <el-form :model="currentOrder" label-width="100px">
-        <el-form-item label="订单号:"><span>{{ currentOrder.orderNumber }}</span></el-form-item>
-        <el-form-item label="桌号:"><span>{{ currentOrder.tableName }}</span></el-form-item>
-        <el-form-item label="人数:"><span>{{ currentOrder.numberOfGuests }}</span></el-form-item>
-        <el-form-item label="金额:"><span>¥{{ currentOrder.totalAmount }}</span></el-form-item>
-        <el-form-item label="状态:">
-          <span>{{ getStatusName(currentOrder.status) }}</span>
-        </el-form-item>
-        <el-form-item label="支付状态:">
-          <span>{{ getPayStatusName(currentOrder.payStatus) }}</span>
-        </el-form-item>
-        <el-form-item label="下单时间:"><span>{{ currentOrder.createTime }}</span></el-form-item>
-        <el-form-item v-if="currentOrder.payTime" label="完成时间:"><span>{{ currentOrder.payTime }}</span></el-form-item>
-        <el-form-item v-if="currentOrder.remark" label="备注:"><span>{{ currentOrder.remark }}</span></el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">关闭</el-button>
-          <el-button v-if="currentOrder.status !== '2004004'" type="warning" @click="updateStatus(currentOrder, {status: '2004004'})">取消订单</el-button>
-          <el-button v-if="currentOrder.status === '2004001'" type="primary" @click="updateStatus(currentOrder, {status: '2004002'})">开始制作</el-button>
-          <el-button v-if="currentOrder.status === '2004002'" type="success" @click="updateStatus(currentOrder, {status: '2004003'})">完成制作</el-button>
-          <el-button v-if="currentOrder.payStatus === '2006001'" type="danger" @click="openRefundDialog(currentOrder)">申请退款</el-button>
-          <el-button v-if="currentOrder.payStatus !== '2006001'" type="primary" @click="updateStatus(currentOrder, {payStatus: '2006001'})">标记为已支付</el-button>
-        </span>
-      </template>
-    </el-dialog>
-    
-    <!-- 退款申请对话框 -->
-    <el-dialog v-model="refundDialogVisible" title="申请退款" width="500px">
-      <el-form :model="refundForm" label-width="100px">
-        <el-form-item label="退款原因:">
-          <el-input v-model="refundForm.refundReason" type="textarea" placeholder="请输入退款原因" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="refundDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitRefund">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <!-- 新的订单详情组件 -->
+    <OrderDetail
+      v-model="orderDetailVisible"
+      :order-data="currentOrder"
+      :get-status-name="getStatusName"
+      :get-pay-status-name="getPayStatusName"
+      @update-status="updateStatus"
+      @update-pay-status="updatePayStatus"
+    />
   </div>
 </template>
 
@@ -97,6 +64,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import ProTable from '@/components/ProTable/index.vue'
+import OrderDetail from './components/orderDetail.vue'
 import { useDictOptions } from '@/hooks/useDictOptions';
 import type {DineInOrderQuery, DineInOrderRow} from '@/api/types/order/dineInOrder'
 import type { ColumnProps,ProTableInstance, SearchProps } from '@/components/ProTable/interface'
@@ -108,8 +76,10 @@ import {getDineInOrderListApi,
         getDineInOrderDetailApi,
         exportDineInOrderExcelApi,
         importDineInOrderExcelApi,
+        updateDineInOrderPayStatusApi,
+        updateDineInOrderStatusApi
 } from "@/api/modules/order/dineInOrders";
-import {Delete, Download, Upload} from "@element-plus/icons-vue";
+import {Delete, Download, EditPen, Upload,List} from "@element-plus/icons-vue";
 import {useHandleData} from "@/hooks/useHandleData";
 import type ImportExcel from "@/components/ImportExcel/index.vue";
 import {downloadTemplate} from "@/api/modules/system/common";
@@ -136,12 +106,8 @@ const getPayStatusName = (payStatus: string | undefined) => {
 
 // 定义响应式数据
 const dialogVisible = ref(false)
+const orderDetailVisible = ref(false)
 const currentOrder = ref<DineInOrderRow>({})
-const refundDialogVisible = ref(false)
-const refundForm = ref({
-  id: 0,
-  refundReason: ''
-})
 const proTableRef = ref()
 
 // 搜索条件项
@@ -184,6 +150,7 @@ const columns: ColumnProps[] = [
   {
     prop: 'status',
     label: '状态',
+    tag: true,
     enum: dineInOrderStatusOptions.value,
     fieldNames: {
       label: 'codeName',
@@ -192,7 +159,16 @@ const columns: ColumnProps[] = [
     }
   },
   { prop: 'createTime', label: '下单时间' },
-  { prop: 'payStatus', label: '支付状态' },
+  { prop: 'payStatus',
+    label: '支付状态',
+    enum: payStatusOptions.value,
+    tag: true,
+    fieldNames:{
+      label: 'codeName',
+      value: 'id',
+      tagType: 'callbackShowStyle'
+    }
+  },
   { prop: 'payTime', label: '支付时间' },
   { prop: 'operation', label: '操作' }
 ]
@@ -203,40 +179,40 @@ const dataCallback = (data: any) => {
   return data
 }
 
-// 查看订单详情
-const viewOrder = (row: DineInOrderRow) => {
-  currentOrder.value = { ...row }
-  dialogVisible.value = true
-}
 
+// 查看订单详情（新组件）
+const viewOrderDetail = (row: DineInOrderRow) => {
+  currentOrder.value = { ...row }
+  orderDetailVisible.value = true
+}
 // 统一更新状态方法
 const updateStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
   const params = {
     id: row.id,
+    orderId: row.orderId,
     ...statusData
   };
-  await useHandleData(updateDineInOrderApi, params, `更新订单状态`);
+  await useHandleData(updateDineInOrderStatusApi, params, `更新订单状态`);
   if (proTableRef.value) {
     proTableRef.value.getTableList();
   }
   dialogVisible.value = false;
 }
 
-// 打开退款对话框
-const openRefundDialog = (row: DineInOrderRow) => {
-  refundForm.value.id = row.id;
-  refundForm.value.refundReason = '';
-  refundDialogVisible.value = true;
-}
-
-// 提交退款申请
-const submitRefund = async () => {
-  await updateStatus({id: refundForm.value.id} as DineInOrderRow, {refundReason: refundForm.value.refundReason});
+const updatePayStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
+  const params = {
+    id: row.id,
+    orderId: row.orderId,
+    ...statusData
+  };
+  await useHandleData(updateDineInOrderPayStatusApi, params, `更新订单支付状态`);
   if (proTableRef.value) {
     proTableRef.value.getTableList();
   }
-  refundDialogVisible.value = false;
+  dialogVisible.value = false;
 }
+
+
 
 // 组件挂载时获取数据
 onMounted(() => {

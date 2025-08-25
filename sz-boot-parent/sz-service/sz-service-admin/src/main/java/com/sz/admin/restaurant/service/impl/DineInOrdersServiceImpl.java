@@ -76,6 +76,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         DiningTable diningTable = diningTableService.getById(dto.getTableId());
         if(diningTable != null){
             diningTable.setStatus("2001002");
+            diningTableService.updateById(diningTable);
         }
 
         // 创建堂食订单扩展记录
@@ -113,12 +114,6 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             BeanUtils.copyProperties(dto, orders);
             ordersService.updateById(orders);
         }
-        DiningTable table = diningTableService.getById(dineInOrders.getTableId());
-        if (table != null) {
-            BeanUtils.copyProperties(dto, table);
-            diningTableService.updateById(table);
-        }
-
     }
 
     @Override
@@ -143,6 +138,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setCreateTime(orders.getCreateTime());
                 vo.setPayStatus(orders.getPayStatus());
                 vo.setPayTime(orders.getPayTime());
+                vo.setRefundReason(orders.getRefundReason());
                 vo.setTableName(table.getTableName());
             }
             
@@ -173,6 +169,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setCreateTime(orders.getCreateTime());
                 vo.setPayStatus(orders.getPayStatus());
                 vo.setPayTime(orders.getPayTime());
+                vo.setRefundReason(orders.getRefundReason());
                 vo.setTableName(table.getTableName());
             }
             
@@ -205,6 +202,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             vo.setCreateTime(orders.getCreateTime());
             vo.setPayStatus(orders.getPayStatus());
             vo.setPayTime(orders.getPayTime());
+            vo.setRefundReason(orders.getRefundReason());
             vo.setTableName(table.getTableName());
         }
         
@@ -229,6 +227,26 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         String fileName = "堂食订单模板";
         OutputStream os = FileUtils.getOutputStream(response, fileName + ".xlsx");
         ExcelUtils.exportExcel(list, "堂食订单", DineInOrdersVO.class, os);
+    }
+
+    @Override
+    public void updateStatus(DineInOrdersUpdateDTO dto) {
+        Orders orders = ordersService.getById(dto.getOrderId());
+        orders.setStatus(dto.getStatus());
+        ordersService.updateById(orders);
+    }
+
+    @Override
+    public void updatePayStatus(DineInOrdersUpdateDTO dto) {
+        Orders orders = ordersService.getById(dto.getOrderId());
+        orders.setPayStatus(dto.getPayStatus());
+        if(dto.getPayStatus().equals("2006001")){
+            orders.setPayTime(LocalDateTime.now());
+        }
+        if(dto.getPayStatus().equals("2006003")){
+            orders.setRefundReason(dto.getRefundReason());
+        }
+        ordersService.updateById(orders);
     }
 
     private static QueryWrapper buildQueryWrapper(DineInOrdersListDTO dto) {

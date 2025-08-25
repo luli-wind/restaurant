@@ -37,4 +37,6 @@ public interface OrderDetailService extends IService<OrderDetail> {
     void importExcel(ImportExcelDTO dto);
 
     void exportExcel(OrderDetailListDTO dto, HttpServletResponse response);
+
+    List<OrderDetailVO> getListByOrderId(Object orderId);
 }

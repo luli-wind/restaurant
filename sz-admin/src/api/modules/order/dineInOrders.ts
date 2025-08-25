@@ -37,6 +37,26 @@ export const updateDineInOrderApi = (params: DineInOrderForm) => {
 };
 
 /**
+ * 修改订单状态
+ * @param params
+ * @returns {*}
+ */
+export const updateDineInOrderStatusApi = (params: DineInOrderForm) => {
+    return http.put(ADMIN_MODULE + `/dine-in-orders/status`, params);
+};
+
+
+/**
+ * 修改支付状态
+ * @param params
+ * @returns {*}
+ */
+export const updateDineInOrderPayStatusApi = (params: DineInOrderForm) => {
+    return http.put(ADMIN_MODULE + `/dine-in-orders/payStatus`, params);
+};
+
+
+/**
  * 删除
  * @param params
  * @returns {*}

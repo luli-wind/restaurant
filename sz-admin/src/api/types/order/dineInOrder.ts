@@ -18,6 +18,8 @@ export type DineInOrderQuery = IPageQuery & {
 
 // 编辑form表单
 export type DineInOrderForm = {
+    id?:number;
+    orderId?: number;
     tableId?: number;
     tableName?: string;
     numberOfGuests?: number;
@@ -30,6 +32,7 @@ export type DineInOrderForm = {
     payStatus?:string;
     payTime?:string;
     orderItems?: DineInOrderItem[];
+    refundReason?: string;
 };
 
 // list或detail返回结构

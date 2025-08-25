@@ -103,6 +103,13 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
         ExcelUtils.exportExcel(list, "订单明细", OrderDetailVO.class, os);
     }
 
+    @Override
+    public List<OrderDetailVO> getListByOrderId(Object orderId) {
+        OrderDetailListDTO dto = new OrderDetailListDTO();
+        dto.setOrderId(Long.parseLong((String) orderId));
+        return listAs(buildQueryWrapper(dto), OrderDetailVO.class);
+    }
+
     private static QueryWrapper buildQueryWrapper(OrderDetailListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(OrderDetail.class);
         if (Utils.isNotNull(dto.getDishName())) {

@@ -25,20 +25,12 @@ public class OrderDetailVO {
     @Schema(description =  "菜品图片")
     private String imageUrl;
 
-    @ExcelProperty(value = "订单ID")
-    @Schema(description =  "订单ID")
-    private Integer orderId;
-
-    @ExcelProperty(value = "菜品ID")
-    @Schema(description =  "菜品ID")
-    private Integer dishId;
-
     @ExcelProperty(value = "数量")
     @Schema(description =  "数量")
     private Integer number;
 
-    @ExcelProperty(value = "总价")
-    @Schema(description =  "总价")
+    @ExcelProperty(value = "单价")
+    @Schema(description =  "单价")
     private Double amount;
 
 }

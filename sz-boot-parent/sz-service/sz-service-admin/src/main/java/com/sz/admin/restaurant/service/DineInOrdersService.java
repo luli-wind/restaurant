@@ -37,4 +37,7 @@ public interface DineInOrdersService extends IService<DineInOrders> {
 
     void exportExcel(DineInOrdersListDTO dto, HttpServletResponse response);
 
+    void updateStatus(DineInOrdersUpdateDTO dto);
+
+    void updatePayStatus(DineInOrdersUpdateDTO dto);
 }

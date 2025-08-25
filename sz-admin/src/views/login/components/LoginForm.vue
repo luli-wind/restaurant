@@ -64,7 +64,7 @@ const loginRules = reactive({
 const loading = ref(false);
 const loginForm = reactive({
   username: '',
-  password: '',
+  password: 'sz123456',
   clientId: '',
   grantType: ''
 });
@@ -88,7 +88,7 @@ const performLogin = async () => {
     router.push(HOME_URL);
     ElNotification({
       title: getTimeState(),
-      message: '欢迎登录 Sz-Admin',
+      message: '欢迎登录',
       type: 'success',
       duration: 3000
     });
