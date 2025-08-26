@@ -123,6 +123,8 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
                 vo.setPayStatus(orders.getPayStatus());
                 vo.setPayTime(orders.getPayTime());
                 vo.setRefundReason(orders.getRefundReason());
+                vo.setOrderItems(orderDetailService.getListByOrderId(orders.getOrderId()));
+
             }
 
             return vo;
@@ -236,6 +238,10 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         }
         if (Utils.isNotNull(dto.getDeliveryAddress())) {
             wrapper.like(TakeawayOrders::getDeliveryAddress, dto.getDeliveryAddress());
+        }
+
+        if (Utils.isNotNull(dto.getCustomerName())) {
+            wrapper.like(TakeawayOrders::getCustomerName, dto.getCustomerName());
         }
         return wrapper;
     }

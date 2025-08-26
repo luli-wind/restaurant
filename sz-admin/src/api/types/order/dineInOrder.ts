@@ -11,7 +11,8 @@ export type OrderItem = {
 
 // 查询条件
 export type DineInOrderQuery = IPageQuery & {
-    tableName?: string;
+    orderId?:number;
+    tableId?: number;
     payStatus?:string;
     status?: string;
 };

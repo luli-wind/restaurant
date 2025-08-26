@@ -4,8 +4,7 @@ import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.restaurant.mapper.DiningTableMapper;
 import com.sz.admin.restaurant.mapper.OrdersMapper;
 import com.sz.admin.restaurant.pojo.dto.*;
-import com.sz.admin.restaurant.pojo.po.DiningTable;
-import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.po.*;
 import com.sz.admin.restaurant.service.DiningTableService;
 import com.sz.admin.restaurant.service.OrderDetailService;
 import com.sz.utils.RestaurantOrderNumberGenerator;
@@ -13,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.sz.admin.restaurant.service.DineInOrdersService;
-import com.sz.admin.restaurant.pojo.po.DineInOrders;
 import com.sz.admin.restaurant.mapper.DineInOrdersMapper;
 import com.sz.admin.restaurant.service.OrdersService;
-import com.sz.admin.restaurant.pojo.po.Orders;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryChain;
@@ -140,6 +137,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setPayTime(orders.getPayTime());
                 vo.setRefundReason(orders.getRefundReason());
                 vo.setTableName(table.getTableName());
+                vo.setOrderItems(orderDetailService.getListByOrderId(orders.getOrderId()));
             }
             
             return vo;
@@ -262,6 +260,13 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         }
         if (Utils.isNotNull(dto.getTableId())) {
             wrapper.eq(DineInOrders::getTableId, dto.getTableId());
+        }
+
+        if (Utils.isNotNull(dto.getStatus())) {
+            wrapper.eq(TakeawayOrders::getOrderId, dto.getStatus());
+        }
+        if (Utils.isNotNull(dto.getPayStatus())) {
+            wrapper.eq(TakeawayOrders::getOrderId, dto.getPayStatus());
         }
         return wrapper;
     }

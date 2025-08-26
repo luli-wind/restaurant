@@ -106,7 +106,11 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
     @Override
     public List<OrderDetailVO> getListByOrderId(Object orderId) {
         OrderDetailListDTO dto = new OrderDetailListDTO();
-        dto.setOrderId(Long.parseLong((String) orderId));
+        if(orderId instanceof Long){
+            dto.setOrderId((Long) orderId);
+        }else if(orderId instanceof String){
+            dto.setOrderId(Long.parseLong((String) orderId));
+        }
         return listAs(buildQueryWrapper(dto), OrderDetailVO.class);
     }
 

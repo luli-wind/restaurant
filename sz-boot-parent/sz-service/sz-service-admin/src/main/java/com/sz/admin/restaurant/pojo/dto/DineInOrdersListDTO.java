@@ -14,6 +14,11 @@ import com.sz.core.common.entity.PageQuery;
 @Data
 @Schema(description = "DineInOrders查询DTO")
 public class DineInOrdersListDTO extends PageQuery {
+    @Schema(description =  "")
+    private String status;
+
+    @Schema(description =  "")
+    private String payStatus;
 
     @Schema(description =  "")
     private Long orderId;

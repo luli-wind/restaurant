@@ -1,8 +1,11 @@
 package com.sz.admin.restaurant.pojo.vo;
 
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.List;
+
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
 
@@ -81,5 +84,9 @@ public class TakeawayOrdersVO {
     @ExcelProperty(value = "")
     @Schema(description ="退款原因")
     private String refundReason;
+
+    // 订单项列表
+    @Schema(description = "订单项列表")
+    private List<OrderDetailVO> orderItems;
 
 }

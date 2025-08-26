@@ -130,7 +130,7 @@
           type="primary"
           @click="handleStartCooking"
         >
-          开始制作
+          催促厨师制作
         </el-button>
         <el-button
           v-if="orderData.status === '2004002'"
@@ -308,7 +308,7 @@ const handleCancelOrder = () => {
 
 // 开始制作
 const handleStartCooking = () => {
-  emit('updateStatus', props.orderData, { status: '2004002' })
+  //emit('updateStatus', props.orderData, { status: '2004002' })
   handleClose()
 }
 

@@ -11,10 +11,10 @@
     <!-- 订单列表 -->
     <div class="order-list-container">
       <el-row :gutter="20">
-        <el-col 
-          v-for="order in orderList" 
-          :key="order.orderId" 
-          :span="24" 
+        <el-col
+          v-for="(order, index) in filteredOrderList"
+          :key="order.orderId  || 'order-' + index"
+          :span="24"
           class="order-item-col"
         >
           <el-card class="order-card" shadow="hover">
@@ -22,7 +22,7 @@
               <div class="order-basic-info">
                 <div class="order-number">
                   <el-tag :type="getOrderTypeTag(order.orderType)">
-                    {{ getOrderTypeName(order.orderType) }}
+                    {{ order.orderType }}
                   </el-tag>
                   <span class="number-text">订单号: {{ order.orderNumber }}</span>
                 </div>
@@ -31,9 +31,17 @@
                   <span>{{ order.createTime }}</span>
                 </div>
               </div>
+              <!-- 备注信息 -->
+              <div v-if="order.remark" class="order-remark">
+                <label>备注:</label>
+                <span class="remark-content">{{ order.remark }}</span>
+              </div>
               <div class="order-status">
-                <el-tag :type="getOrderStatusType(order.status)">
-                  {{ getOrderStatusName(order.status) }}
+                <el-tag :type="getOrderStatusType(order.status)" v-if="isDineInOrder(order)">
+                  {{ optionsStore.getDictNameById('dine_in_order_status', order.status || '') }}
+                </el-tag>
+                <el-tag :type="getOrderStatusType(order.status)" v-if="isTakeAwayOrder(order)">
+                  {{ optionsStore.getDictNameById('take_away_order_status', order.status || '') }}
                 </el-tag>
               </div>
             </div>
@@ -98,29 +106,28 @@
 
             <div class="order-footer">
               <div class="order-actions">
-                <el-button 
-                  v-if="order.status === 'pending'" 
-                  type="primary" 
+                <el-button
+                  v-if="order.status === 'pending'"
+                  type="primary"
                   @click="startCooking(order)"
+                  :disabled="!order.orderId && !order.id"
                 >
                   开始制作
                 </el-button>
-                <el-button 
-                  v-else-if="order.status === 'processing'" 
-                  type="success" 
+                <el-button
+                  v-else-if="order.status === 'processing'"
+                  type="success"
                   @click="finishCooking(order)"
+                  :disabled="!order.orderId && !order.id"
                 >
                   完成制作
                 </el-button>
-                <el-button 
-                  v-else-if="order.status === 'completed'" 
-                  type="info" 
+                <el-button
+                  v-else-if="order.status === 'completed'"
+                  type="info"
                   disabled
                 >
                   已完成
-                </el-button>
-                <el-button @click="viewOrderDetail(order)">
-                  查看详情
                 </el-button>
               </div>
             </div>
@@ -142,163 +149,22 @@
       </div>
     </div>
 
-    <!-- 订单详情对话框 -->
-    <el-dialog
-      v-model="orderDetailVisible"
-      title="订单详情"
-      width="800px"
-      class="order-detail-dialog"
-    >
-      <div v-if="currentOrder" class="order-detail-content">
-        <!-- 订单基本信息 -->
-        <el-card class="detail-card" shadow="never">
-          <template #header>
-            <div class="card-header">
-              <span>订单信息</span>
-            </div>
-          </template>
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">订单号：</span>
-                <span class="info-value">{{ currentOrder.orderNumber }}</span>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">下单时间：</span>
-                <span class="info-value">{{ currentOrder.createTime }}</span>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">订单类型：</span>
-                <span class="info-value">{{ getOrderTypeName(currentOrder.orderType) }}</span>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">订单状态：</span>
-                <el-tag :type="getOrderStatusType(currentOrder.status)" class="status-tag">
-                  {{ getOrderStatusName(currentOrder.status) }}
-                </el-tag>
-              </div>
-            </el-col>
-            
-            <!-- 堂食订单信息 -->
-            <template v-if="currentOrder && isDineInOrder(currentOrder)">
-              <el-col :span="12">
-                <div class="info-item">
-                  <span class="info-label">桌号：</span>
-                  <span class="info-value">{{ currentOrder.tableName }}</span>
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div class="info-item">
-                  <span class="info-label">用餐人数：</span>
-                  <span class="info-value">{{ currentOrder.numberOfGuests }}人</span>
-                </div>
-              </el-col>
-            </template>
-            
-            <!-- 外卖订单信息 -->
-            <template v-else-if="currentOrder && isTakeAwayOrder(currentOrder)">
-              <el-col :span="12">
-                <div class="info-item">
-                  <span class="info-label">客户姓名：</span>
-                  <span class="info-value">{{ currentOrder.customerName }}</span>
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div class="info-item">
-                  <span class="info-label">联系电话：</span>
-                  <span class="info-value">{{ currentOrder.customerPhone }}</span>
-                </div>
-              </el-col>
-              <el-col :span="24">
-                <div class="info-item">
-                  <span class="info-label">配送地址：</span>
-                  <span class="info-value">{{ currentOrder.deliveryAddress }}</span>
-                </div>
-              </el-col>
-            </template>
-            
-            <el-col v-if="currentOrder.remark" :span="24">
-              <div class="info-item">
-                <span class="info-label">订单备注：</span>
-                <span class="info-value">{{ currentOrder.remark }}</span>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-
-        <!-- 菜品详情 -->
-        <el-card class="detail-card dishes-card" shadow="never">
-          <template #header>
-            <div class="card-header">
-              <span>菜品详情</span>
-            </div>
-          </template>
-          <div class="dishes-list">
-            <div
-              v-for="(item, index) in currentOrder.orderItems"
-              :key="index"
-              class="dish-item"
-            >
-              <div class="dish-image">
-                <img
-                  :src="item.imageUrl || defaultDishImage"
-                  :alt="item.dishName"
-                  @error="handleImageError"
-                />
-              </div>
-              <div class="dish-info">
-                <div class="dish-name">{{ item.dishName }}</div>
-                <div class="dish-price">¥{{ item.amount }}</div>
-              </div>
-              <div class="dish-quantity">
-                <span class="quantity">×{{ item.number }}</span>
-              </div>
-              <div class="dish-total">
-                <span class="total">¥{{ (item.amount * item.number).toFixed(2) }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="order-total">
-            <span class="total-label">订单总额：</span>
-            <span class="total-amount">¥{{ calculateOrderTotal(currentOrder) }}</span>
-          </div>
-        </el-card>
-      </div>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="orderDetailVisible = false">关闭</el-button>
-          <el-button 
-            v-if="currentOrder && currentOrder.status === 'pending'" 
-            type="primary" 
-            @click="startCooking(currentOrder)"
-          >
-            开始制作
-          </el-button>
-          <el-button 
-            v-else-if="currentOrder && currentOrder.status === 'processing'" 
-            type="success" 
-            @click="finishCooking(currentOrder)"
-          >
-            完成制作
-          </el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import type { OrderItem, DineInOrderRow } from "@/api/types/order/dineInOrder";
-import type { TakeAwayOrderRow } from "@/api/types/order/takeAwayOrder";
+import type { OrderItem, DineInOrderRow } from '@/api/types/order/dineInOrder';
+import type { TakeAwayOrderRow } from '@/api/types/order/takeAwayOrder';
+import { getChefOrderDetailApi, startCookingApi, finishCookingApi } from '@/api/modules/order/chefOrder';
+import { getDineInOrderListApi } from '@/api/modules/order/dineInOrders'
+import { getTakeAwayOrderListApi } from '@/api/modules/order/takeAwayOrder';
+import {getOrderDetailListApi} from "@/api/modules/order/orderDetail";
+import {useOptionsStore} from "@/stores/modules/options";
+
+const optionsStore = useOptionsStore()
+
 
 // 定义联合类型
 type Order = DineInOrderRow | TakeAwayOrderRow;
@@ -306,6 +172,10 @@ type Order = DineInOrderRow | TakeAwayOrderRow;
 // 响应式数据
 const activeTab = ref('all')
 const orderList = ref<Order[]>([])
+// 计算属性：过滤掉状态为2005001的订单
+const filteredOrderList = computed(() => {
+  return orderList.value.filter(order => order.status !== '2005001');
+});
 const orderDetailVisible = ref(false)
 const currentOrder = ref<Order | null>(null)
 const defaultDishImage = ref('https://via.placeholder.com/80x80?text=菜品图片')
@@ -315,148 +185,54 @@ const pagination = reactive({
   pageNum: 1,
   pageSize: 10,
   total: 0
-})
+});
 
-// 模拟订单数据
-const mockOrderList: Order[] = [
-  {
-    orderId: 1,
-    orderNumber: 20250825001,
-    orderType: 'dineIn',
-    status: 'pending',
-    createTime: '2025-08-25 12:30:00',
-    tableName: 'A01',
-    numberOfGuests: 4,
-    remark: '少放辣椒',
-    orderItems: [
-      {
-        dishId: 101,
-        dishName: '宫保鸡丁',
-        imageUrl: '',
-        number: 2,
-        amount: 38.00
-      },
-      {
-        dishId: 102,
-        dishName: '麻婆豆腐',
-        imageUrl: '',
-        number: 1,
-        amount: 22.00
-      }
-    ]
-  } as DineInOrderRow,
-  {
-    orderId: 2,
-    orderNumber: 20250825002,
-    orderType: 'takeaway',
-    status: 'processing',
-    createTime: '2025-08-25 12:45:00',
-    customerName: '张三',
-    customerPhone: '13800138000',
-    deliveryAddress: '北京市朝阳区某某街道123号',
-    orderItems: [
-      {
-        dishId: 103,
-        dishName: '红烧肉',
-        imageUrl: '',
-        number: 1,
-        amount: 48.00
-      },
-      {
-        dishId: 104,
-        dishName: '清炒时蔬',
-        imageUrl: '',
-        number: 1,
-        amount: 18.00
-      }
-    ]
-  } as TakeAwayOrderRow,
-  {
-    orderId: 3,
-    orderNumber: 20250825003,
-    orderType: 'dineIn',
-    status: 'completed',
-    createTime: '2025-08-25 11:20:00',
-    tableName: 'B05',
-    numberOfGuests: 2,
-    orderItems: [
-      {
-        dishId: 105,
-        dishName: '糖醋里脊',
-        imageUrl: '',
-        number: 1,
-        amount: 42.00
-      }
-    ]
-  } as DineInOrderRow
-]
 
 // 类型守卫函数
 const isDineInOrder = (order: Order): order is DineInOrderRow => {
-  return order.orderType === 'dineIn';
+  return order.orderType === '堂食';
 }
 
 const isTakeAwayOrder = (order: Order): order is TakeAwayOrderRow => {
-  return order.orderType === 'takeaway';
+  return order.orderType === '外卖';
 }
 
 // 获取订单类型标签
-const getOrderTypeTag = (type: string) => {
+const getOrderTypeTag = (type: string | undefined) => {
   switch (type) {
-    case 'dineIn':
+    case '堂食':
       return 'primary'
-    case 'takeaway':
+    case '外卖':
       return 'success'
     default:
       return 'info'
   }
 }
 
-// 获取订单类型名称
-const getOrderTypeName = (type: string) => {
-  switch (type) {
-    case 'dineIn':
-      return '堂食'
-    case 'takeaway':
-      return '外卖'
-    default:
-      return '未知'
-  }
-}
+
 
 // 获取订单状态类型
-const getOrderStatusType = (status: string) => {
+const getOrderStatusType = (status: string | undefined) => {
   switch (status) {
-    case 'pending':
-      return ''
-    case 'processing':
+    case '2004002'|| '2005002':
+      return 'default'
+    case '2004003' || '2005003':
       return 'warning'
-    case 'completed':
+    case '2004005' || '2005005':
       return 'success'
+    case '2004006' || '2005006':
+      return 'danger'
     default:
       return 'info'
   }
 }
 
-// 获取订单状态名称
-const getOrderStatusName = (status: string) => {
-  switch (status) {
-    case 'pending':
-      return '待制作'
-    case 'processing':
-      return '制作中'
-    case 'completed':
-      return '已完成'
-    default:
-      return '未知'
-  }
-}
 
 // 计算订单总额
 const calculateOrderTotal = (order: Order) => {
   return order.orderItems.reduce((total, item) => {
-    return total + (item.amount * item.number)
-  }, 0).toFixed(2)
+    return total + item.amount * item.number;
+  }, 0).toFixed(2);
 }
 
 // 处理标签页切换
@@ -478,12 +254,82 @@ const handleCurrentChange = (val: number) => {
 }
 
 // 加载订单列表
-const loadOrderList = () => {
-  // 模拟API调用
-  setTimeout(() => {
-    orderList.value = mockOrderList
-    pagination.total = mockOrderList.length
-  }, 300)
+const loadOrderList = async () => {
+  // 构造查询参数
+  const params = {
+    page: pagination.pageNum,
+    limit: pagination.pageSize
+  };
+  
+  // 根据当前选中的标签页确定订单类型和状态
+  if (activeTab.value === 'all') {
+    // 加载所有订单（堂食+外卖）
+    try {
+      console.log('请求参数:', params);
+      const [dineInRes, takeAwayRes] = await Promise.all([
+        getDineInOrderListApi(params),
+        getTakeAwayOrderListApi(params)
+      ]);
+      console.log('堂食订单响应:', dineInRes);
+      console.log('外卖订单响应:', takeAwayRes);
+      // 合并订单列表
+      orderList.value = [...dineInRes.data.rows, ...takeAwayRes.data.rows];
+      console.log('合并后的订单列表:', orderList.value);
+      pagination.total = dineInRes.data.total + takeAwayRes.data.total;
+      console.log('总记录数:', pagination.total);
+    } catch (err: any) {
+      console.error('获取订单列表失败:', err);
+      ElMessage.error('获取订单列表失败: ' + err.message);
+    }
+  } else if (activeTab.value === 'dineIn') {
+    // 只加载堂食订单
+    try {
+      console.log('请求参数:', params);
+      const res = await getDineInOrderListApi(params);
+      console.log('堂食订单响应:', res);
+      orderList.value = res.data.rows;
+      console.log('堂食订单列表:', orderList.value);
+      pagination.total = res.data.total;
+      console.log('堂食订单总记录数:', pagination.total);
+    } catch (err: any) {
+      console.error('获取堂食订单列表失败:', err);
+      ElMessage.error('获取堂食订单列表失败: ' + err.message);
+    }
+  } else if (activeTab.value === 'takeaway') {
+    // 只加载外卖订单
+    try {
+      console.log('请求参数:', params);
+      const res = await getTakeAwayOrderListApi(params);
+      console.log('外卖订单响应:', res);
+      orderList.value = res.data.rows;
+      console.log('外卖订单列表:', orderList.value);
+      pagination.total = res.data.total;
+      console.log('外卖订单总记录数:', pagination.total);
+    } catch (err: any) {
+      console.error('获取外卖订单列表失败:', err);
+      ElMessage.error('获取外卖订单列表失败: ' + err.message);
+    }
+  } else {
+    // 按状态分类加载订单
+    const status = activeTab.value;
+    try {
+      console.log('请求参数:', { ...params, status });
+      const [dineInRes, takeAwayRes] = await Promise.all([
+        getDineInOrderListApi({ ...params, status }),
+        getTakeAwayOrderListApi({ ...params, status })
+      ]);
+      console.log('按状态分类 - 堂食订单响应:', dineInRes);
+      console.log('按状态分类 - 外卖订单响应:', takeAwayRes);
+      // 合并订单列表
+      orderList.value = [...dineInRes.data.rows, ...takeAwayRes.data.rows];
+      console.log('按状态分类后的订单列表:', orderList.value);
+      pagination.total = dineInRes.data.total + takeAwayRes.data.total;
+      console.log('按状态分类总记录数:', pagination.total);
+    } catch (err: any) {
+      console.error('获取订单列表失败:', err);
+      ElMessage.error('获取订单列表失败: ' + err.message);
+    }
+  }
 }
 
 // 处理图片加载错误
@@ -499,15 +345,26 @@ const startCooking = (order: Order) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    // 模拟API调用更新订单状态
-    order.status = 'processing'
-    ElMessage.success('开始制作成功')
-    if (currentOrder.value && currentOrder.value.orderId === order.orderId) {
-      currentOrder.value.status = 'processing'
+    // 调用API更新订单状态为制作中
+    const orderId = order.orderId || order.id;
+    if (!orderId) {
+      ElMessage.error('订单ID不存在');
+      return;
     }
+    // 确定订单类型
+    const orderType = isDineInOrder(order) ? 'dineIn' : 'takeaway';
+    startCookingApi({ id: orderId, orderType }).then(() => {
+      order.status = 'processing';
+      ElMessage.success('开始制作成功');
+      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)) {
+        currentOrder.value.status = 'processing';
+      }
+    }).catch(err => {
+      ElMessage.error('开始制作失败: ' + err.message);
+    });
   }).catch(() => {
     // 用户取消操作
-  })
+  });
 }
 
 // 完成制作
@@ -517,22 +374,62 @@ const finishCooking = (order: Order) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    // 模拟API调用更新订单状态
-    order.status = 'completed'
-    ElMessage.success('制作完成')
-    if (currentOrder.value && currentOrder.value.orderId === order.orderId) {
-      currentOrder.value.status = 'completed'
+    // 调用API更新订单状态为已完成
+    const orderId = order.orderId || order.id;
+    if (!orderId) {
+      ElMessage.error('订单ID不存在');
+      return;
     }
+    // 确定订单类型
+    const orderType = isDineInOrder(order) ? 'dineIn' : 'takeaway';
+    finishCookingApi({ id: orderId, orderType }).then(() => {
+      order.status = 'completed';
+      ElMessage.success('制作完成');
+      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)) {
+        currentOrder.value.status = 'completed';
+      }
+    }).catch(err => {
+      ElMessage.error('完成制作失败: ' + err.message);
+    });
   }).catch(() => {
     // 用户取消操作
-  })
+  });
 }
 
 // 查看订单详情
 const viewOrderDetail = (order: Order) => {
-  currentOrder.value = { ...order }
-  orderDetailVisible.value = true
+  // 调用API获取订单详情
+  const orderId = order.orderId
+  if (!orderId) {
+    ElMessage.error('订单ID不存在');
+    return;
+  }
+  getOrderDetailListApi({ orderId: orderId }).then(res => {
+    currentOrder.value = res.data;
+    orderDetailVisible.value = true;
+  }).catch(err => {
+    ElMessage.error('获取订单详情失败: ' + err.message);
+  });
 }
+
+// 测试API方法
+const testAPI = async () => {
+  try {
+    console.log('开始测试API...');
+    // 测试堂食订单API
+    const dineInRes = await getDineInOrderListApi({ page: 1, limit: 10 });
+    console.log('堂食订单API响应:', dineInRes);
+    
+    // 测试外卖订单API
+    const takeAwayRes = await getTakeAwayOrderListApi({ page: 1, limit: 10 });
+    console.log('外卖订单API响应:', takeAwayRes);
+    
+    ElMessage.success('API测试成功，请查看控制台输出');
+  } catch (err) {
+    console.error('API测试失败:', err);
+    ElMessage.error('API测试失败: ' + (err as any).message);
+  }
+};
 
 // 组件挂载时加载数据
 onMounted(() => {
@@ -628,8 +525,27 @@ onMounted(() => {
           .order-status {
             .el-tag {
               font-weight: bold;
+              font-size: 20px;
             }
           }
+          .order-remark {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #fffbe6;
+            border: 1px solid #ffe58f;
+            border-radius: 4px;
+            font-size: 14px;
+
+            label {
+              font-weight: bold;
+              color: rgb(0, 0, 0);
+              margin-right: 8px;
+            }
+
+            .remark-content {
+              color: #333;
+            }
+                       }
         }
         
         .order-content {

@@ -1,9 +1,12 @@
 package com.sz.admin.restaurant.pojo.vo;
 
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
+
+import java.util.List;
 
 /**
  * <p>
@@ -75,5 +78,9 @@ public class DineInOrdersVO {
     @ExcelProperty(value = "桌子编号")
     @Schema(description = "桌子编号")
     private String tableName;
+
+    // 订单项列表
+    @Schema(description = "订单项列表")
+    private List<OrderDetailVO> orderItems;
 
 }
