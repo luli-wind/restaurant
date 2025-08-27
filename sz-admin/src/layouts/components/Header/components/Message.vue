@@ -109,6 +109,7 @@ const getData = () => {
 };
 
 mittBus.on('socket.MESSAGE', handleMessage);
+mittBus.on('socket.TODO', handleMessage);
 mittBus.on('socket.READ', () => {
   getUnreadCount();
 });

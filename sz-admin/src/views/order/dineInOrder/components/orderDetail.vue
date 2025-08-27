@@ -128,7 +128,7 @@
         <el-button
           v-if="orderData.status === '2004001'"
           type="primary"
-          @click="handleStartCooking"
+          @click="handleReminderCooking"
         >
           催促厨师制作
         </el-button>
@@ -193,6 +193,7 @@
 import { ref, reactive, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getOrderDetailListApi } from '@/api/modules/order/orderDetail'
+import { orderReminderApi } from '@/api/modules/system/message'
 import type { OrderDetailRow } from '@/api/types/order/orderDetail'
 import type { DineInOrderRow } from '@/api/types/order/dineInOrder'
 
@@ -307,8 +308,14 @@ const handleCancelOrder = () => {
 }
 
 // 开始制作
-const handleStartCooking = () => {
-  //emit('updateStatus', props.orderData, { status: '2004002' })
+const handleReminderCooking = async () => {
+  try {
+    await orderReminderApi(props.orderData.orderId || '')
+    ElMessage.success('催单成功')
+  } catch (error) {
+    ElMessage.error('催单失败')
+    console.error(error)
+  }
   handleClose()
 }
 

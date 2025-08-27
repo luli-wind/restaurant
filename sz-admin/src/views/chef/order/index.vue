@@ -153,8 +153,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import mittBus from '@/utils/mittBus';
 import type { OrderItem, DineInOrderRow } from '@/api/types/order/dineInOrder';
 import type { TakeAwayOrderRow } from '@/api/types/order/takeAwayOrder';
 import { getChefOrderDetailApi, startCookingApi, finishCookingApi } from '@/api/modules/order/chefOrder';
@@ -434,7 +435,20 @@ const testAPI = async () => {
 // 组件挂载时加载数据
 onMounted(() => {
   loadOrderList()
+  // 监听WebSocket消息，实时刷新订单列表
+  mittBus.on('socket.TODO', handleWebSocketMessage);
 })
+
+// 组件卸载时移除监听
+onUnmounted(() => {
+  mittBus.off('socket.TODO', handleWebSocketMessage);
+})
+
+// 处理WebSocket消息
+const handleWebSocketMessage = (data: any) => {
+  // 收到催单消息时，重新加载订单列表
+  loadOrderList()
+}
 </script>
 
 <style scoped lang="scss">

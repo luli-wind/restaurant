@@ -37,3 +37,11 @@ export const getNoticeMessageListApi = () => {
 export const getUnreadMessageCountApi = () => {
   return http.get<UnreadMessageCount>(ADMIN_MODULE + `/sys-message/count`);
 };
+
+/**
+ * 服务员催单
+ * @param orderId 订单ID
+ */
+export const orderReminderApi = (orderId: string | number) => {
+  return http.post(ADMIN_MODULE + `/message/reminder/${orderId}`);
+};
