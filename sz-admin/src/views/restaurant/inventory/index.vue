@@ -8,6 +8,7 @@
       :search-columns="searchColumns"
       :request-api="getTableList"
       row-key="materialId"
+      :row-class-name="tableRowClassName"
     >
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
@@ -99,10 +100,13 @@ import type { InventoryQuery, InventoryRow } from '@/api/types/restaurant/invent
 import ImportExcel from '@/components/ImportExcel/index.vue';
 import { downloadTemplate } from '@/api/modules/system/common';
 import { useDownload } from "@/hooks/useDownload";
+import { useDict } from '@/hooks/useDict';
+import {useDictOptions} from "@/hooks/useDictOptions";
 defineOptions({
   name: 'InventoryView'
 });
 const proTableRef = ref<ProTableInstance>();
+useDict(['inventory_status'])
 // 表格配置项
 const columns: ColumnProps<InventoryRow>[] = [
   { type: 'selection', width: 80 },
@@ -110,12 +114,31 @@ const columns: ColumnProps<InventoryRow>[] = [
   { prop: 'currentStock', label: '当前容量' },
   { prop: 'minStock', label: '最小容量' },
   { prop: 'unit', label: '计量单位' },
+  {prop:'status',
+    label:'库存状态',
+    tag: true,
+    enum: useDictOptions('inventory_status'),
+    fieldNames: {
+      label: 'codeName',
+      value: 'id',
+      tagType: 'callbackShowStyle'
+    }
+  },
   { prop: 'operation', label: '操作', width: 250, fixed: 'right' }
 ];
 // 搜索条件项
 const searchColumns: SearchProps[] = [
   { prop: 'materialName', label: '材料名', el: 'input' },
-  { prop: 'currentStock', label: '当前容量', el: 'input' },
+  { prop: 'status',
+    label: '库存状态',
+    el: 'select',
+    enum: useDictOptions('inventory_status'),
+    fieldNames: {
+      label: 'codeName',
+      value: 'id',
+      tagType: 'callbackShowStyle'
+    },
+  },
 ];
 // 获取table列表
 const getTableList = (params: InventoryQuery) => {
@@ -175,4 +198,20 @@ const downloadFile = async () => {
   let newParams = formatParams(proTableRef.value?.searchParam as InventoryQuery);
   useDownload(exportInventoryExcelApi, "库存管理", newParams);
 };
+
+// 表格行样式处理函数
+const tableRowClassName = ({ row }: { row: InventoryRow }) => {
+  // 判断当前库存是否小于最少库存
+  if (row.currentStock !== undefined && row.minStock !== undefined && row.currentStock <= row.minStock) {
+    return 'warning-row';
+  }
+  return '';
+};
 </script>
+
+<style scoped>
+:deep(.warning-row) {
+  background-color: #fef0f0 !important;
+  color: #f56c6c !important;
+}
+</style>

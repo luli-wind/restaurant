@@ -107,8 +107,9 @@
             <div class="order-footer">
               <div class="order-actions">
                 <el-button
-                  v-if="order.status === 'pending'"
+                  v-if="order.status == '2005007' || order.status =='2004001'"
                   type="primary"
+                  size="large"
                   @click="startCooking(order)"
                   :disabled="!order.orderId && !order.id"
                 >
@@ -173,9 +174,16 @@ type Order = DineInOrderRow | TakeAwayOrderRow;
 // 响应式数据
 const activeTab = ref('all')
 const orderList = ref<Order[]>([])
-// 计算属性：过滤掉状态为2005001的订单
+// 计算属性：过滤掉状态为2005001的订单，并按创建时间倒序排列
 const filteredOrderList = computed(() => {
-  return orderList.value.filter(order => order.status !== '2005001');
+  return orderList.value
+    .filter(order => order.status !== '2005001')
+    .sort((a, b) => {
+      // 按创建时间倒序排列（最新的在前）
+      const timeA = a.createTime ? new Date(a.createTime).getTime() : 0;
+      const timeB = b.createTime ? new Date(b.createTime).getTime() : 0;
+      return timeB - timeA;
+    });
 });
 const orderDetailVisible = ref(false)
 const currentOrder = ref<Order | null>(null)
@@ -347,18 +355,19 @@ const startCooking = (order: Order) => {
     type: 'warning'
   }).then(() => {
     // 调用API更新订单状态为制作中
-    const orderId = order.orderId || order.id;
+    const orderId = order.orderId;
     if (!orderId) {
       ElMessage.error('订单ID不存在');
       return;
     }
     // 确定订单类型
     const orderType = isDineInOrder(order) ? 'dineIn' : 'takeaway';
-    startCookingApi({ id: orderId, orderType }).then(() => {
-      order.status = 'processing';
+    startCookingApi({ orderId: orderId, orderType }).then(() => {
       ElMessage.success('开始制作成功');
-      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)) {
-        currentOrder.value.status = 'processing';
+      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)&&isDineInOrder(order)) {
+        currentOrder.value.status = '2004002';
+      }else if(currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)&&isTakeAwayOrder(order)){
+        currentOrder.value.status = '2005002';
       }
     }).catch(err => {
       ElMessage.error('开始制作失败: ' + err.message);
@@ -630,6 +639,7 @@ const handleWebSocketMessage = (data: any) => {
               }
               
               .dish-price {
+                margin-left: 25px;
                 font-weight: bold;
                 color: #f56c6c;
               }

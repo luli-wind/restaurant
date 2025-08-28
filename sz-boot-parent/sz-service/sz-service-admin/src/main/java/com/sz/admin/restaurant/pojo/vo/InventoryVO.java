@@ -26,14 +26,17 @@ public class InventoryVO {
 
     @ExcelProperty(value = "当前容量")
     @Schema(description =  "当前容量")
-    private Integer currentStock;
+    private Double currentStock;
 
     @ExcelProperty(value = "最小容量")
     @Schema(description =  "最小容量")
-    private Integer minStock;
+    private Double minStock;
 
     @ExcelProperty(value = "计量单位")
     @Schema(description =  "计量单位")
     private String unit;
 
+    @ExcelProperty(value = "库存状态")
+    @Schema(description = "库存状态")
+    private String status;
 }

@@ -1,5 +1,6 @@
 package com.sz.admin.restaurant.pojo.dto;
 
+import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -22,10 +23,10 @@ public class InventoryUpdateDTO {
     private String materialName;
 
     @Schema(description =  "当前容量")
-    private Integer currentStock;
+    private Double currentStock;
 
     @Schema(description =  "最小容量")
-    private Integer minStock;
+    private Double minStock;
 
     @Schema(description =  "计量单位")
     private String unit;

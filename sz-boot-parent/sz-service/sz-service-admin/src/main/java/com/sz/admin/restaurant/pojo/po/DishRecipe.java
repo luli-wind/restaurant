@@ -36,7 +36,7 @@ public class DishRecipe implements Serializable {
     private Long materialId;
 
     @Schema(description = "制作一份该菜品所需原材料的数量")
-    private BigDecimal materialQuantity;
+    private Double materialQuantity;
 
 
 }

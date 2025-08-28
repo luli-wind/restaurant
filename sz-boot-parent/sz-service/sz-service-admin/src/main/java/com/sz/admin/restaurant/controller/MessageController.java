@@ -52,8 +52,6 @@ import static org.springframework.core.NestedExceptionUtils.buildMessage;
 public class MessageController {
     private final SysUserService sysUserService;
     private final OrdersService ordersService;
-    private final DineInOrdersService dineInOrdersService;
-    private final TakeawayOrdersService takeawayOrdersService;
     private final WebsocketRedisService websocketRedisService;
     private final OrderReminderService orderReminderService;
     private final SysMessageUserService sysMessageUserService;
@@ -69,14 +67,11 @@ public class MessageController {
     @Operation(summary = "服务员催单")
     @PostMapping("/reminder/{orderId}")
     public ApiResult<Void> orderReminder(@PathVariable Long orderId) {
-        // 1. 验证用户是否登录
-        //CommonResponseEnum.UNAUTHORIZED.assertTrue(!StpUtil.isLogin());
-        log.info("服务员催单请求，订单ID: {}", orderId);
+
 
         // 2. 获取当前登录用户信息
         LoginUser loginUser = LoginUtils.getLoginUser();
         Long userId = loginUser.getUserInfo().getId();
-        log.info("当前登录用户ID: {}", userId);
 
         // 3. 验证用户角色权限（role表中id=4为服务员）
         SysUserVO currentUser = sysUserService.getSysUserByUserId(userId);
@@ -84,20 +79,16 @@ public class MessageController {
         //CommonResponseEnum.INVALID_PERMISSION.assertTrue(!isWaiter);
 
         // 4. 检查是否可以催单（去重机制）
-       // CommonResponseEnum.DEBOUNCE.assertTrue(!orderReminderService.canRemind(orderId, userId));
-        //log.info("通过去重检查，可以进行催单操作");
+       CommonResponseEnum.DEBOUNCE.assertTrue(!orderReminderService.canRemind(orderId, userId));
+
 
         // 5. 查询订单信息
         com.sz.admin.restaurant.pojo.po.Orders order = ordersService.getById(orderId);
         CommonResponseEnum.INVALID_ID.assertNull(order);
 
         // 6. 构建催单消息
-        OrderReminderMessageDTO reminderMessage = buildReminderMessage(order);
         String msg="厨师师傅，订单号为:"+order.getOrderNumber()+"催单，顾客赶时间，辛苦优先安排！";
         // 7. 查询所有厨师用户列表（role表中id=5）
-        List<SysUserRole>  c= sysUserRoleService.list();
-        System.out.println(c);
-
         List<SysUserRole> allUserRole = sysUserRoleService.list();
 
         List<Object> receiverIds = new ArrayList<>();
@@ -110,7 +101,7 @@ public class MessageController {
         SysMessage message = new SysMessage();
         message.setMessageTypeCd("msg");
         message.setSenderId(userId);
-        message.setTitle("催单处理!!!");
+        message.setTitle("催单通知!!!");
         message.setContent(msg);
         sysMessageService.save(message);
         sysMessageUserService.batchInsert(message.getId(), receiverIds);
@@ -129,47 +120,13 @@ public class MessageController {
 
         // 9. 通过WebSocket服务向所有在线厨师推送催单消息
         websocketRedisService.sendServiceToWs(transferMessage);
-        log.info("已向WebSocket服务发送催单消息，订单ID: {}", orderId);
+
 
         // 10. 记录催单操作
         orderReminderService.recordReminder(orderId, userId);
 
-        // 11. 记录催单日志
-        log.info("服务员 [{}] 对订单 [{}] 进行了催单操作", userId, orderId);
 
         return ApiResult.success();
     }
 
-    /**
-     * 构建催单消息
-     *
-     * @param order 订单信息
-     * @return 催单消息DTO
-     */
-    private OrderReminderMessageDTO buildReminderMessage(com.sz.admin.restaurant.pojo.po.Orders order) {
-        OrderReminderMessageDTO reminderMessage = new OrderReminderMessageDTO();
-        reminderMessage.setOrderId(order.getOrderId());
-        reminderMessage.setOrderNumber(order.getOrderNumber());
-        reminderMessage.setOrderType(order.getOrderType());
-        reminderMessage.setTotalAmount(order.getTotalAmount());
-        reminderMessage.setReminderTime(LocalDateTime.now());
-
-        // 根据订单类型获取额外信息
-        if ("堂食".equals(order.getOrderType())) {
-            // 获取堂食订单信息
-            com.sz.admin.restaurant.pojo.vo.DineInOrdersVO dineInOrder = dineInOrdersService.detail(order.getOrderId());
-            if (dineInOrder != null) {
-                reminderMessage.setTableNumber(dineInOrder.getTableId().toString());
-            }
-        } else if ("外卖".equals(order.getOrderType())) {
-            // 获取外卖订单信息
-            com.sz.admin.restaurant.pojo.vo.TakeawayOrdersVO takeawayOrder = takeawayOrdersService.detail(order.getOrderId());
-            if (takeawayOrder != null) {
-                reminderMessage.setCustomerName(takeawayOrder.getCustomerName());
-                reminderMessage.setCustomerPhone(takeawayOrder.getCustomerPhone());
-            }
-        }
-
-        return reminderMessage;
-    }
 }

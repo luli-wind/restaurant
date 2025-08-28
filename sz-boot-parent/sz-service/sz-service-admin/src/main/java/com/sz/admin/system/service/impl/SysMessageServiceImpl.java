@@ -14,6 +14,7 @@ import com.sz.admin.system.pojo.vo.sysmessage.MessageCountVO;
 import com.sz.admin.system.pojo.vo.sysmessage.SysMessageVO;
 import com.sz.admin.system.service.SysMessageService;
 import com.sz.admin.system.service.SysMessageUserService;
+import com.sz.core.common.entity.LoginUser;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SocketMessage;
 import com.sz.core.common.entity.TransferMessage;
@@ -27,6 +28,7 @@ import com.sz.core.util.Utils;
 import com.sz.redis.WebsocketRedisService;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,6 +104,21 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
         long todo = count(buildQueryWrapper(new SysMessageListDTO("todo")).where(SYS_MESSAGE_USER.IS_READ.eq("F")));
         long msg = count(buildQueryWrapper(new SysMessageListDTO("msg")).where(SYS_MESSAGE_USER.IS_READ.eq("F")));
         return new MessageCountVO(all, todo, msg);
+    }
+
+    @Override
+    public void sendInventoryAlert() {
+        LoginUser loginUser = LoginUtils.getLoginUser();
+        Long userId = loginUser.getUserInfo().getId();
+        Message message =new Message();
+        message.setMessageTypeCd("msg");
+        message.setSenderId(userId);
+        message.setTitle("库存警告!!!");
+        message.setContent("部分库存即将不足，请及时联系供应商，补充库存");
+        List receiverIds =new ArrayList<>();
+        receiverIds.add("1");
+        message.setReceiverIds(receiverIds);
+        create(message);
     }
 
     private static QueryWrapper buildQueryWrapper(SysMessageListDTO dto) {

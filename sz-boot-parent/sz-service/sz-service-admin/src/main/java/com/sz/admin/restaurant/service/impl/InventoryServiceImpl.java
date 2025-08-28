@@ -1,7 +1,14 @@
 package com.sz.admin.restaurant.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.pojo.po.DishRecipe;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.vo.DishRecipeVO;
+import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
+import com.sz.admin.restaurant.service.OrderDetailService;
+import com.sz.admin.system.service.SysMessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.sz.admin.restaurant.service.InventoryService;
 import com.sz.admin.restaurant.pojo.po.Inventory;
@@ -16,6 +23,7 @@ import com.sz.core.util.Utils;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import com.sz.admin.restaurant.pojo.dto.InventoryCreateDTO;
 import com.sz.admin.restaurant.pojo.dto.InventoryUpdateDTO;
@@ -41,6 +49,9 @@ import com.sz.admin.restaurant.pojo.vo.InventoryVO;
 @Service
 @RequiredArgsConstructor
 public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory> implements InventoryService {
+    private final OrderDetailService orderDetailService;
+    private final DishRecipeServiceImpl dishRecipeService;
+    private final SysMessageService sysMessageService;
     @Override
     public void create(InventoryCreateDTO dto){
         Inventory inventory = BeanCopyUtils.copy(dto, Inventory.class);
@@ -50,6 +61,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
     @Override
     public void update(InventoryUpdateDTO dto){
         Inventory inventory = BeanCopyUtils.copy(dto, Inventory.class);
+        updateStatus(inventory);
         QueryWrapper wrapper;
         // id有效性校验
         wrapper = QueryWrapper.create()
@@ -109,6 +121,73 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         return list;
     }
 
+    //根据订单明细，看看库存是否有足够的食物
+    public boolean isEnough(Long orderId) {
+        List<OrderDetailVO> list = orderDetailService.getListByOrderId(orderId);
+        List<OrderDetail> orderDetailList =new ArrayList<>();
+        for (OrderDetailVO orderDetailVO : list) {
+            OrderDetail orderDetail = new OrderDetail();
+            BeanUtils.copyProperties(orderDetailVO, orderDetail);
+            orderDetailList.add(orderDetail);
+        }
+        //遍历每道菜的菜谱
+        for (OrderDetail orderDetail : orderDetailList) {
+            List<DishRecipeVO> dishRecipeList =  dishRecipeService.listByDishId(orderDetail.getDishId());
+            //根据菜谱的配方与库存相比较
+            for(DishRecipeVO dishRecipeVO : dishRecipeList){
+                Inventory inventory = getById(dishRecipeVO.getMaterialId());
+                if(inventory.getCurrentStock()<dishRecipeVO.getMaterialQuantity()*orderDetail.getNumber()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void subtractMatrials(Long orderId) {
+        List<OrderDetailVO> list = orderDetailService.getListByOrderId(orderId);
+        List<OrderDetail> orderDetailList =new ArrayList<>();
+        for (OrderDetailVO orderDetailVO : list) {
+            OrderDetail orderDetail = new OrderDetail();
+            BeanUtils.copyProperties(orderDetailVO, orderDetail);
+            orderDetailList.add(orderDetail);
+        }
+        //是否向管理员发送库存警告
+        boolean inventoryAlert = false;
+        //遍历每道菜的菜谱
+        for (OrderDetail orderDetail : orderDetailList) {
+            List<DishRecipeVO> dishRecipeList =  dishRecipeService.listByDishId(orderDetail.getDishId());
+            //根据菜谱的配方与库存相比较
+            for(DishRecipeVO dishRecipeVO : dishRecipeList){
+                Inventory inventory = getById(dishRecipeVO.getMaterialId());
+                Double currentStock = inventory.getCurrentStock();
+                //扣除材料
+                currentStock -=dishRecipeVO.getMaterialQuantity()*orderDetail.getNumber();
+                inventory.setCurrentStock(currentStock);
+                updateById(inventory);
+                //如果材料小于最少预警值，向管理员发送通告
+                if(inventory.getCurrentStock()<inventory.getMinStock()){
+                    updateStatus(inventory);
+                    saveOrUpdate(inventory);
+                    inventoryAlert=true;
+                }
+            }
+        }
+        if(inventoryAlert){
+            sysMessageService.sendInventoryAlert();
+        }
+
+    }
+
+    public void updateStatus(Inventory inventory){
+        if(inventory.getCurrentStock()>inventory.getMinStock()){
+            inventory.setStatus("2007001");
+        }else {
+            inventory.setStatus("2007002");
+        }
+    }
+
     private static QueryWrapper buildQueryWrapper(InventoryListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(Inventory.class);
         if (Utils.isNotNull(dto.getMaterialName())) {
@@ -116,6 +195,9 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         }
         if (Utils.isNotNull(dto.getCurrentStockStart()) && Utils.isNotNull(dto.getCurrentStockEnd())) {
             wrapper.between(Inventory::getCurrentStock, dto.getCurrentStockStart(), dto.getCurrentStockEnd());
+        }
+        if (Utils.isNotNull(dto.getStatus())) {
+            wrapper.like(Inventory::getStatus, dto.getStatus());
         }
         return wrapper;
     }

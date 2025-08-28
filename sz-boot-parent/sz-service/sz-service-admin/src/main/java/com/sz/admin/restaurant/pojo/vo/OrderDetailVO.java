@@ -16,6 +16,9 @@ import cn.idev.excel.annotation.ExcelProperty;
 @Data
 @Schema(description = "OrderDetail返回vo")
 public class OrderDetailVO {
+    @ExcelProperty(value = "菜品ID")
+    @Schema(description =  "菜品ID")
+    private Long dishId;
 
     @ExcelProperty(value = "菜品名")
     @Schema(description =  "菜品名")

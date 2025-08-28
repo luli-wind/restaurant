@@ -28,4 +28,6 @@ public interface SysMessageService extends IService<SysMessage> {
     SysMessageVO detail(Object id);
 
     MessageCountVO countMyUnreadMessages();
+
+    void sendInventoryAlert();
 }

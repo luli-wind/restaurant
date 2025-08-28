@@ -76,21 +76,21 @@ export const getChefOrderDetailApi = async (params: { id: number, orderType: 'di
  * @param params
  * @returns {*}
  */
-export const startCookingApi = async (params: { id: number, orderType: 'dineIn' | 'takeaway' }) => {
-    const { id, orderType } = params;
+export const startCookingApi = async (params: { orderId: number, orderType: 'dineIn' | 'takeaway' }) => {
+    const { orderId, orderType } = params;
     
     // 根据订单类型调用不同的接口
     if (orderType === 'dineIn') {
         // 调用堂食订单更新状态接口
         return await updateDineInOrderStatusApi({
-            id,
-            status: 'processing'
+            orderId,
+            status: '2004002'
         } as any);
     } else if (orderType === 'takeaway') {
         // 调用外卖订单更新状态接口
         return await updateTakeAwayOrderStatusApi({
-            id,
-            status: 'processing'
+            orderId,
+            status: '2005002'
         } as any);
     } else {
         throw new Error('无效的订单类型');

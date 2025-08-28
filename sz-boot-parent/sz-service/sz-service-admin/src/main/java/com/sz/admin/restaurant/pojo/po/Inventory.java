@@ -31,13 +31,16 @@ public class Inventory implements Serializable {
     private String materialName;
 
     @Schema(description = "当前容量")
-    private Integer currentStock;
+    private Double currentStock;
 
     @Schema(description = "最小容量")
-    private Integer minStock;
+    private Double minStock;
 
     @Schema(description = "计量单位")
     private String unit;
+
+    @Schema(description = "库存状态")
+    private String status;
 
 
 }

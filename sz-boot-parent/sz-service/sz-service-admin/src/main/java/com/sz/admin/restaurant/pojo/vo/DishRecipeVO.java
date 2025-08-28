@@ -27,7 +27,7 @@ public class DishRecipeVO {
     private Long materialId;
 
     @Schema(description = "制作一份该菜品所需原材料的数量")
-    private BigDecimal materialQuantity;
+    private Double materialQuantity;
 
     @Schema(description = "原材料名称")
     private String materialName;

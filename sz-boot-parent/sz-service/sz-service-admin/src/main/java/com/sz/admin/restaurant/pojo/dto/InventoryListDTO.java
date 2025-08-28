@@ -1,5 +1,6 @@
 package com.sz.admin.restaurant.pojo.dto;
 
+import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import com.sz.core.common.entity.PageQuery;
@@ -19,9 +20,12 @@ public class InventoryListDTO extends PageQuery {
     private String materialName;
 
     @Schema(description =  "当前容量开始")
-    private Integer currentStockStart;
+    private Double currentStockStart;
 
     @Schema(description =  "当前容量结束")
-    private Integer currentStockEnd;
+    private Double currentStockEnd;
+
+    @Schema(description = "库存状态")
+    private String status;
 
 }

@@ -8,11 +8,12 @@
         <result column="current_stock" property="currentStock"/>
         <result column="min_stock" property="minStock"/>
         <result column="unit" property="unit"/>
+        <result column="status" property="status"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        material_id, material_name, current_stock, min_stock, unit
+        material_id, material_name, current_stock, min_stock, unit,status
     </sql>
 
 </mapper>

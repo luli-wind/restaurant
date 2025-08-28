@@ -4,6 +4,7 @@ import type { IPageQuery } from '@/api/types';
 export type InventoryQuery = IPageQuery & {
     materialName?: string;
     unit?: string;
+    status?:string;
 };
 
 // 编辑form表单
@@ -13,6 +14,7 @@ export type InventoryForm = {
     currentStock?: number;
     minStock?: number;
     unit?: string;
+    status?:string
 };
 
 // list或detail返回结构
@@ -22,4 +24,5 @@ export type InventoryRow = {
     currentStock?: number;
     minStock?: number;
     unit?: string;
+    status?:string
 };

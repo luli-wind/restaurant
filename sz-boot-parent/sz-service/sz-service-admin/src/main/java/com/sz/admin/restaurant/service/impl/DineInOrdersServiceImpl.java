@@ -5,6 +5,7 @@ import com.sz.admin.restaurant.mapper.DiningTableMapper;
 import com.sz.admin.restaurant.mapper.OrdersMapper;
 import com.sz.admin.restaurant.pojo.dto.*;
 import com.sz.admin.restaurant.pojo.po.*;
+import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
 import com.sz.admin.restaurant.service.DiningTableService;
 import com.sz.admin.restaurant.service.OrderDetailService;
 import com.sz.utils.RestaurantOrderNumberGenerator;
@@ -23,13 +24,17 @@ import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.Utils;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sz.core.common.entity.ImportExcelDTO;
 import com.sz.excel.core.ExcelResult;
+
 import java.io.OutputStream;
+
 import jakarta.servlet.http.HttpServletResponse;
 import com.sz.core.util.FileUtils;
 import com.sz.excel.utils.ExcelUtils;
@@ -50,8 +55,9 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     private final OrdersService ordersService;
     private final DiningTableService diningTableService;
     private final OrderDetailService orderDetailService;
+    private final InventoryServiceImpl inventoryService;
     @Override
-    public void create(DineInOrdersCreateDTO dto){
+    public void create(DineInOrdersCreateDTO dto) {
         // 创建基本订单记录
         Orders orders = new Orders();
         BeanUtils.copyProperties(dto, orders);
@@ -64,14 +70,14 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         List<OrderDetail> detailList = dto.getOrderItems();
         for (OrderDetail orderDetail : detailList) {
             orderDetail.setOrderId(orders.getOrderId());
-            totalAmount +=orderDetail.getAmount()*orderDetail.getNumber();
+            totalAmount += orderDetail.getAmount() * orderDetail.getNumber();
         }
 
         orders.setTotalAmount(totalAmount);
         ordersService.save(orders);
         //将餐桌设为已占用状态
         DiningTable diningTable = diningTableService.getById(dto.getTableId());
-        if(diningTable != null){
+        if (diningTable != null) {
             diningTable.setStatus("2001002");
             diningTableService.updateById(diningTable);
         }
@@ -92,16 +98,16 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     }
 
     @Override
-    public void update(DineInOrdersUpdateDTO dto){
+    public void update(DineInOrdersUpdateDTO dto) {
         // id有效性校验
         QueryWrapper wrapper = QueryWrapper.create()
-            .eq(DineInOrders::getId, dto.getId());
+                .eq(DineInOrders::getId, dto.getId());
         CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) > 0);
 
         // 更新堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
         saveOrUpdate(dineInOrders);
-        
+
         // 更新基本订单记录（如果需要）
         // 这里可以根据实际需求更新Orders表中的字段
         // 例如，如果dto中包含了需要更新的订单字段，可以这样处理：
@@ -114,11 +120,11 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     }
 
     @Override
-    public PageResult<DineInOrdersVO> page(DineInOrdersListDTO dto){
+    public PageResult<DineInOrdersVO> page(DineInOrdersListDTO dto) {
         Page<DineInOrders> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), DineInOrders.class);
         Page<DineInOrdersVO> voPage = new Page<>(page.getPageNumber(), page.getPageSize());
         voPage.setTotalRow(page.getTotalRow());
-        
+
         // 转换为VO对象并关联查询Orders表的信息
         List<DineInOrdersVO> voList = page.getRecords().stream().map(dineInOrders -> {
             // 查询对应的基本订单记录
@@ -139,18 +145,18 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setTableName(table.getTableName());
                 vo.setOrderItems(orderDetailService.getListByOrderId(orders.getOrderId()));
             }
-            
+
             return vo;
         }).toList();
-        
+
         voPage.setRecords(voList);
         return PageUtils.getPageResult(voPage);
     }
 
     @Override
-    public List<DineInOrdersVO> list(DineInOrdersListDTO dto){
+    public List<DineInOrdersVO> list(DineInOrdersListDTO dto) {
         List<DineInOrders> dineInOrdersList = listAs(buildQueryWrapper(dto), DineInOrders.class);
-        
+
         // 转换为VO对象并关联查询Orders表的信息
         return dineInOrdersList.stream().map(dineInOrders -> {
             // 查询对应的基本订单记录
@@ -170,22 +176,22 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setRefundReason(orders.getRefundReason());
                 vo.setTableName(table.getTableName());
             }
-            
+
             return vo;
         }).toList();
     }
 
     @Override
-    public void remove(SelectIdsDTO dto){
+    public void remove(SelectIdsDTO dto) {
         CommonResponseEnum.INVALID_ID.assertTrue(!dto.getIds().isEmpty());
         removeByIds(dto.getIds());
     }
 
     @Override
-    public DineInOrdersVO detail(Object id){
+    public DineInOrdersVO detail(Object id) {
         DineInOrders dineInOrders = getById((Serializable) id);
         CommonResponseEnum.INVALID_ID.assertNull(dineInOrders);
-        
+
         // 查询对应的基本订单记录
         Orders orders = ordersService.getById(dineInOrders.getOrderId());
         DiningTable table = diningTableService.getById(dineInOrders.getTableId());
@@ -203,7 +209,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             vo.setRefundReason(orders.getRefundReason());
             vo.setTableName(table.getTableName());
         }
-        
+
         return vo;
     }
 
@@ -231,8 +237,17 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     public void updateStatus(DineInOrdersUpdateDTO dto) {
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setStatus(dto.getStatus());
+        if (dto.getStatus().equals("2004002")) {
+            if(inventoryService.isEnough(dto.getOrderId())){
+                //扣除库存中的材料
+                inventoryService.subtractMatrials(dto.getOrderId());
+            }else {
+                //告知管理员或服务员材料不足，让他们取消订单或者更换订单
+
+            }
+        }
         //用户完成用餐，将餐桌设置为空闲状态
-        if(dto.getStatus().equals("2004005")){
+        if (dto.getStatus().equals("2004005")) {
             DiningTable table = diningTableService.getById(dto.getTableId());
             table.setStatus("2001001");
             diningTableService.updateById(table);
@@ -240,14 +255,16 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         ordersService.updateById(orders);
     }
 
+
+
     @Override
     public void updatePayStatus(DineInOrdersUpdateDTO dto) {
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setPayStatus(dto.getPayStatus());
-        if(dto.getPayStatus().equals("2006001")){
+        if (dto.getPayStatus().equals("2006001")) {
             orders.setPayTime(LocalDateTime.now());
         }
-        if(dto.getPayStatus().equals("2006003")){
+        if (dto.getPayStatus().equals("2006003")) {
             orders.setRefundReason(dto.getRefundReason());
         }
         ordersService.updateById(orders);
