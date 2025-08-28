@@ -53,7 +53,6 @@ public class DineInOrdersController  {
     }
 
     @Operation(summary = "修改订单状态")
-    @SaCheckPermission(value = "dine.in.orders.update")
     @PutMapping("/status")
     public ApiResult<Void> updateStatus(@RequestBody DineInOrdersUpdateDTO dto) {
         dineInOrdersService.updateStatus(dto);
@@ -61,7 +60,6 @@ public class DineInOrdersController  {
     }
 
     @Operation(summary = "修改支付状态")
-    @SaCheckPermission(value = "dine.in.orders.update")
     @PutMapping("/payStatus")
     public ApiResult<Void> updatePayStatus(@RequestBody DineInOrdersUpdateDTO dto) {
         dineInOrdersService.updatePayStatus(dto);
@@ -77,7 +75,6 @@ public class DineInOrdersController  {
     }
 
     @Operation(summary = "列表查询")
-    @SaCheckPermission(value = "dine.in.orders.query_table")
     @GetMapping
     public ApiResult<PageResult<DineInOrdersVO>> list(DineInOrdersListDTO dto) {
         return ApiPageResult.success(dineInOrdersService.page(dto));

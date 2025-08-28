@@ -41,6 +41,9 @@ import com.sz.excel.utils.ExcelUtils;
 import lombok.SneakyThrows;
 import com.sz.admin.restaurant.pojo.vo.DineInOrdersVO;
 
+import static com.sz.admin.restaurant.pojo.po.table.DineInOrdersTableDef.DINE_IN_ORDERS;
+import static com.sz.admin.restaurant.pojo.po.table.OrdersTableDef.ORDERS;
+
 /**
  * <p>
  * 堂食扩展字段 服务实现类
@@ -85,7 +88,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         // 创建堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
         // 设置订单ID
-        dineInOrders.setOrderId(Math.toIntExact(orders.getOrderId()));
+        dineInOrders.setOrderId(orders.getOrderId());
         save(dineInOrders);
 
         for (OrderDetail orderDetail : detailList) {
@@ -272,18 +275,23 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
 
     private static QueryWrapper buildQueryWrapper(DineInOrdersListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(DineInOrders.class);
+        
+        // 关联订单表进行查询
+        if (Utils.isNotNull(dto.getStatus()) || Utils.isNotNull(dto.getPayStatus()) || Utils.isNotNull(dto.getOrderId())) {
+            wrapper.leftJoin(ORDERS).on(DINE_IN_ORDERS.ORDER_ID.eq(ORDERS.ORDER_ID));
+        }
+        
         if (Utils.isNotNull(dto.getOrderId())) {
             wrapper.eq(DineInOrders::getOrderId, dto.getOrderId());
         }
         if (Utils.isNotNull(dto.getTableId())) {
             wrapper.eq(DineInOrders::getTableId, dto.getTableId());
         }
-
         if (Utils.isNotNull(dto.getStatus())) {
-            wrapper.eq(TakeawayOrders::getOrderId, dto.getStatus());
+            wrapper.eq(Orders::getStatus, dto.getStatus());
         }
         if (Utils.isNotNull(dto.getPayStatus())) {
-            wrapper.eq(TakeawayOrders::getOrderId, dto.getPayStatus());
+            wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
         }
         return wrapper;
     }

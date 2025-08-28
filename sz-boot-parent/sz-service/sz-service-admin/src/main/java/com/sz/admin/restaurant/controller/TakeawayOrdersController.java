@@ -47,7 +47,6 @@ public class TakeawayOrdersController  {
     }
 
     @Operation(summary = "修改订单状态")
-    @SaCheckPermission(value = "takeaway.orders.update")
     @PutMapping("/status")
     public ApiResult<Void> updateStatus(@RequestBody TakeawayOrdersUpdateDTO dto) {
         takeawayOrdersService.updateStatus(dto);
@@ -55,7 +54,6 @@ public class TakeawayOrdersController  {
     }
 
     @Operation(summary = "修改支付状态")
-    @SaCheckPermission(value = "takeaway.orders.update")
     @PutMapping("/payStatus")
     public ApiResult<Void> updatePayStatus(@RequestBody TakeawayOrdersUpdateDTO dto) {
         takeawayOrdersService.updatePayStatus(dto);
@@ -79,7 +77,6 @@ public class TakeawayOrdersController  {
     }
 
     @Operation(summary = "列表查询")
-    @SaCheckPermission(value = "takeaway.orders.query_table")
     @GetMapping
     public ApiResult<PageResult<TakeawayOrdersVO>> list(TakeawayOrdersListDTO dto) {
         return ApiPageResult.success(takeawayOrdersService.page(dto));

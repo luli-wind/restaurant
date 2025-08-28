@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(value = "orders", onInsert = EntityChangeListener.class, onUpdate = EntityChangeListener.class)
 @Schema(description = "订单表")
+@SuppressWarnings("all")
 public class Orders implements Serializable {
 
     @Serial

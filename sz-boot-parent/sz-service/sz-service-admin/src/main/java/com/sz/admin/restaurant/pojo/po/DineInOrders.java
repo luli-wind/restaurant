@@ -18,6 +18,7 @@ import com.sz.mysql.EntityChangeListener;
 @Data
 @Table(value = "dine_in_orders")
 @Schema(description = "堂食扩展字段")
+@SuppressWarnings("all")
 public class DineInOrders implements Serializable {
 
     @Serial
@@ -28,10 +29,10 @@ public class DineInOrders implements Serializable {
     private Long id;
 
     @Schema(description ="")
-    private Integer orderId;
+    private Long orderId;
 
     @Schema(description ="")
-    private Integer tableId;
+    private Long tableId;
 
     @Schema(description ="")
     private Integer numberOfGuests;

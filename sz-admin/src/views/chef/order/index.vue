@@ -5,7 +5,7 @@
       <el-tab-pane label="全部订单" name="all"></el-tab-pane>
       <el-tab-pane label="待制作" name="pending"></el-tab-pane>
       <el-tab-pane label="制作中" name="processing"></el-tab-pane>
-      <el-tab-pane label="已完成" name="completed"></el-tab-pane>
+<!--      <el-tab-pane label="已完成" name="completed"></el-tab-pane>-->
     </el-tabs>
 
     <!-- 订单列表 -->
@@ -116,19 +116,13 @@
                   开始制作
                 </el-button>
                 <el-button
-                  v-else-if="order.status === 'processing'"
+                  v-else-if="order.status == '2005002'|| order.status =='2004002'"
                   type="success"
+                  size="large"
                   @click="finishCooking(order)"
                   :disabled="!order.orderId && !order.id"
                 >
                   完成制作
-                </el-button>
-                <el-button
-                  v-else-if="order.status === 'completed'"
-                  type="info"
-                  disabled
-                >
-                  已完成
                 </el-button>
               </div>
             </div>
@@ -185,7 +179,6 @@ const filteredOrderList = computed(() => {
       return timeB - timeA;
     });
 });
-const orderDetailVisible = ref(false)
 const currentOrder = ref<Order | null>(null)
 const defaultDishImage = ref('https://via.placeholder.com/80x80?text=菜品图片')
 
@@ -274,68 +267,36 @@ const loadOrderList = async () => {
   if (activeTab.value === 'all') {
     // 加载所有订单（堂食+外卖）
     try {
-      console.log('请求参数:', params);
       const [dineInRes, takeAwayRes] = await Promise.all([
         getDineInOrderListApi(params),
         getTakeAwayOrderListApi(params)
       ]);
-      console.log('堂食订单响应:', dineInRes);
-      console.log('外卖订单响应:', takeAwayRes);
       // 合并订单列表
       orderList.value = [...dineInRes.data.rows, ...takeAwayRes.data.rows];
-      console.log('合并后的订单列表:', orderList.value);
       pagination.total = dineInRes.data.total + takeAwayRes.data.total;
-      console.log('总记录数:', pagination.total);
     } catch (err: any) {
-      console.error('获取订单列表失败:', err);
       ElMessage.error('获取订单列表失败: ' + err.message);
     }
-  } else if (activeTab.value === 'dineIn') {
-    // 只加载堂食订单
-    try {
-      console.log('请求参数:', params);
-      const res = await getDineInOrderListApi(params);
-      console.log('堂食订单响应:', res);
-      orderList.value = res.data.rows;
-      console.log('堂食订单列表:', orderList.value);
-      pagination.total = res.data.total;
-      console.log('堂食订单总记录数:', pagination.total);
-    } catch (err: any) {
-      console.error('获取堂食订单列表失败:', err);
-      ElMessage.error('获取堂食订单列表失败: ' + err.message);
-    }
-  } else if (activeTab.value === 'takeaway') {
-    // 只加载外卖订单
-    try {
-      console.log('请求参数:', params);
-      const res = await getTakeAwayOrderListApi(params);
-      console.log('外卖订单响应:', res);
-      orderList.value = res.data.rows;
-      console.log('外卖订单列表:', orderList.value);
-      pagination.total = res.data.total;
-      console.log('外卖订单总记录数:', pagination.total);
-    } catch (err: any) {
-      console.error('获取外卖订单列表失败:', err);
-      ElMessage.error('获取外卖订单列表失败: ' + err.message);
-    }
   } else {
+    let dineInStatus:string='';
+    let takeAwatStatus:string='';
     // 按状态分类加载订单
-    const status = activeTab.value;
+    if(activeTab.value=='pending'){
+      dineInStatus = '2004001';
+      takeAwatStatus='2005007';
+    }else if(activeTab.value=='processing') {
+      dineInStatus = '2004002';
+      takeAwatStatus = '2005002';
+    }
     try {
-      console.log('请求参数:', { ...params, status });
       const [dineInRes, takeAwayRes] = await Promise.all([
-        getDineInOrderListApi({ ...params, status }),
-        getTakeAwayOrderListApi({ ...params, status })
+        getDineInOrderListApi({ ...params, status:dineInStatus }),
+        getTakeAwayOrderListApi({ ...params, status: takeAwatStatus})
       ]);
-      console.log('按状态分类 - 堂食订单响应:', dineInRes);
-      console.log('按状态分类 - 外卖订单响应:', takeAwayRes);
       // 合并订单列表
       orderList.value = [...dineInRes.data.rows, ...takeAwayRes.data.rows];
-      console.log('按状态分类后的订单列表:', orderList.value);
       pagination.total = dineInRes.data.total + takeAwayRes.data.total;
-      console.log('按状态分类总记录数:', pagination.total);
     } catch (err: any) {
-      console.error('获取订单列表失败:', err);
       ElMessage.error('获取订单列表失败: ' + err.message);
     }
   }
@@ -385,18 +346,20 @@ const finishCooking = (order: Order) => {
     type: 'warning'
   }).then(() => {
     // 调用API更新订单状态为已完成
-    const orderId = order.orderId || order.id;
+    const orderId = order.orderId;
     if (!orderId) {
       ElMessage.error('订单ID不存在');
       return;
     }
     // 确定订单类型
     const orderType = isDineInOrder(order) ? 'dineIn' : 'takeaway';
-    finishCookingApi({ id: orderId, orderType }).then(() => {
+    finishCookingApi({ orderId: orderId, orderType }).then(() => {
       order.status = 'completed';
       ElMessage.success('制作完成');
-      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)) {
-        currentOrder.value.status = 'completed';
+      if (currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)&&isDineInOrder(order)) {
+        currentOrder.value.status = '2004003'
+      }else if(currentOrder.value && (currentOrder.value.orderId === orderId || currentOrder.value.id === orderId)&&isTakeAwayOrder(order)){
+        currentOrder.value.status = '2005003'
       }
     }).catch(err => {
       ElMessage.error('完成制作失败: ' + err.message);
@@ -406,40 +369,7 @@ const finishCooking = (order: Order) => {
   });
 }
 
-// 查看订单详情
-const viewOrderDetail = (order: Order) => {
-  // 调用API获取订单详情
-  const orderId = order.orderId
-  if (!orderId) {
-    ElMessage.error('订单ID不存在');
-    return;
-  }
-  getOrderDetailListApi({ orderId: orderId }).then(res => {
-    currentOrder.value = res.data;
-    orderDetailVisible.value = true;
-  }).catch(err => {
-    ElMessage.error('获取订单详情失败: ' + err.message);
-  });
-}
 
-// 测试API方法
-const testAPI = async () => {
-  try {
-    console.log('开始测试API...');
-    // 测试堂食订单API
-    const dineInRes = await getDineInOrderListApi({ page: 1, limit: 10 });
-    console.log('堂食订单API响应:', dineInRes);
-    
-    // 测试外卖订单API
-    const takeAwayRes = await getTakeAwayOrderListApi({ page: 1, limit: 10 });
-    console.log('外卖订单API响应:', takeAwayRes);
-    
-    ElMessage.success('API测试成功，请查看控制台输出');
-  } catch (err) {
-    console.error('API测试失败:', err);
-    ElMessage.error('API测试失败: ' + (err as any).message);
-  }
-};
 
 // 组件挂载时加载数据
 onMounted(() => {

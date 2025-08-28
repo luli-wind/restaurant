@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @Data
 @Table(value = "takeaway_orders")
 @Schema(description = "外卖扩展字段表")
+@SuppressWarnings("all")
 public class TakeawayOrders implements Serializable {
 
     @Serial
@@ -29,7 +30,7 @@ public class TakeawayOrders implements Serializable {
     private Long id;
 
     @Schema(description ="")
-    private Integer orderId;
+    private Long orderId;
 
     @Schema(description ="")
     private String customerName;
