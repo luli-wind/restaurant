@@ -1,6 +1,8 @@
 package com.sz.admin.system.service;
 
 import com.mybatisflex.core.service.IService;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.po.Orders;
 import com.sz.admin.system.pojo.dto.sysmessage.Message;
 import com.sz.admin.system.pojo.dto.sysmessage.SysMessageListDTO;
 import com.sz.admin.system.pojo.po.SysMessage;
@@ -30,4 +32,6 @@ public interface SysMessageService extends IService<SysMessage> {
     MessageCountVO countMyUnreadMessages();
 
     void sendInventoryAlert();
+
+    void sendInventoryInsufficient(List<OrderDetail> orderDetailList,Orders orders);
 }

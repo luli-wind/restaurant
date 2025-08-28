@@ -4,16 +4,20 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.po.Orders;
 import com.sz.admin.system.mapper.SysMessageMapper;
 import com.sz.admin.system.pojo.dto.sysmessage.Message;
 import com.sz.admin.system.pojo.dto.sysmessage.PayloadBody;
 import com.sz.admin.system.pojo.dto.sysmessage.SysMessageListDTO;
 import com.sz.admin.system.pojo.po.SysMessage;
 import com.sz.admin.system.pojo.po.SysMessageUser;
+import com.sz.admin.system.pojo.po.SysUserRole;
 import com.sz.admin.system.pojo.vo.sysmessage.MessageCountVO;
 import com.sz.admin.system.pojo.vo.sysmessage.SysMessageVO;
 import com.sz.admin.system.service.SysMessageService;
 import com.sz.admin.system.service.SysMessageUserService;
+import com.sz.admin.system.service.SysUserRoleService;
 import com.sz.core.common.entity.LoginUser;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SocketMessage;
@@ -54,6 +58,8 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
     private final SysMessageUserService sysMessageUserService;
 
     private final WebsocketRedisService websocketRedisService;
+
+    private final SysUserRoleService sysUserRoleService;
 
     @Override
     public void create(Message dto) {
@@ -117,6 +123,34 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
         message.setContent("部分库存即将不足，请及时联系供应商，补充库存");
         List receiverIds =new ArrayList<>();
         receiverIds.add("1");
+        message.setReceiverIds(receiverIds);
+        create(message);
+    }
+
+    @Override
+    public void sendInventoryInsufficient(List<OrderDetail> orderDetailList,Orders orders) {
+        LoginUser loginUser = LoginUtils.getLoginUser();
+        Long userId = loginUser.getUserInfo().getId();
+        Message message =new Message();
+        message.setMessageTypeCd("msg");
+        message.setSenderId(userId);
+        message.setTitle("库存不足，无法完成订单!!!");
+        StringBuilder msg = new StringBuilder();
+        msg.append("订单号为:"+orders.getOrderNumber()+"，以下菜品:");
+        for (OrderDetail orderDetail : orderDetailList) {
+            msg.append(orderDetail.getDishName()+" ");
+        }
+        msg.append(",库存不足，无法制作，请向客户致歉，请客户更换订单。谢谢配合工作");
+        message.setContent(msg.toString());
+        List<SysUserRole> allUserRole = sysUserRoleService.list();
+
+        List<Object> receiverIds = new ArrayList<>();
+        for (SysUserRole sysUserRole : allUserRole) {
+            if(sysUserRole.getRoleId().equals(4L)){
+                receiverIds.add(sysUserRole.getUserId());
+            }
+        }
+        receiverIds.add("1");//添加管理员
         message.setReceiverIds(receiverIds);
         create(message);
     }

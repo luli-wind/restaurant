@@ -3,8 +3,10 @@ package com.sz.admin.restaurant.service.impl;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import com.sz.admin.restaurant.pojo.po.Orders;
+import com.sz.admin.restaurant.service.InventoryService;
 import com.sz.admin.restaurant.service.OrderDetailService;
 import com.sz.admin.restaurant.service.OrdersService;
+import com.sz.admin.system.service.SysMessageService;
 import com.sz.utils.RestaurantOrderNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -52,6 +54,8 @@ import static com.sz.admin.restaurant.pojo.po.table.TakeawayOrdersTableDef.TAKEA
 public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper, TakeawayOrders> implements TakeawayOrdersService {
     private final OrdersService ordersService;
     private final OrderDetailService orderDetailService;
+    private final InventoryService inventoryService;
+    private final SysMessageService messageService;
     @Override
     public void create(TakeawayOrdersCreateDTO dto){
         // 创建基本订单记录
@@ -212,6 +216,17 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
     public void updateStatus(TakeawayOrdersUpdateDTO dto) {
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setStatus(dto.getStatus());
+        if (dto.getStatus().equals("2005002")) {
+            if(inventoryService.isEnough(dto.getOrderId())){
+                //扣除库存中的材料
+                inventoryService.subtractMatrials(dto.getOrderId());
+            }else {
+                //告知管理员或服务员材料不足，让他们取消订单或者更换订单
+                List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
+                messageService.sendInventoryInsufficient(orderDetailList,orders);
+                orders.setStatus("2005007");
+            }
+        }
         ordersService.updateById(orders);
     }
 

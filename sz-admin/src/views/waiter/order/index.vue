@@ -137,36 +137,13 @@
               <span>已点菜品</span>
             </div>
           </template>
-          <div class="order-items-list">
-            <div
-              v-for="(item, index) in orderItems"
-              :key="index"
-              class="order-item"
-            >
-              <div class="item-info">
-                <div class="item-name">{{ item.dishName }}</div>
-                <div class="item-price">¥{{ item.amount }} × {{ item.number }}</div>
-              </div>
-              <div class="item-actions">
-                <el-input-number
-                  v-model="item.number"
-                  :min="1"
-                  size="small"
-                  controls-position="right"
-                  @change="updateItemQuantity(index, $event)"
-                />
-                <el-button
-                  type="danger"
-                  link
-                  :icon="Delete"
-                  @click="removeFromOrder(index)"
-                />
-              </div>
-            </div>
-            <div v-if="orderItems.length === 0" class="empty-order">
-              暂无菜品
-            </div>
-          </div>
+          <OrderDishManager
+            :order-items="orderItems"
+            :order-status="currentOrderStatus"
+            @update-item="handleUpdateItem"
+            @remove-item="removeFromOrder"
+            @add-dish="handleAddDish"
+          />
         </el-card>
 
         <!-- 订单操作区 -->
@@ -199,9 +176,11 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
+  import { useRoute } from 'vue-router'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { Search, Delete, Check } from '@element-plus/icons-vue'
   import {getDictByCode,} from "@/api/modules/system/dict";
+  import OrderDishManager from './components/OrderDishManager.vue'
   import type {
     DiningTableRow,
     DiningTableQuery
@@ -231,6 +210,7 @@
   import {useDict} from "@/hooks/useDict";
   import { useHandleData } from '@/hooks/useHandleData'
 
+const route = useRoute()
 const optionsStore = useOptionsStore()
 
 
@@ -240,6 +220,9 @@ useDict(['table_status'])
 const tables = ref<DiningTableRow[]>([])
 const tableSearch = ref('')
 const selectedTable = ref<DiningTableRow | null>(null)
+
+// 订单状态（用于控制菜品修改功能）
+const currentOrderStatus = ref('2004001') // 默认设置为待处理状态以方便测试
 
 // 菜品相关数据
 const dishes = ref<DishRow[]>([])
@@ -337,6 +320,23 @@ const removeFromOrder = (index: number) => {
   orderItems.value.splice(index, 1)
 }
 
+// 处理菜品更新
+const handleUpdateItem = (index: number, updatedItem: any) => {
+  orderItems.value[index] = updatedItem
+}
+
+// 处理加单操作
+const handleAddDish = () => {
+  // 加单功能：重新激活菜品选择区域，让用户可以选择新的菜品
+  ElMessage.info('加单功能已触发，请在菜品列表中选择要添加的菜品')
+  
+  // 滚动到菜品选择区域，使其更加明显
+  const dishSection = document.querySelector('.dish-display-card')
+  if (dishSection) {
+    dishSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }
+}
+
 const clearOrder = () => {
   ElMessageBox.confirm('确定要清空订单吗？', '提示', {
     confirmButtonText: '确定',
@@ -394,9 +394,11 @@ const initTables = async () => {
   try {
     const res = await getAllDiningTableListApi()
     tables.value = res.data || []
+    return Promise.resolve() // 返回一个resolved的Promise
   } catch (error) {
     ElMessage.error('获取餐桌列表失败')
     console.error(error)
+    return Promise.reject(error) // 返回一个rejected的Promise
   }
 }
 
@@ -418,7 +420,33 @@ const initDishes = async () => {
 
 // 组件挂载时初始化数据
 onMounted(() => {
-  initTables()
+  // 处理从管理员页面传递过来的订单参数
+  if (route.query.orderId) {
+    // 如果有订单ID参数，可以在这里处理
+    // 例如：加载订单详情，设置当前订单状态等
+    console.log('接收到订单参数:', route.query)
+    
+    // 设置餐桌信息
+    if (route.query.tableId) {
+      // 这里可以根据tableId查找对应的餐桌信息并选中
+      // 由于需要异步操作，我们先初始化餐桌列表，然后在回调中处理
+      initTables().then(() => {
+        const table = tables.value.find(t => t.tableId === Number(route.query.tableId))
+        if (table) {
+          selectTable(table)
+        }
+      })
+    }
+    
+    // 设置订单状态（用于控制菜品修改功能）
+    // 这里可以根据实际需求从订单详情中获取状态
+    // 暂时使用默认状态
+    currentOrderStatus.value = '2004001'
+  } else {
+    // 没有订单参数时的正常初始化
+    initTables()
+  }
+  
   initDishes()
 })
 </script>

@@ -18,10 +18,10 @@
         <el-input v-model="paramsProps.row.materialName" placeholder="请填写材料名" clearable></el-input>
       </el-form-item>
       <el-form-item label="当前容量" prop="currentStock">
-        <el-input-number v-model="paramsProps.row.currentStock" :precision="0" :min="1" :max="999999" />
+        <el-input-number v-model="paramsProps.row.currentStock" :precision="2" :min="0" :max="999999" :step="0.1" />
       </el-form-item>
       <el-form-item label="最小容量" prop="minStock">
-        <el-input-number v-model="paramsProps.row.minStock" :precision="0" :min="1" :max="999999" />
+        <el-input-number v-model="paramsProps.row.minStock" :precision="2" :min="0" :max="999999" :step="0.1" />
       </el-form-item>
       <el-form-item label="计量单位" prop="unit">
         <el-input v-model="paramsProps.row.unit" placeholder="请填写计量单位" clearable></el-input>

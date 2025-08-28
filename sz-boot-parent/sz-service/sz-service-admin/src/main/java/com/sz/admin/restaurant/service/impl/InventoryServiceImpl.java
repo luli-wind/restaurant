@@ -3,6 +3,7 @@ package com.sz.admin.restaurant.service.impl;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.restaurant.pojo.po.DishRecipe;
 import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.po.Orders;
 import com.sz.admin.restaurant.pojo.vo.DishRecipeVO;
 import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
 import com.sz.admin.restaurant.service.OrderDetailService;
@@ -179,6 +180,32 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         }
 
     }
+
+    //查看哪些菜品，库存不足
+    public List<OrderDetail> InsufficientInventory(Long orderId) {
+        List<OrderDetailVO> list = orderDetailService.getListByOrderId(orderId);
+        List<OrderDetail> orderDetailList =new ArrayList<>();
+        List<OrderDetail> result = new ArrayList<>();
+        for (OrderDetailVO orderDetailVO : list) {
+            OrderDetail orderDetail = new OrderDetail();
+            BeanUtils.copyProperties(orderDetailVO, orderDetail);
+            orderDetailList.add(orderDetail);
+        }
+        //遍历每道菜的菜谱
+        for (OrderDetail orderDetail : orderDetailList) {
+            List<DishRecipeVO> dishRecipeList =  dishRecipeService.listByDishId(orderDetail.getDishId());
+            //根据菜谱的配方与库存相比较
+            for(DishRecipeVO dishRecipeVO : dishRecipeList){
+                Inventory inventory = getById(dishRecipeVO.getMaterialId());
+                if(inventory.getCurrentStock()<dishRecipeVO.getMaterialQuantity()*orderDetail.getNumber()){
+                    result.add(orderDetail);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
 
     public void updateStatus(Inventory inventory){
         if(inventory.getCurrentStock()>inventory.getMinStock()){

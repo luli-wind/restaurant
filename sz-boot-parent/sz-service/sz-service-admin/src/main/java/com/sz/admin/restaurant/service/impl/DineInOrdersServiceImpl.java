@@ -8,6 +8,8 @@ import com.sz.admin.restaurant.pojo.po.*;
 import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
 import com.sz.admin.restaurant.service.DiningTableService;
 import com.sz.admin.restaurant.service.OrderDetailService;
+import com.sz.admin.system.service.SysMenuService;
+import com.sz.admin.system.service.SysMessageService;
 import com.sz.utils.RestaurantOrderNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -59,6 +61,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     private final DiningTableService diningTableService;
     private final OrderDetailService orderDetailService;
     private final InventoryServiceImpl inventoryService;
+    private final SysMessageService messageService;
     @Override
     public void create(DineInOrdersCreateDTO dto) {
         // 创建基本订单记录
@@ -246,7 +249,9 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 inventoryService.subtractMatrials(dto.getOrderId());
             }else {
                 //告知管理员或服务员材料不足，让他们取消订单或者更换订单
-
+                List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
+                messageService.sendInventoryInsufficient(orderDetailList,orders);
+                orders.setStatus("2004001");
             }
         }
         //用户完成用餐，将餐桌设置为空闲状态

@@ -3,6 +3,7 @@ package com.sz.admin.restaurant.service;
 import com.mybatisflex.core.service.IService;
 import com.sz.admin.restaurant.pojo.po.Inventory;
 import com.sz.admin.restaurant.pojo.po.OrderDetail;
+import com.sz.admin.restaurant.pojo.po.Orders;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.entity.PageResult;
 import java.util.List;
@@ -44,4 +45,6 @@ public interface InventoryService extends IService<Inventory> {
     boolean isEnough(Long orderId);
 
     void subtractMatrials(Long orderId);
+
+    List<OrderDetail> InsufficientInventory(Long orderId);
 }

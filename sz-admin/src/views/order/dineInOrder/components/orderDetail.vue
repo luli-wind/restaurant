@@ -81,6 +81,14 @@
         <template #header>
           <div class="card-header">
             <span class="card-title">菜品详情</span>
+            <el-button
+              type="primary"
+              :disabled="orderData.status !== '2004001'"
+              @click="handleAddDish"
+              title="仅当订单状态为待处理时可加单"
+            >
+              加单
+            </el-button>
           </div>
         </template>
         <div class="dishes-list">
@@ -105,6 +113,17 @@
             </div>
             <div class="dish-total">
               <span class="total">¥{{ (item.amount * item.number).toFixed(2) }}</span>
+            </div>
+            <div class="dish-actions">
+              <el-button
+                type="primary"
+                link
+                :disabled="orderData.status !== '2004001'"
+                @click="handleEditDish(item, index)"
+                title="仅当订单状态为待处理时可修改"
+              >
+                修改
+              </el-button>
             </div>
           </div>
         </div>
@@ -356,6 +375,33 @@ const submitRefund = () => {
   })
   refundDialogVisible.value = false
   handleClose()
+}
+
+// 处理加单操作
+const handleAddDish = () => {
+  // 检查订单状态是否允许加单
+  if (props.orderData.status !== '2004001') {
+    ElMessage.warning('只有当订单状态为待处理时才能加单')
+    return
+  }
+  
+  // 这里可以打开一个对话框或新页面来处理加单操作
+  // 例如，可以跳转到服务员点餐页面并传入订单ID
+  ElMessage.info(`为订单 ${props.orderData.orderNumber} 添加菜品`)
+  // 实际实现中，这里可能需要调用API来获取可选菜品列表并允许用户选择
+}
+
+// 处理修改菜品操作
+const handleEditDish = (item: OrderDetailRow, index: number) => {
+  // 检查订单状态是否允许修改
+  if (props.orderData.status !== '2004001') {
+    ElMessage.warning('只有当订单状态为待处理时才能修改菜品')
+    return
+  }
+  
+  // 这里可以打开一个对话框来修改菜品数量或其他属性
+  ElMessage.info(`修改菜品 ${item.dishName}`)
+  // 实际实现中，这里可能需要调用API来更新订单详情
 }
 </script>
 
