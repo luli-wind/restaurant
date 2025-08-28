@@ -56,6 +56,9 @@ const allCount = ref(0);
 const msgCount = ref(0);
 const todoCount = ref(0);
 
+// 创建音频对象，使用本地提示音
+const notificationSound = new Audio('/src/assets/sounds/notification.mp3');
+
 const msgList = ref<MessageRow[]>([]);
 const todoList = ref<MessageRow[]>([]);
 
@@ -86,6 +89,14 @@ const handleMessage = (data: any) => {
     message: notice.content || '',
     type: 'info'
   });
+  
+  // 播放提示音
+  try {
+    notificationSound.play().catch(e => console.log('播放提示音失败:', e));
+  } catch (e) {
+    console.log('播放提示音失败:', e);
+  }
+  
   getUnreadCount();
   getMsgList();
   getTodoList();

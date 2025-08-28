@@ -118,6 +118,7 @@ public class MessageController {
         // 8. 构造WebSocket消息
         SocketMessage socketMessage = SocketMessage.builder()
                 .channel(SocketChannelEnum.MESSAGE)
+                .scope(com.sz.core.common.enums.MessageTransferScopeEnum.SOCKET_CLIENT)
                 .data(JsonUtils.toJsonString(message))
                 .build();
 
