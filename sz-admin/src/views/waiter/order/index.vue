@@ -27,12 +27,12 @@
               :class="[
                 'table-item',
                 {
-                  'table-item--disabled': table.status != '2001001',
+                  'table-item--disabled': false,
                   'table-item--selected': selectedTable?.tableId === table.tableId,
                   'table-item--available': table.status === '2001001'
                 }
               ]"
-              @click="table.status === '2001001' && selectTable(table)"
+              @click="selectTable(table)"
             >
               <div class="table-item__name">
                 <span>{{ table.tableName }}</span>
@@ -155,6 +155,7 @@
           <div class="order-buttons">
             <el-button
               type="danger"
+              :disabled="currentOrderStatus != '2004001'"
               plain
               @click="clearOrder"
             >
@@ -194,7 +195,7 @@
     DineInOrderRow
   } from '@/api/types/order/dineInOrder'
   import {
-    getAllDiningTableListApi
+    getAllDiningTableListApi,
   } from '@/api/modules/restaurant/diningTable'
   import {
     getAllDishListApi
@@ -202,8 +203,11 @@
   import {
     createDineInOrderApi,
     getDineInOrderListApi,
+    updateDineInOrderApi,
     updateDineInOrderStatusApi,
-    updateDineInOrderPayStatusApi
+    updateDineInOrderPayStatusApi,
+    getDineInOrderDetailApi as getOrderDetailApi,
+    getDineInOrderByTableIdApi
   } from '@/api/modules/order/dineInOrders'
   import { useDictOptions } from '@/hooks/useDictOptions'
   import { useOptionsStore } from '@/stores/modules/options'
@@ -224,6 +228,13 @@ const selectedTable = ref<DiningTableRow | null>(null)
 // 订单状态（用于控制菜品修改功能）
 const currentOrderStatus = ref('2004001') // 默认设置为待处理状态以方便测试
 
+// 支付状态（用于控制订单修改功能）
+const currentPayStatus = ref('2006002') // 默认设置为未支付状态
+
+// 订单ID（用于标识修改的订单）
+  const currentId=ref('')
+const currentOrderId = ref('')
+const currentOrderNumber = ref('')
 // 菜品相关数据
 const dishes = ref<DishRow[]>([])
 const dishSearch = ref('')
@@ -234,7 +245,7 @@ const dishCategories = useDictOptions('dish_category')
 const orderForm = ref({
   tableName: '',
   numberOfGuests: 1,
-  remark: ''
+  remark: '',
 })
 
 const orderItems = ref<Array<{
@@ -281,9 +292,40 @@ const totalAmount = computed(() => {
 })
 
 // 方法
-const selectTable = (table: DiningTableRow) => {
+const selectTable = async (table: DiningTableRow) => {
   selectedTable.value = table
   orderForm.value.tableName = table.tableName || ''
+  
+  // 如果餐桌状态不是空闲状态，则尝试加载该餐桌的订单信息
+  if (table.status !== '2001001') {
+    try {
+      // 查询该餐桌的订单列表
+      const res = await getDineInOrderByTableIdApi({tableId : table.tableId })
+      console.log(res)
+      const orders = res.data || []
+      currentId.value =orders.id
+      currentOrderId.value = orders.orderId
+      orderForm.value.tableName = orders.tableName
+      orderForm.value.numberOfGuests = orders.numberOfGuests
+      orderForm.value.remark=orders.remark;
+      orderItems.value = orders.orderItems;
+      currentOrderStatus.value=orders.status;
+      currentPayStatus.value = orders.payStatus
+      currentOrderNumber.value = orders.orderNumber
+    } catch (error) {
+      ElMessage.error('获取订单信息失败')
+      console.error(error)
+    }
+  } else {
+    // 如果餐桌是空闲状态，则清空当前订单信息
+    currentOrderId.value = ''
+    currentOrderNumber.value = ''
+    currentOrderStatus.value = '2004001'
+    currentPayStatus.value = '2006002'
+    orderItems.value = []
+    orderForm.value.numberOfGuests = 1
+    orderForm.value.remark = ''
+  }
 }
 
 const addToOrder = (dish: DishRow) => {
@@ -362,23 +404,60 @@ const submitOrder = async () => {
   }
 
   try {
-    const orderData: DineInOrderForm = {
-      tableId: selectedTable.value.tableId,
-      numberOfGuests: orderForm.value.numberOfGuests,
-      remark: orderForm.value.remark,
-      orderItems: orderItems.value.map(item => ({
-        dishId: item.dishId,
-        dishName: item.dishName || '',
-        imageUrl: item.imageUrl || '',
-        number: item.number,
-        amount: item.amount
-      }))
+    // 如果是修改订单
+    if (currentOrderId.value) {
+      // 检查支付状态，只有支付状态为2006002时才能修改订单
+      if (currentPayStatus.value !== '2006002') {
+        ElMessage.warning('只有支付状态为未支付的订单才能进行修改操作')
+        return
+      }
+      
+      // 调用修改订单API
+      const orderData: DineInOrderForm = {
+        id: Number(currentId.value),
+        orderId:Number(currentOrderId.value),
+        tableId: selectedTable.value.tableId,
+        tableName:orderForm.value.tableName,
+        numberOfGuests: orderForm.value.numberOfGuests,
+        remark: orderForm.value.remark,
+        orderNumber:currentOrderNumber.value,
+        orderType:'堂食',
+        status:currentOrderStatus.value,
+        payStatus:currentPayStatus.value,
+        orderItems: orderItems.value.map(item => ({
+          dishId: item.dishId,
+          dishName: item.dishName || '',
+          imageUrl: item.imageUrl || '',
+          number: item.number,
+          amount: item.amount
+        }))
+      }
+      
+      await updateDineInOrderApi(orderData)
+      ElMessage.success('订单修改成功')
+    } else {
+      // 新订单
+      const orderData: DineInOrderForm = {
+        tableId: selectedTable.value.tableId,
+        numberOfGuests: orderForm.value.numberOfGuests,
+        remark: orderForm.value.remark,
+        orderItems: orderItems.value.map(item => ({
+          dishId: item.dishId,
+          dishName: item.dishName || '',
+          imageUrl: item.imageUrl || '',
+          number: item.number,
+          amount: item.amount
+        }))
+      }
+      
+      await createDineInOrderApi(orderData)
+      ElMessage.success('订单提交成功')
     }
-
-    await createDineInOrderApi(orderData)
-    ElMessage.success('订单提交成功')
+    
     // 清空订单
     orderItems.value = []
+    currentOrderId.value = ''
+    currentOrderNumber.value = ''
   } catch (error) {
     ElMessage.error('订单提交失败')
     console.error(error)
@@ -418,6 +497,49 @@ const initDishes = async () => {
   }
 }
 
+// 加载订单详情
+const loadOrderDetail = async (orderId: string) => {
+  try {
+    const res = await getOrderDetailApi({ id: Number(orderId) })
+    const orderDetail = res.data
+    
+    // 设置订单信息
+    if (orderDetail) {
+      // 设置餐桌信息
+      if (orderDetail.tableId) {
+        const table = tables.value.find(t => t.tableId === orderDetail.tableId)
+        if (table) {
+          selectTable(table)
+        }
+      }
+      
+      // 设置用餐人数
+      orderForm.value.numberOfGuests = orderDetail.numberOfGuests || 1
+      
+      // 设置订单备注
+      orderForm.value.remark = orderDetail.remark || ''
+      
+      // 设置已点菜品
+      if (orderDetail.orderItems) {
+        orderItems.value = orderDetail.orderItems.map(item => ({
+          dishId: item.dishId,
+          dishName: item.dishName || '',
+          imageUrl: item.imageUrl || '',
+          amount: item.amount || 0,
+          number: item.number || 0
+        }))
+      }
+      
+      // 设置订单状态和支付状态
+      currentOrderStatus.value = orderDetail.status || '2004001'
+      currentPayStatus.value = orderDetail.payStatus || '2006002'
+    }
+  } catch (error) {
+    ElMessage.error('获取订单详情失败')
+    console.error(error)
+  }
+}
+
 // 组件挂载时初始化数据
 onMounted(() => {
   // 处理从管理员页面传递过来的订单参数
@@ -425,6 +547,20 @@ onMounted(() => {
     // 如果有订单ID参数，可以在这里处理
     // 例如：加载订单详情，设置当前订单状态等
     console.log('接收到订单参数:', route.query)
+    
+    // 保存订单信息
+    currentOrderId.value = route.query.orderId as string
+    currentOrderNumber.value = route.query.orderNumber as string
+    
+    // 设置支付状态
+    if (route.query.payStatus) {
+      currentPayStatus.value = route.query.payStatus as string
+    }
+    
+    // 设置订单状态
+    if (route.query.status) {
+      currentOrderStatus.value = route.query.status as string
+    }
     
     // 设置餐桌信息
     if (route.query.tableId) {
@@ -435,13 +571,17 @@ onMounted(() => {
         if (table) {
           selectTable(table)
         }
+        
+        // 加载订单详情
+        loadOrderDetail(currentOrderId.value)
+      })
+    } else {
+      // 如果没有餐桌ID参数，仍然需要初始化餐桌列表并加载订单详情
+      initTables().then(() => {
+        // 加载订单详情
+        loadOrderDetail(currentOrderId.value)
       })
     }
-    
-    // 设置订单状态（用于控制菜品修改功能）
-    // 这里可以根据实际需求从订单详情中获取状态
-    // 暂时使用默认状态
-    currentOrderStatus.value = '2004001'
   } else {
     // 没有订单参数时的正常初始化
     initTables()

@@ -1,14 +1,5 @@
 <template>
   <div class="order-dish-manager">
-    <!-- 加单按钮 -->
-    <el-button 
-      type="primary" 
-      :icon="Plus" 
-      @click="handleAddDish"
-      class="add-dish-btn"
-    >
-      加单
-    </el-button>
 
     <!-- 已点菜品清单（带修改功能） -->
     <div class="order-items-list">
@@ -36,13 +27,15 @@
             :icon="Edit"
             :disabled="orderStatus !== '2004001'"
             @click="handleEditDish(item, index)"
-            title="仅当订单状态为待处理时可修改"
+            title="订单制作中，无法修改"
           />
           <el-button
             type="danger"
             link
             :icon="Delete"
+            :disabled="orderStatus !== '2004001'"
             @click="removeFromOrder(index)"
+            title="订单制作中，无法修改"
           />
         </div>
       </div>
@@ -150,13 +143,15 @@ const updateItemQuantity = (index: number, value: number | null) => {
 
 // 从订单中移除菜品
 const removeFromOrder = (index: number) => {
+  // 检查订单状态是否允许删除
+  if (props.orderStatus !== '2004001') {
+    ElMessage.warning('只有当订单状态为待处理时才能删除菜品')
+    return
+  }
+  
   emit('remove-item', index)
 }
 
-// 处理加单操作
-const handleAddDish = () => {
-  emit('add-dish')
-}
 
 // 处理编辑菜品
 const handleEditDish = (item: OrderItem, index: number) => {

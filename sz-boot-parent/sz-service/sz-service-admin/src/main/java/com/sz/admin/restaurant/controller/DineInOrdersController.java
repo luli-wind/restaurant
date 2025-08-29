@@ -80,6 +80,13 @@ public class DineInOrdersController  {
         return ApiPageResult.success(dineInOrdersService.page(dto));
     }
 
+    @Operation(summary = "根据桌子编号获取订单详情")
+    @GetMapping("/getDineInOrderByTableId")
+    public ApiResult<DineInOrdersVO> getDineInOrderByTableId(Long tableId) {
+        return ApiResult.success(dineInOrdersService.getDineInOrderByTableId(tableId));
+    }
+
+
     @Operation(summary = "详情")
     @SaCheckPermission(value = "dine.in.orders.query_table")
     @GetMapping("/{id}")

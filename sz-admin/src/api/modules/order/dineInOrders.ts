@@ -91,3 +91,7 @@ export const importDineInOrderExcelApi = (params : UploadRawFile, config?: Axios
 export const exportDineInOrderExcelApi  = (params: DineInOrderQuery) => {
     return http.download(ADMIN_MODULE + `/dine-in-orders/export`, params);
 };
+
+export const getDineInOrderByTableIdApi =(params: {tableId:number | undefined}) =>{
+    return http.get<IPage<DineInOrderRow>>(ADMIN_MODULE + `/dine-in-orders/getDineInOrderByTableId`, params);
+}

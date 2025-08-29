@@ -25,7 +25,7 @@ export type DineInOrderForm = {
     tableName?: string;
     numberOfGuests?: number;
     remark?: string;
-    orderNumber?: number;
+    orderNumber?: string;
     orderType?: string;
     totalAmount?: number;
     status?: string;
@@ -44,7 +44,7 @@ export type DineInOrderRow = {
    tableName?: string;
    numberOfGuests?: number;
    remark?: string;
-   orderNumber?: number;
+   orderNumber?: string;
    orderType?: string;
    totalAmount?: number;
    status?: string;

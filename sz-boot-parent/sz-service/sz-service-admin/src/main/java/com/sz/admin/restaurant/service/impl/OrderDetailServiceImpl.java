@@ -75,6 +75,12 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
         CommonResponseEnum.INVALID_ID.assertTrue(dto.getIds().isEmpty());
         removeByIds(dto.getIds());
     }
+    
+    public void removeByOrderId(Long orderId){
+        QueryWrapper wrapper = QueryWrapper.create()
+            .eq(OrderDetail::getOrderId, orderId);
+        remove(wrapper);
+    }
 
     @Override
     public OrderDetailVO detail(Object id){

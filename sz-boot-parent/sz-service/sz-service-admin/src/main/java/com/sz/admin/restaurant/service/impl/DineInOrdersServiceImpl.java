@@ -1,8 +1,7 @@
 package com.sz.admin.restaurant.service.impl;
 
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import com.sz.admin.restaurant.mapper.DiningTableMapper;
-import com.sz.admin.restaurant.mapper.OrdersMapper;
 import com.sz.admin.restaurant.pojo.dto.*;
 import com.sz.admin.restaurant.pojo.po.*;
 import com.sz.admin.restaurant.pojo.vo.OrderDetailVO;
@@ -43,6 +42,7 @@ import com.sz.excel.utils.ExcelUtils;
 import lombok.SneakyThrows;
 import com.sz.admin.restaurant.pojo.vo.DineInOrdersVO;
 
+import static com.mybatisflex.core.row.Db.selectListByQuery;
 import static com.sz.admin.restaurant.pojo.po.table.DineInOrdersTableDef.DINE_IN_ORDERS;
 import static com.sz.admin.restaurant.pojo.po.table.OrdersTableDef.ORDERS;
 
@@ -62,6 +62,9 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     private final OrderDetailService orderDetailService;
     private final InventoryServiceImpl inventoryService;
     private final SysMessageService messageService;
+
+    //todo 下单通知以及订单更新通知厨师
+
     @Override
     public void create(DineInOrdersCreateDTO dto) {
         // 创建基本订单记录
@@ -69,7 +72,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         BeanUtils.copyProperties(dto, orders);
         orders.setOrderNumber(RestaurantOrderNumberGenerator.generateOrderNo());
         orders.setOrderType("堂食");
-        orders.setStatus("2004001");//已下单
+        orders.setStatus("2004002");//已下单
         orders.setPayStatus("2006002");//未支付
         orders.setCreateTime(LocalDateTime.now());
         Double totalAmount = 0.0;
@@ -78,7 +81,6 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             orderDetail.setOrderId(orders.getOrderId());
             totalAmount += orderDetail.getAmount() * orderDetail.getNumber();
         }
-
         orders.setTotalAmount(totalAmount);
         ordersService.save(orders);
         //将餐桌设为已占用状态
@@ -87,18 +89,14 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             diningTable.setStatus("2001002");
             diningTableService.updateById(diningTable);
         }
-
         // 创建堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
         // 设置订单ID
         dineInOrders.setOrderId(orders.getOrderId());
         save(dineInOrders);
-
         for (OrderDetail orderDetail : detailList) {
             orderDetail.setOrderId(orders.getOrderId());
         }
-
-
         orderDetailService.saveBatch(detailList);
 
     }
@@ -106,9 +104,9 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     @Override
     public void update(DineInOrdersUpdateDTO dto) {
         // id有效性校验
-        QueryWrapper wrapper = QueryWrapper.create()
-                .eq(DineInOrders::getId, dto.getId());
-        CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) > 0);
+//        QueryWrapper wrapper = QueryWrapper.create()
+//                .eq(DineInOrders::getId, dto.getId());
+//        CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) > 0);
 
         // 更新堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
@@ -118,11 +116,27 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         // 这里可以根据实际需求更新Orders表中的字段
         // 例如，如果dto中包含了需要更新的订单字段，可以这样处理：
         Orders orders = ordersService.getById(dineInOrders.getOrderId());
+        Double totalAmount = 0.0;
+        List<OrderDetail> detailList = dto.getOrderItems();
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+            totalAmount += orderDetail.getAmount() * orderDetail.getNumber();
+        }
         if (orders != null) {
             // 更新订单相关字段
             BeanUtils.copyProperties(dto, orders);
+            orders.setCreateTime(LocalDateTime.now());
+            orders.setTotalAmount(totalAmount);
             ordersService.updateById(orders);
+            //查看库存
+            dto.setStatus("2005002");
+            updateStatus(dto);
         }
+        for (OrderDetail orderDetail : detailList) {
+            orderDetail.setOrderId(orders.getOrderId());
+        }
+        orderDetailService.removeByOrderId(orders.getOrderId());
+        orderDetailService.saveBatch(detailList);
     }
 
     @Override
@@ -182,7 +196,6 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 vo.setRefundReason(orders.getRefundReason());
                 vo.setTableName(table.getTableName());
             }
-
             return vo;
         }).toList();
     }
@@ -245,8 +258,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         orders.setStatus(dto.getStatus());
         if (dto.getStatus().equals("2004002")) {
             if(inventoryService.isEnough(dto.getOrderId())){
-                //扣除库存中的材料
-                inventoryService.subtractMatrials(dto.getOrderId());
+                //选择制作时，不扣除原材料，制作完成后再扣除。
             }else {
                 //告知管理员或服务员材料不足，让他们取消订单或者更换订单
                 List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
@@ -254,8 +266,12 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
                 orders.setStatus("2004001");
             }
         }
+        if(dto.getStatus().equals("2004005")){
+            //扣除库存中的材料
+            inventoryService.subtractMatrials(dto.getOrderId());
+        }
         //用户完成用餐，将餐桌设置为空闲状态
-        if (dto.getStatus().equals("2004005")) {
+        if (dto.getStatus().equals("2004005") || dto.getStatus().equals("2004004")) {
             DiningTable table = diningTableService.getById(dto.getTableId());
             table.setStatus("2001001");
             diningTableService.updateById(table);
@@ -276,6 +292,28 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             orders.setRefundReason(dto.getRefundReason());
         }
         ordersService.updateById(orders);
+    }
+
+    @Override
+    public DineInOrdersVO getDineInOrderByTableId(Long tableId) {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select() // 查询所有字段，或使用.select(ACCOUNT.ID, ACCOUNT.USER_NAME)指定字段
+                .from(DineInOrders.class) // 指定查询的表对应的实体类
+                .orderBy(DineInOrders::getId, false); // 按主键降序。true为升序，false为降序
+        DiningTable table =diningTableService.getById(tableId);
+        List<Row> dineInOrdersList = selectListByQuery(queryWrapper);
+        DineInOrdersVO dineInOrdersVO = new DineInOrdersVO();
+        DineInOrders dineInOrders =new DineInOrders();
+        for(int i = 0; i < 1; i++) {
+            Row row = dineInOrdersList.get(i);
+           dineInOrders =row.toEntity(DineInOrders.class);
+        }
+        BeanUtils.copyProperties(dineInOrders, dineInOrdersVO);
+        Orders orders = ordersService.getById(dineInOrders.getOrderId());
+        BeanUtils.copyProperties(orders, dineInOrdersVO);
+        dineInOrdersVO.setTableName(table.getTableName());
+        dineInOrdersVO.setOrderItems(orderDetailService.getListByOrderId(orders.getOrderId()));
+        return dineInOrdersVO;
     }
 
     private static QueryWrapper buildQueryWrapper(DineInOrdersListDTO dto) {

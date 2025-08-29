@@ -40,4 +40,6 @@ public interface DineInOrdersService extends IService<DineInOrders> {
     void updateStatus(DineInOrdersUpdateDTO dto);
 
     void updatePayStatus(DineInOrdersUpdateDTO dto);
+
+    DineInOrdersVO getDineInOrderByTableId(Long tableId);
 }

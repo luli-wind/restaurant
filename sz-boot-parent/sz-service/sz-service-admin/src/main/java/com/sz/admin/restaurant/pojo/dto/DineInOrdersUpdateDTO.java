@@ -1,8 +1,11 @@
 package com.sz.admin.restaurant.pojo.dto;
 
 import cn.idev.excel.annotation.ExcelProperty;
+import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * <p>
@@ -63,5 +66,9 @@ public class DineInOrdersUpdateDTO {
 
     @Schema(description = "退款原因")
     private String refundReason;
+
+    // 订单项列表
+    @Schema(description = "订单项列表")
+    private List<OrderDetail> orderItems;
 
 }

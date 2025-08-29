@@ -39,4 +39,6 @@ public interface OrderDetailService extends IService<OrderDetail> {
     void exportExcel(OrderDetailListDTO dto, HttpServletResponse response);
 
     List<OrderDetailVO> getListByOrderId(Object orderId);
+
+    void removeByOrderId(Long orderId);
 }

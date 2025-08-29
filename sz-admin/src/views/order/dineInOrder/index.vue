@@ -42,7 +42,6 @@
           </template>
           <!-- 自定义操作列 -->
           <template #operation="{ row }">
-            <el-button type="primary" :icon="List"  link @click="handleAddDish(row)">加单</el-button>
             <el-button type="primary" :icon="EditPen" link @click="viewOrderDetail(row)">订单详情</el-button>
           </template>
         </ProTable>
@@ -188,19 +187,7 @@ const viewOrderDetail = (row: DineInOrderRow) => {
   orderDetailVisible.value = true
 }
 
-// 处理加单操作
-const handleAddDish = (row: DineInOrderRow) => {
-  // 跳转到服务员点餐页面并传入订单ID
-  router.push({
-    path: '/waiter/order/index',
-    query: {
-      orderId: row.id,
-      orderNumber: row.orderNumber,
-      tableId: row.tableId,
-      tableName: row.tableName
-    }
-  })
-}
+
 // 统一更新状态方法
 const updateStatus = async (row: DineInOrderRow, statusData: {status?: string, payStatus?: string, refundReason?: string}) => {
   const params = {
