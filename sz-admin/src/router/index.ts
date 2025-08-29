@@ -58,6 +58,10 @@ router.beforeEach(async (to, from, next) => {
   if (ROUTER_WHITE_LIST.includes(to.path)) {
     return next();
   }
+  // 4.1 判断访问页面是否为公开页面（无需权限验证），如果存在直接放行
+  if (to.meta.isPublic) {
+    return next();
+  }
 
   // 5.判断是否有 Token，没有重定向到 login 页面
   if (!userStore.token) {

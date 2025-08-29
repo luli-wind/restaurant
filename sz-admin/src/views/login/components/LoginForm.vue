@@ -32,6 +32,9 @@
   <div v-if="IS_PREVIEW" style="margin-top: 20px; color: var(--el-color-warning)">
     <span>如无法登陆请联系作者：feiyuchuixue@163.com</span>
   </div>
+  <div class="guest-order-link">
+    <el-button link type="primary" @click="goToGuestOrder">访客点单</el-button>
+  </div>
   <SliderCaptcha ref="captchaRef" @success="onSliderSuccess" @close="onCaptchaClose" />
 </template>
 
@@ -54,6 +57,11 @@ const router = useRouter();
 const userStore = useUserStore();
 const tabsStore = useTabsStore();
 const keepAliveStore = useKeepAliveStore();
+
+// 跳转到访客点单页面
+const goToGuestOrder = () => {
+  router.push('/guest/order');
+};
 
 const loginFormRef = ref();
 const loginRules = reactive({

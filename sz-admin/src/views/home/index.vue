@@ -175,7 +175,6 @@ import {
   User,
   Plus,
   Dish,
-  Desk,
   Avatar
 } from '@element-plus/icons-vue'
 
@@ -190,7 +189,7 @@ const dashboardData = ref({
 const quickActions = ref([
   { title: '新增订单', icon: Plus, iconClass: 'add-order-icon', path: '/order/dineInOrder' },
   { title: '菜品管理', icon: Dish, iconClass: 'dish-icon', path: '/restaurant/dish' },
-  { title: '餐桌管理', icon: Desk, iconClass: 'table-icon', path: '/restaurant/diningTable' },
+  { title: '餐桌管理',  iconClass: 'table-icon', path: '/restaurant/diningTable' },
   { title: '员工管理', icon: Avatar, iconClass: 'staff-icon', path: '/system/accountManage' }
 ])
 
@@ -218,7 +217,7 @@ const tableStatus = ref({
 
 const notifications = ref([
   { id: 1, title: '新订单提醒 #D20230801006', time: '5分钟前', icon: Document, read: false },
-  { id: 2, title: '餐桌A05需要清洁', time: '15分钟前', icon: Desk, read: false },
+  { id: 2, title: '餐桌A05需要清洁', time: '15分钟前', read: false },
   { id: 3, title: '菜品库存不足提醒', time: '1小时前', icon: Dish, read: true },
   { id: 4, title: '系统维护通知', time: '2小时前', icon: Avatar, read: true }
 ])

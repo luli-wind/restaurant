@@ -42,4 +42,6 @@ public interface TakeawayOrdersService extends IService<TakeawayOrders> {
     void updateStatus(TakeawayOrdersUpdateDTO dto);
 
     void updatePayStatus(TakeawayOrdersUpdateDTO dto);
+
+    TakeawayOrdersVO createGuestOrder(TakeawayOrdersCreateDTO dto);
 }

@@ -269,4 +269,18 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         }
         return wrapper;
     }
+
+    @Override
+    public TakeawayOrdersVO createGuestOrder(TakeawayOrdersCreateDTO dto) {
+        // 创建订单
+        create(dto);
+        
+        // 获取刚创建的订单详情
+        TakeawayOrdersListDTO queryDto = new TakeawayOrdersListDTO();
+        queryDto.setCustomerPhone(dto.getCustomerPhone());
+        List<TakeawayOrdersVO> orders = list(queryDto);
+        
+        // 返回最新创建的订单
+        return orders.get(orders.size() - 1);
+    }
 }

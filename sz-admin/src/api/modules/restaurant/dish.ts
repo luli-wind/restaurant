@@ -1,4 +1,5 @@
 import http from '@/api';
+import guestHttp from '@/api/guestHttp';
 import { ADMIN_MODULE } from '@/api/helper/prefix';
 import type { IPage } from '@/api/types';
 import type {
@@ -14,7 +15,7 @@ import type { AxiosRequestConfig } from 'axios';
  * @returns {*}
  */
 export const getAllDishListApi = () => {
-  return http.get<[DishRow]>(ADMIN_MODULE + `/dish/all`);
+  return guestHttp.get<[DishRow]>(ADMIN_MODULE + `/dish/all`);
 };
 
 

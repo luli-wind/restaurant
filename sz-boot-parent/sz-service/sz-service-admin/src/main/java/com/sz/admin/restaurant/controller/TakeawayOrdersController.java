@@ -22,6 +22,8 @@ import com.sz.admin.restaurant.pojo.vo.TakeawayOrdersVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 外卖扩展字段表 Controller
@@ -104,5 +106,18 @@ public class TakeawayOrdersController  {
     @PostMapping("/export")
     public void exportExcel(@RequestBody TakeawayOrdersListDTO dto, HttpServletResponse response) {
         takeawayOrdersService.exportExcel(dto, response);
+    }
+
+    @Operation(summary = "访客下单")
+    @PostMapping("/guest")
+    public ApiResult<TakeawayOrdersVO> guestOrder(@RequestBody TakeawayOrdersCreateDTO dto) {
+        takeawayOrdersService.create(dto);
+        // 获取刚创建的订单详情
+        TakeawayOrdersListDTO queryDto = new TakeawayOrdersListDTO();
+        queryDto.setCustomerPhone(dto.getCustomerPhone());
+        List<TakeawayOrdersVO> orders = takeawayOrdersService.list(queryDto);
+        // 返回最新创建的订单
+        TakeawayOrdersVO latestOrder = orders.get(orders.size() - 1);
+        return ApiResult.success(latestOrder);
     }
 }

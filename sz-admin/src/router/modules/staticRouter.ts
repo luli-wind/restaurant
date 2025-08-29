@@ -1,5 +1,6 @@
 import { HOME_URL, LOGIN_URL } from '@/config';
 import type { RouteRecordRaw } from 'vue-router';
+import { guestOrderRouter } from './guestOrderRouter';
 
 export const staticRouter: RouteRecordRaw[] = [
   {
@@ -35,7 +36,8 @@ export const staticRouter: RouteRecordRaw[] = [
         }
       }
     ]
-  }
+  },
+  ...guestOrderRouter
 ];
 
 /**

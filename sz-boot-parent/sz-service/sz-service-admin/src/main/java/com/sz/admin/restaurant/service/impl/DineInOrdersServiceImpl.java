@@ -103,10 +103,6 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
 
     @Override
     public void update(DineInOrdersUpdateDTO dto) {
-        // id有效性校验
-//        QueryWrapper wrapper = QueryWrapper.create()
-//                .eq(DineInOrders::getId, dto.getId());
-//        CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) > 0);
 
         // 更新堂食订单扩展记录
         DineInOrders dineInOrders = BeanCopyUtils.copy(dto, DineInOrders.class);
