@@ -5,69 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="加单功能实现。">
-      <change afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/guestHttp.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/modules/system/thirdPartyLogin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/types/system/thirdPartyLogin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/thirdPartyLogin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/order/guestOrder/OrderHistory.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersQueryDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/controller/ThirdPartyLoginController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/mapper/ThirdPartyUserMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/dto/ThirdPartyLoginDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/po/ThirdPartyUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/vo/ThirdPartyLoginVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/AlipayService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/ThirdPartyUserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/AlipayServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/ThirdPartyUserServiceImpl.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/framework/V2.6__20250828_Update_DDL.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__create_third_party_user_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__update_dish_recipe_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/system/ThirdPartyUserMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/test/quoteStyle.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/test/quoteStyle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/test/values.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/test/values.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/.eslintrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/test/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/test/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/router/modules/guestOrderRouter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/modules/guestOrderRouter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/login/components/LoginForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/components/LoginForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/DishList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/DishList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/OrderForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/OrderForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/ShoppingCart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/ShoppingCart.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/dineInOrder/components/orderDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/dineInOrder/components/orderDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/takeAwayOrder/components/orderDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/takeAwayOrder/components/orderDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-dependencies/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-dependencies/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/TakeawayOrders.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/TakeawayOrders.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/TakeawayOrdersService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/TakeawayOrdersService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/DineInOrdersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/DineInOrdersServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/TakeawayOrdersMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/TakeawayOrdersMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/SysMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/SysMessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/SysMessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/SysMessageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/utils/RestaurantOrderNumberGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/utils/RestaurantOrderNumberGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +116,7 @@
       <workItem from="1755844938208" duration="8880000" />
       <workItem from="1756016798742" duration="13869000" />
       <workItem from="1756084285596" duration="58058000" />
-      <workItem from="1756518180917" duration="13877000" />
+      <workItem from="1756518180917" duration="16829000" />
     </task>
     <task id="LOCAL-00001" summary="服务员点单页面初始化">
       <option name="closed" value="true" />

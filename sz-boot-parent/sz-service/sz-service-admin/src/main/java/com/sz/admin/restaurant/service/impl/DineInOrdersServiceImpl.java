@@ -72,7 +72,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         BeanUtils.copyProperties(dto, orders);
         orders.setOrderNumber(RestaurantOrderNumberGenerator.generateOrderNo());
         orders.setOrderType("堂食");
-        orders.setStatus("2004002");//已下单
+        orders.setStatus("2004002");//制作中
         orders.setPayStatus("2006002");//未支付
         orders.setCreateTime(LocalDateTime.now());
         Double totalAmount = 0.0;
@@ -99,6 +99,8 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         }
         orderDetailService.saveBatch(detailList);
 
+        //通知厨师制作
+        messageService.sendMakeOrderAlert(orders);
     }
 
     @Override
@@ -125,7 +127,7 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             orders.setTotalAmount(totalAmount);
             ordersService.updateById(orders);
             //查看库存
-            dto.setStatus("2005002");
+            dto.setStatus("2004002");
             updateStatus(dto);
         }
         for (OrderDetail orderDetail : detailList) {
@@ -133,6 +135,9 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         }
         orderDetailService.removeByOrderId(orders.getOrderId());
         orderDetailService.saveBatch(detailList);
+
+        //通知厨师制作
+        messageService.sendChangeOrderAlert(orders);
     }
 
     @Override

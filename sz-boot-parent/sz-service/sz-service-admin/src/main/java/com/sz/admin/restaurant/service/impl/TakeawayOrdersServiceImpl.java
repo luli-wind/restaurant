@@ -88,6 +88,9 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
             orderDetail.setOrderId(orders.getOrderId());
         }
         orderDetailService.saveBatch(detailList);
+
+        //发送通知提醒服务员
+        messageService.sendOrderAlert(orders);
     }
 
     @Override
@@ -216,6 +219,9 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
     public void updateStatus(TakeawayOrdersUpdateDTO dto) {
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setStatus(dto.getStatus());
+        if (dto.getStatus().equals("2005007")){
+            messageService.sendMakeOrderAlert(orders);
+        }
         if (dto.getStatus().equals("2005002")) {
             if(inventoryService.isEnough(dto.getOrderId())){
                 //扣除库存中的材料

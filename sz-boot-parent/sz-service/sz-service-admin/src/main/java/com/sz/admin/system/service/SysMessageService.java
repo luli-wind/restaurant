@@ -34,4 +34,10 @@ public interface SysMessageService extends IService<SysMessage> {
     void sendInventoryAlert();
 
     void sendInventoryInsufficient(List<OrderDetail> orderDetailList,Orders orders);
+
+    void sendOrderAlert(Orders orders);
+
+    void sendMakeOrderAlert(Orders orders);
+
+    void sendChangeOrderAlert(Orders orders);
 }

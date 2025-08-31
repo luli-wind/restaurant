@@ -320,7 +320,7 @@ const handleClose = () => {
 
 // 取消订单
 const handleCancelOrder = () => {
-  emit('updateStatus', props.orderData, { status: '2005004' })
+  emit('updateStatus', props.orderData, { status: '2005006' })
   handleClose()
 }
 

@@ -121,18 +121,11 @@
           取消订单
         </el-button>
         <el-button
-          v-if="orderData.status === '2004001'"
+          v-if="orderData.status === '2004001' || orderData.status=='2004002'"
           type="primary"
           @click="handleReminderCooking"
         >
           催促厨师制作
-        </el-button>
-        <el-button
-          v-if="orderData.status === '2004002'"
-          type="success"
-          @click="handleFinishCooking"
-        >
-          完成制作
         </el-button>
         <el-button
             v-if="orderData.status === '2004003'"

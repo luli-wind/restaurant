@@ -155,6 +155,66 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
         create(message);
     }
 
+    @Override
+    public void sendOrderAlert(Orders orders) {
+        Message message =new Message();
+        message.setMessageTypeCd("msg");
+        message.setSenderId(1L);//管理员
+        message.setTitle("客户已下单，请及时处理!!!");
+        message.setContent("订单号为:"+orders.getOrderNumber()+",请及时接单处理!!!");
+        List<SysUserRole> allUserRole = sysUserRoleService.list();
+        List<Object> receiverIds = new ArrayList<>();
+        for (SysUserRole sysUserRole : allUserRole) {
+            if(sysUserRole.getRoleId().equals(4L)){
+                receiverIds.add(sysUserRole.getUserId());
+            }
+        }
+        receiverIds.add("1");//添加管理员
+        message.setReceiverIds(receiverIds);
+        create(message);
+    }
+
+    @Override
+    public void sendMakeOrderAlert(Orders orders) {
+        LoginUser loginUser = LoginUtils.getLoginUser();
+        Long userId = loginUser.getUserInfo().getId();
+        Message message =new Message();
+        message.setMessageTypeCd("msg");
+        message.setSenderId(userId);//管理员
+        message.setTitle("有新的订单需要制作，请及时处理!!!");
+        message.setContent("订单号为:"+orders.getOrderNumber()+",请及时制作处理!!!");
+        List<SysUserRole> allUserRole = sysUserRoleService.list();
+
+        List<Object> receiverIds = new ArrayList<>();
+        for (SysUserRole sysUserRole : allUserRole) {
+            if(sysUserRole.getRoleId().equals(5L)){
+                receiverIds.add(sysUserRole.getUserId());
+            }
+        }
+        message.setReceiverIds(receiverIds);
+        create(message);
+    }
+
+    @Override
+    public void sendChangeOrderAlert(Orders orders) {
+        LoginUser loginUser = LoginUtils.getLoginUser();
+        Long userId = loginUser.getUserInfo().getId();
+        Message message =new Message();
+        message.setMessageTypeCd("msg");
+        message.setSenderId(userId);
+        message.setTitle("有订单更改，请注意，及时处理!!!");
+        message.setContent("订单号为:"+orders.getOrderNumber()+",请及时查看处理!!!");
+        List<SysUserRole> allUserRole = sysUserRoleService.list();
+        List<Object> receiverIds = new ArrayList<>();
+        for (SysUserRole sysUserRole : allUserRole) {
+            if(sysUserRole.getRoleId().equals(5L)){
+                receiverIds.add(sysUserRole.getUserId());
+            }
+        }
+        message.setReceiverIds(receiverIds);
+        create(message);
+    }
+
     private static QueryWrapper buildQueryWrapper(SysMessageListDTO dto) {
         Long userId = Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo().getId();
         QueryWrapper wrapper = QueryWrapper.create()
