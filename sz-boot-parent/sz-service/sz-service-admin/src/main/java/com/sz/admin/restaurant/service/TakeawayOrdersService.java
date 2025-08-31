@@ -44,4 +44,11 @@ public interface TakeawayOrdersService extends IService<TakeawayOrders> {
     void updatePayStatus(TakeawayOrdersUpdateDTO dto);
 
     TakeawayOrdersVO createGuestOrder(TakeawayOrdersCreateDTO dto);
+
+    /**
+     * 根据第三方用户ID查询订单
+     * @param dto 查询条件
+     * @return 订单列表
+     */
+    PageResult<TakeawayOrdersVO> getOrdersByThirdPartyUserId(com.sz.admin.restaurant.pojo.dto.TakeawayOrdersQueryDTO dto);
 }

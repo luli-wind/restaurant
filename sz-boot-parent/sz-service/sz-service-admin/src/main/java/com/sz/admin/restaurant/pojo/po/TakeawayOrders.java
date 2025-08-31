@@ -50,4 +50,7 @@ public class TakeawayOrders implements Serializable {
     @Schema(description ="")
     private String remark;
 
+    @Schema(description ="第三方用户ID")
+    private Long thirdPartyUserId;
+
 }

@@ -111,13 +111,13 @@ public class TakeawayOrdersController  {
     @Operation(summary = "访客下单")
     @PostMapping("/guest")
     public ApiResult<TakeawayOrdersVO> guestOrder(@RequestBody TakeawayOrdersCreateDTO dto) {
-        takeawayOrdersService.create(dto);
-        // 获取刚创建的订单详情
-        TakeawayOrdersListDTO queryDto = new TakeawayOrdersListDTO();
-        queryDto.setCustomerPhone(dto.getCustomerPhone());
-        List<TakeawayOrdersVO> orders = takeawayOrdersService.list(queryDto);
-        // 返回最新创建的订单
-        TakeawayOrdersVO latestOrder = orders.get(orders.size() - 1);
-        return ApiResult.success(latestOrder);
+        TakeawayOrdersVO order = takeawayOrdersService.createGuestOrder(dto);
+        return ApiResult.success(order);
+    }
+    
+    @Operation(summary = "根据第三方用户ID查询订单")
+    @GetMapping("/third-party-user")
+    public ApiResult<PageResult<TakeawayOrdersVO>> getOrdersByThirdPartyUserId(com.sz.admin.restaurant.pojo.dto.TakeawayOrdersQueryDTO dto) {
+        return ApiPageResult.success(takeawayOrdersService.getOrdersByThirdPartyUserId(dto));
     }
 }

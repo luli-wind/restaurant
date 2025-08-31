@@ -69,6 +69,9 @@ public class TakeawayOrdersCreateDTO {
    @Schema(description ="退款原因")
    private String refundReason;
 
+   @Schema(description ="第三方用户ID")
+   private Long thirdPartyUserId;
+
    // 订单项列表
    @Schema(description = "订单项列表")
    private List<OrderDetail> orderItems;

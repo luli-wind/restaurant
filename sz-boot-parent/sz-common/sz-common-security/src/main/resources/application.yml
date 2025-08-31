@@ -11,3 +11,5 @@ router:
     - "/common/**"
     - "/swagger-ui.html"
     - "/www/**"
+    - "/takeaway-orders/guest"
+    - "/dish/all"

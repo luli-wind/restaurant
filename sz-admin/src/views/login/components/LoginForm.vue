@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { HOME_URL, IS_PREVIEW } from '@/config';
 import { getTimeState } from '@/utils';
 import { loginApi } from '@/api/modules/system/login';
@@ -54,6 +54,7 @@ import { ElNotification } from 'element-plus';
 import SliderCaptcha from '@/components/Captcha/SliderCaptcha.vue';
 import { getCaptchaStatus } from '@/api/modules/system/captcha';
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 const tabsStore = useTabsStore();
 const keepAliveStore = useKeepAliveStore();
@@ -93,7 +94,23 @@ const performLogin = async () => {
     tabsStore.closeMultipleTab();
     keepAliveStore.setKeepAliveName([]);
 
-    router.push(HOME_URL);
+    // 登录成功后跳转到用户原本想要访问的页面，如果没有则根据角色跳转到不同页面
+    const redirect = route.query.redirect as string;
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      // 获取用户角色列表
+      const userRoles = data.roles || [];
+      
+      // 检查用户是否具有客户角色（ID为7）
+      if (userRoles.includes('7')) {
+        // 客户角色跳转到访客订单页面
+        router.push('/guest/order');
+      } else {
+        // 其他角色跳转到首页
+        router.push(HOME_URL);
+      }
+    }
     ElNotification({
       title: getTimeState(),
       message: '欢迎登录',

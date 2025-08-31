@@ -55,9 +55,23 @@
     </div>
 
     <div class="cart-footer">
-      <div class="cart-total">
-        <span>总计:</span>
-        <span class="total-amount">¥{{ Number(cartTotal).toFixed(2) }}</span>
+      <div class="cart-summary">
+        <div class="summary-item">
+          <span>菜品总价:</span>
+          <span>¥{{ Number(itemsTotal).toFixed(2) }}</span>
+        </div>
+        <div class="summary-item" v-if="cartItems.length > 0">
+          <span>包装费:</span>
+          <span>¥{{ Number(calculatedPackagingFee).toFixed(2) }}</span>
+        </div>
+        <div class="summary-item" v-if="cartItems.length > 0">
+          <span>配送费:</span>
+          <span>¥{{ Number(calculatedDeliveryFee).toFixed(2) }}</span>
+        </div>
+        <div class="summary-item total">
+          <span>总计:</span>
+          <span class="total-amount">¥{{ Number(cartTotal).toFixed(2) }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -80,11 +94,30 @@ const emit = defineEmits<{
   (e: 'clear-cart'): void
 }>()
 
-// 计算购物车总价
-const cartTotal = computed(() => {
+// 配送费和包装费
+const deliveryFee = 5.00;  // 配送费5元
+const packagingFee = 2.00; // 包装费2元
+
+// 计算菜品总价
+const itemsTotal = computed(() => {
   return props.cartItems.reduce((total, item) => {
     return total + (item.price * item.quantity)
   }, 0)
+})
+
+// 计算配送费（购物车为空时为0）
+const calculatedDeliveryFee = computed(() => {
+  return props.cartItems.length > 0 ? deliveryFee : 0
+})
+
+// 计算包装费（购物车为空时为0）
+const calculatedPackagingFee = computed(() => {
+  return props.cartItems.length > 0 ? packagingFee : 0
+})
+
+// 计算购物车总价（包含配送费和包装费）
+const cartTotal = computed(() => {
+  return itemsTotal.value + calculatedDeliveryFee.value + calculatedPackagingFee.value
 })
 
 // 更新数量
@@ -209,16 +242,35 @@ const clearCart = () => {
   padding: 16px 20px;
   border-top: 1px solid #eee;
   
-  .cart-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 18px;
-    font-weight: bold;
+  .cart-summary {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     
-    .total-amount {
-      color: #ff6600;
-      font-size: 24px;
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      &.total {
+        border-top: 1px dashed #ddd;
+        margin-top: 8px;
+        padding-top: 16px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
+        
+        .total-amount {
+          color: #ff6600;
+          font-size: 24px;
+        }
+      }
     }
   }
 }

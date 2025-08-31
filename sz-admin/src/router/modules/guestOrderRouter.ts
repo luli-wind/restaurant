@@ -19,5 +19,20 @@ export const guestOrderRouter: RouteRecordRaw[] = [
       isLink: '',
       isPublic: true // 标记为公开页面，无需权限验证
     }
+  },
+  {
+    path: '/order/history',
+    name: 'orderHistory',
+    component: () => import('@/views/order/guestOrder/OrderHistory.vue'),
+    meta: {
+      title: '订单历史',
+      icon: 'Document',
+      isAffix: 'F',
+      isFull: 'F',
+      isHidden: 'F',
+      isKeepAlive: 'T',
+      isLink: '',
+      isPublic: true // 标记为公开页面，无需权限验证
+    }
   }
 ];

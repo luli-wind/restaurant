@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "alipay-sdk": "^4.14.0",
+    "wechat-jssdk": "^5.1.0"
+  }
+}

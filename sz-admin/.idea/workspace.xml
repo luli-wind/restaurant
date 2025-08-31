@@ -4,44 +4,137 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$" afterDir="false" />
+    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="加单功能实现。">
+      <change afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/guestHttp.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/modules/system/thirdPartyLogin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/types/system/thirdPartyLogin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/thirdPartyLogin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/order/guestOrder/OrderHistory.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersQueryDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/controller/ThirdPartyLoginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/mapper/ThirdPartyUserMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/dto/ThirdPartyLoginDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/po/ThirdPartyUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/pojo/vo/ThirdPartyLoginVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/AlipayService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/ThirdPartyUserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/AlipayServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/ThirdPartyUserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/framework/V2.6__20250828_Update_DDL.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__create_third_party_user_table.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__update_dish_recipe_table.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/system/ThirdPartyUserMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/test/quoteStyle.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/test/quoteStyle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/object-inspect/test/values.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/object-inspect/test/values.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/.eslintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/test/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/test/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/side-channel/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/side-channel/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/modules/guestOrderRouter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/modules/guestOrderRouter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/login/components/LoginForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/components/LoginForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/DishList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/DishList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/OrderForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/OrderForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/components/ShoppingCart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/components/ShoppingCart.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-dependencies/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-dependencies/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/TakeawayOrdersCreateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/TakeawayOrders.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/TakeawayOrders.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/TakeawayOrdersService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/TakeawayOrdersService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/TakeawayOrdersMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/TakeawayOrdersMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="31dDDgTymr2JYIBsbytlPinOYaC" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/project/restaurant/sz-admin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.serve.executor": "Run",
-    "ts.external.directory.path": "E:\\project\\restaurant\\sz-admin\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/project/restaurant/sz-admin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.serve.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;E:\\project\\restaurant\\sz-admin\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
   }
-}]]></component>
+}</component>
+  <component name="RunAnythingCache">
+    <myKeys>
+      <visibility group="Gradle 任务" flag="true" />
+      <visibility group="Grunt" flag="true" />
+      <visibility group="Gulp" flag="true" />
+      <visibility group="HTTP 请求" flag="true" />
+      <visibility group="Maven 目标" flag="true" />
+      <visibility group="Node.js" flag="true" />
+      <visibility group="npm" flag="true" />
+      <visibility group="yarn" flag="true" />
+      <visibility group="最近的项目" flag="true" />
+      <visibility group="运行配置" flag="true" />
+    </myKeys>
+  </component>
   <component name="RunManager">
     <configuration name="serve" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/package.json" />
@@ -71,7 +164,51 @@
       <option name="presentableId" value="Default" />
       <updated>1755844937191</updated>
       <workItem from="1755844938208" duration="8880000" />
+      <workItem from="1756016798742" duration="13869000" />
+      <workItem from="1756084285596" duration="58058000" />
+      <workItem from="1756518180917" duration="13877000" />
     </task>
+    <task id="LOCAL-00001" summary="服务员点单页面初始化">
+      <option name="closed" value="true" />
+      <created>1756027810875</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1756027810875</updated>
+    </task>
+    <task id="LOCAL-00002" summary="厨师订单处理页面初始化">
+      <option name="closed" value="true" />
+      <created>1756133180791</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1756133180791</updated>
+    </task>
+    <task id="LOCAL-00003" summary="库存不足提醒服务员，管理员。">
+      <option name="closed" value="true" />
+      <created>1756396052466</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1756396052466</updated>
+    </task>
+    <task id="LOCAL-00004" summary="库存不足提醒服务员，管理员。">
+      <option name="closed" value="true" />
+      <created>1756396101101</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1756396101101</updated>
+    </task>
+    <task id="LOCAL-00005" summary="加单功能实现。">
+      <option name="closed" value="true" />
+      <created>1756452021538</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1756452021538</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -87,5 +224,13 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="服务员点单页面初始化" />
+    <MESSAGE value="厨师订单处理页面初始化" />
+    <MESSAGE value="库存不足提醒服务员，管理员。" />
+    <MESSAGE value="加单功能实现。" />
+    <option name="LAST_COMMIT_MESSAGE" value="加单功能实现。" />
   </component>
 </project>

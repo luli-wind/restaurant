@@ -73,6 +73,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
             orderDetail.setOrderId(orders.getOrderId());
             totalAmount +=orderDetail.getAmount()*orderDetail.getNumber();
         }
+
         totalAmount +=dto.getPackagingFee();
         totalAmount +=dto.getDeliveryFee();
         orders.setTotalAmount(totalAmount);
@@ -80,13 +81,12 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         //处理外卖订单扩展字段
         TakeawayOrders takeawayOrders = BeanCopyUtils.copy(dto, TakeawayOrders.class);
         takeawayOrders.setOrderId(orders.getOrderId());
+        takeawayOrders.setThirdPartyUserId(dto.getThirdPartyUserId());
         save(takeawayOrders);
         //处理订单详情
         for (OrderDetail orderDetail : detailList) {
             orderDetail.setOrderId(orders.getOrderId());
         }
-
-
         orderDetailService.saveBatch(detailList);
     }
 
@@ -282,5 +282,62 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         
         // 返回最新创建的订单
         return orders.get(orders.size() - 1);
+    }
+
+    @Override
+    public PageResult<TakeawayOrdersVO> getOrdersByThirdPartyUserId(com.sz.admin.restaurant.pojo.dto.TakeawayOrdersQueryDTO dto) {
+        // 构造查询条件
+        QueryWrapper wrapper = QueryWrapper.create().from(TAKEAWAY_ORDERS);
+        
+        // 添加第三方用户ID条件
+        if (dto.getThirdPartyUserId() != null) {
+            wrapper.eq(TakeawayOrders::getThirdPartyUserId, dto.getThirdPartyUserId());
+        }
+        
+        // 添加其他查询条件
+        if (Utils.isNotNull(dto.getStatus())) {
+            wrapper.eq(Orders::getStatus, dto.getStatus());
+        }
+        if (Utils.isNotNull(dto.getPayStatus())) {
+            wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
+        }
+        if (Utils.isNotNull(dto.getCustomerPhone())) {
+            wrapper.like(TakeawayOrders::getCustomerPhone, dto.getCustomerPhone());
+        }
+        if (Utils.isNotNull(dto.getDeliveryAddress())) {
+            wrapper.like(TakeawayOrders::getDeliveryAddress, dto.getDeliveryAddress());
+        }
+        if (Utils.isNotNull(dto.getCustomerName())) {
+            wrapper.like(TakeawayOrders::getCustomerName, dto.getCustomerName());
+        }
+        
+        // 执行分页查询
+        Page<TakeawayOrders> page = pageAs(PageUtils.getPage(dto), wrapper, TakeawayOrders.class);
+        Page<TakeawayOrdersVO> voPage = new Page<>(page.getPageNumber(), page.getPageSize());
+        voPage.setTotalRow(page.getTotalRow());
+        
+        // 转换为VO对象并关联查询Orders表的信息
+        List<TakeawayOrdersVO> voList = page.getRecords().stream().map(takeawayOrders -> {
+            // 查询对应的基本订单记录
+            Orders orders = ordersService.getById(takeawayOrders.getOrderId());
+            // 将两个记录的信息合并到VO对象中
+            TakeawayOrdersVO vo = BeanCopyUtils.copy(takeawayOrders, TakeawayOrdersVO.class);
+            if (orders != null) {
+                vo.setOrderId(orders.getOrderId());
+                vo.setOrderNumber(orders.getOrderNumber());
+                vo.setOrderType(orders.getOrderType());
+                vo.setTotalAmount(orders.getTotalAmount());
+                vo.setStatus(orders.getStatus());
+                vo.setCreateTime(orders.getCreateTime());
+                vo.setPayStatus(orders.getPayStatus());
+                vo.setPayTime(orders.getPayTime());
+                vo.setRefundReason(orders.getRefundReason());
+                vo.setOrderItems(orderDetailService.getListByOrderId(orders.getOrderId()));
+            }
+            return vo;
+        }).toList();
+        
+        voPage.setRecords(voList);
+        return PageUtils.getPageResult(voPage);
     }
 }

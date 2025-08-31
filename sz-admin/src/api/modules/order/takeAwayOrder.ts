@@ -1,10 +1,10 @@
 import http from '@/api';
 import { ADMIN_MODULE } from '@/api/helper/prefix';
-import type { IPage } from '@/api/types';
+import type {IPage, IResultData} from '@/api/types';
 import type {
-    TakeAwayOrderForm,
     TakeAwayOrderQuery,
-    TakeAwayOrderRow
+    TakeAwayOrderRow,
+    TakeAwayOrderForm
 } from '@/api/types/order/takeAwayOrder'
 import type { UploadRawFile } from "element-plus/es/components/upload/src/upload";
 import type { AxiosRequestConfig } from 'axios';
@@ -23,9 +23,9 @@ export const getTakeAwayOrderListApi = (params: TakeAwayOrderQuery) => {
  * @param params
  * @returns {*}
  */
-export const createTakeAwayOrderApi = (params: TakeAwayOrderForm) => {
-    return http.post(ADMIN_MODULE + `/takeaway-orders`, params);
-};
+// export const createTakeAwayOrderApi = (params: TakeAwayOrderForm) => {
+//     return http.post(ADMIN_MODULE + `/takeaway-orders`, params);
+// };
 
 /**
  * 修改
@@ -90,4 +90,31 @@ export const importTakeAwayOrderExcelApi = (params : UploadRawFile, config?: Axi
  */
 export const exportTakeAwayOrderExcelApi  = (params: TakeAwayOrderQuery) => {
     return http.download(ADMIN_MODULE + `/takeaway-orders/export`, params);
+};
+
+/**
+ * 创建访客外卖订单
+ * @param params
+ * @returns {*}
+ */
+export const createTakeAwayOrderApi = (params: TakeAwayOrderForm) => {
+    return http.post<IResultData<any>>(ADMIN_MODULE + `/takeaway-orders/guest`, params);
+};
+
+/**
+ * 分页查询外卖订单
+ * @param params
+ * @returns {*}
+ */
+export const pageTakeAwayOrderApi = (params: TakeAwayOrderQuery) => {
+    return http.get<IResultData<IPage<any>>>(ADMIN_MODULE + `/takeaway-orders/page`, params);
+};
+
+/**
+ * 根据第三方用户ID查询订单
+ * @param params
+ * @returns {*}
+ */
+export const getTakeAwayOrdersByThirdPartyUserApi = (params: { thirdPartyUserId: string }) => {
+    return http.get<IResultData<IPage<any>>>(ADMIN_MODULE + `/takeaway-orders/third-party-user`, params);
 };

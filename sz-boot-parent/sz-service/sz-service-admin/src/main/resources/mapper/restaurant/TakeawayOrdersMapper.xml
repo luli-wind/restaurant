@@ -11,11 +11,12 @@
         <result column="packaging_fee" property="packagingFee"/>
         <result column="delivery_fee" property="deliveryFee"/>
         <result column="remark" property="remark"/>
+        <result column="third_party_user_id" property="thirdPartyUserId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_id,customer_name, customer_phone, delivery_address, packaging_fee, delivery_fee, remark
+        id, order_id,customer_name, customer_phone, delivery_address, packaging_fee, delivery_fee, remark, third_party_user_id
     </sql>
 
 </mapper>

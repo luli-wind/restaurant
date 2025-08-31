@@ -69,7 +69,6 @@ import type {TakeAwayOrderQuery, TakeAwayOrderRow} from '@/api/types/order/takeA
 import type { ColumnProps,ProTableInstance, SearchProps } from '@/components/ProTable/interface'
 import { useDict } from '@/hooks/useDict';
 import {getTakeAwayOrderListApi,
-        createTakeAwayOrderApi,
         updateTakeAwayOrderApi,
         removeTakeAwayOrderApi,
         getTakeAwayOrderDetailApi,
