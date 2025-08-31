@@ -1,51 +1,10 @@
 <template>
   <div class="statistics-container">
 
-    <!-- 筛选条件区域 -->
-    <el-card class="filter-card">
-      <div class="filter-content">
-        <el-form :model="filterForm" label-width="80px" inline>
-          <el-form-item label="时间范围">
-            <el-date-picker
-              v-model="filterForm.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="YYYY-MM-DD"
-              @change="handleDateRangeChange"
-            />
-          </el-form-item>
-          <el-form-item label="统计维度">
-            <el-select v-model="filterForm.dimension" @change="handleDimensionChange">
-              <el-option label="按天" value="day" />
-              <el-option label="按周" value="week" />
-              <el-option label="按月" value="month" />
-              <el-option label="按季度" value="quarter" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="餐厅区域">
-            <el-select v-model="filterForm.areaId" placeholder="请选择区域" clearable>
-              <el-option
-                v-for="area in areaOptions"
-                :key="area.id"
-                :label="area.name"
-                :value="area.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="refreshData">查询</el-button>
-            <el-button @click="resetFilter">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-card>
-
     <!-- 核心指标区域 -->
     <el-row :gutter="20" class="metrics-row">
       <el-col :xs="24" :sm="12" :md="6">
-        <el-card class="metric-card sales-card">
+        <el-card class="metric-card sales-card" v-loading="loading.coreIndicators">
           <div class="card-content">
             <div class="card-icon">
               <el-icon :size="28" color="#fff"><Money /></el-icon>
@@ -64,7 +23,7 @@
       </el-col>
       
       <el-col :xs="24" :sm="12" :md="6">
-        <el-card class="metric-card order-card">
+        <el-card class="metric-card order-card" v-loading="loading.coreIndicators">
           <div class="card-content">
             <div class="card-icon">
               <el-icon :size="28" color="#fff"><Document /></el-icon>
@@ -83,7 +42,7 @@
       </el-col>
       
       <el-col :xs="24" :sm="12" :md="6">
-        <el-card class="metric-card customer-card">
+        <el-card class="metric-card customer-card" v-loading="loading.coreIndicators">
           <div class="card-content">
             <div class="card-icon">
               <el-icon :size="28" color="#fff"><User /></el-icon>
@@ -102,7 +61,7 @@
       </el-col>
       
       <el-col :xs="24" :sm="12" :md="6">
-        <el-card class="metric-card avg-card">
+        <el-card class="metric-card avg-card" v-loading="loading.coreIndicators">
           <div class="card-content">
             <div class="card-icon">
               <el-icon :size="28" color="#fff"><Wallet /></el-icon>
@@ -125,7 +84,7 @@
     <el-row :gutter="20" class="charts-row">
       <!-- 销售趋势图表 -->
       <el-col :xs="24" :md="12">
-        <el-card class="chart-card">
+        <el-card class="chart-card" v-loading="loading.salesTrend">
           <template #header>
             <div class="card-header">
               <span>销售趋势</span>
@@ -149,7 +108,7 @@
 
       <!-- 利润分析图表 -->
       <el-col :xs="24" :md="12">
-        <el-card class="chart-card">
+        <el-card class="chart-card" v-loading="loading.profitAnalysis">
           <template #header>
             <div class="card-header">
               <span>利润分析</span>
@@ -163,7 +122,7 @@
 
       <!-- 菜品销售排行 -->
       <el-col :xs="24" :md="12">
-        <el-card class="chart-card">
+        <el-card class="chart-card" v-loading="loading.dishRanking">
           <template #header>
             <div class="card-header">
               <span>菜品销售排行</span>
@@ -187,7 +146,7 @@
 
       <!-- 订单状态分布 -->
       <el-col :xs="24" :md="12">
-        <el-card class="chart-card">
+        <el-card class="chart-card" v-loading="loading.orderStatus">
           <template #header>
             <div class="card-header">
               <span>订单状态分布</span>
@@ -202,11 +161,10 @@
         </el-card>
       </el-col>
 
-
     </el-row>
 
     <!-- 详细数据表格 -->
-    <el-card class="data-table-card">
+    <el-card class="data-table-card" v-loading="loading.detailedData">
       <template #header>
         <div class="card-header">
           <span>详细统计数据</span>
@@ -264,21 +222,15 @@ import {
 import SimpleBarChart from './components/SimpleBarChart.vue'
 import SimplePieChart from './components/SimplePieChart.vue'
 import ProfitAnalysisChart from './components/ProfitAnalysisChart.vue'
-
-// 筛选表单数据
-const filterForm = reactive({
-  dateRange: [],
-  dimension: 'day',
-  areaId: undefined
-})
-
-// 餐厅区域选项
-const areaOptions = ref([
-  { id: 1, name: '大厅区域' },
-  { id: 2, name: '包间区域' },
-  { id: 3, name: '户外区域' },
-  { id: 4, name: 'VIP区域' }
-])
+import type {StatisticsQueryParams} from "@/api/types/statistics/statistics";
+import {
+  getCoreIndicatorsApi,
+  getSalesTrendApi,
+  getDishRankingApi,
+  getOrderStatusDistributionApi,
+  getProfitAnalysisApi,
+  getDetailedDataApi
+} from '@/api/modules/statistics/statistics';
 
 // 核心指标数据
 const coreMetrics = ref({
@@ -394,6 +346,19 @@ const pagination = reactive({
   total: 30
 })
 
+// 加载状态
+const loading = reactive({
+  coreIndicators: false,
+  salesTrend: false,
+  dishRanking: false,
+  orderStatus: false,
+  profitAnalysis: false,
+  detailedData: false
+})
+
+// 错误信息
+const error = ref<string | null>(null)
+
 // 格式化数字
 const formatNumber = (value: number): string => {
   return value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -406,42 +371,187 @@ const getChangeClass = (change: number): string => {
   return 'neutral'
 }
 
-// 处理日期范围变化
-const handleDateRangeChange = (value: [string, string] | null) => {
-  console.log('日期范围变化:', value)
-  // 这里可以触发数据重新加载
+// 简化查询参数
+const getQueryParams = (): StatisticsQueryParams => {
+  return {
+    dimension: 'day',
+    page: pagination.currentPage,
+    size: pagination.pageSize
+  }
 }
 
-// 处理维度变化
-const handleDimensionChange = (value: string) => {
-  console.log('统计维度变化:', value)
-  // 这里可以触发数据重新加载
+// 加载核心指标数据
+const loadCoreIndicators = async () => {
+  try {
+    loading.coreIndicators = true
+    error.value = null
+    const params = getQueryParams()
+    const response = await getCoreIndicatorsApi(params)
+    const data = response.data
+    
+    coreMetrics.value = {
+      totalSales: data.totalSales,
+      salesChange: 12.5,
+      orderCount: data.orderCount,
+      orderChange: 8.3,
+      customerCount: data.customerCount,
+      customerChange: 5.7,
+      avgOrderAmount: data.avgOrderAmount,
+      avgChange: 3.2
+    }
+  } catch (err) {
+    console.error('加载核心指标失败:', err)
+    error.value = '加载核心指标失败'
+    ElMessage.error('加载核心指标失败')
+  } finally {
+    loading.coreIndicators = false
+  }
 }
 
-// 刷新数据
-const refreshData = () => {
-  ElMessage.success('数据刷新成功')
-  // 这里应该重新加载所有数据
+// 加载销售趋势数据
+const loadSalesTrend = async () => {
+  try {
+    loading.salesTrend = true
+    error.value = null
+    const params = getQueryParams()
+    params.type = salesTrendType.value as 'amount' | 'count'
+    
+    const response = await getSalesTrendApi(params)
+    const data = response.data
+    
+    salesTrendData.value = data.trendData.map(item => ({
+      label: item.date,
+      value: salesTrendType.value === 'amount' ? item.amount : item.count || 0
+    }))
+    
+    salesTrendMaxValue.value = Math.max(...salesTrendData.value.map(item => item.value)) * 1.2
+  } catch (err) {
+    console.error('加载销售趋势失败:', err)
+    error.value = '加载销售趋势失败'
+    ElMessage.error('加载销售趋势失败')
+  } finally {
+    loading.salesTrend = false
+  }
 }
 
-// 重置筛选条件
-const resetFilter = () => {
-  filterForm.dateRange = []
-  filterForm.dimension = 'day'
-  filterForm.areaId = undefined
-  ElMessage.info('筛选条件已重置')
+// 加载菜品排行数据
+const loadDishRanking = async () => {
+  try {
+    loading.dishRanking = true
+    error.value = null
+    const params = getQueryParams()
+    params.type = dishRankingType.value as 'quantity' | 'amount'
+    params.limit = 10
+    
+    const response = await getDishRankingApi(params)
+    const data = response.data
+    
+    dishRankingData.value = data.rankingData.map(item => ({
+      label: item.dishName,
+      value: dishRankingType.value === 'quantity' ? item.quantity : item.amount
+    }))
+  } catch (err) {
+    console.error('加载菜品排行失败:', err)
+    error.value = '加载菜品排行失败'
+    ElMessage.error('加载菜品排行失败')
+  } finally {
+    loading.dishRanking = false
+  }
+}
+
+// 加载订单状态分布数据
+const loadOrderStatusDistribution = async () => {
+  try {
+    loading.orderStatus = true
+    error.value = null
+    const params = getQueryParams()
+    
+    const response = await getOrderStatusDistributionApi(params)
+    const data = response.data
+    
+    orderStatusData.value = data.statusData.map(item => ({
+      label: item.statusName,
+      value: item.count,
+      percentage: item.percentage
+    }))
+  } catch (err) {
+    console.error('加载订单状态分布失败:', err)
+    error.value = '加载订单状态分布失败'
+    ElMessage.error('加载订单状态分布失败')
+  } finally {
+    loading.orderStatus = false
+  }
+}
+
+// 加载利润分析数据
+const loadProfitAnalysis = async () => {
+  try {
+    loading.profitAnalysis = true
+    error.value = null
+    const params = getQueryParams()
+    
+    const response = await getProfitAnalysisApi(params)
+    const data = response.data
+    
+    profitAnalysisData.value = data.profitData
+  } catch (err) {
+    console.error('加载利润分析失败:', err)
+    error.value = '加载利润分析失败'
+    ElMessage.error('加载利润分析失败')
+  } finally {
+    loading.profitAnalysis = false
+  }
+}
+
+// 加载详细数据
+const loadDetailedData = async () => {
+  try {
+    loading.detailedData = true
+    error.value = null
+    const params = getQueryParams()
+    
+    const response = await getDetailedDataApi(params)
+    const data = response.data
+    
+    detailData.value = data.records.map(item => ({
+      date: item.date,
+      salesAmount: item.totalSales,
+      orderCount: item.orderCount,
+      customerCount: item.customerCount,
+      avgOrderAmount: item.avgOrderAmount,
+      profitMargin: Math.round((item.profit || 0) * 100)
+    }))
+    
+    pagination.total = data.total
+  } catch (err) {
+    console.error('加载详细数据失败:', err)
+    error.value = '加载详细数据失败'
+    ElMessage.error('加载详细数据失败')
+  } finally {
+    loading.detailedData = false
+  }
+}
+
+// 加载所有数据
+const loadAllData = async () => {
+  await Promise.all([
+    loadCoreIndicators(),
+    loadSalesTrend(),
+    loadDishRanking(),
+    loadOrderStatusDistribution(),
+    loadProfitAnalysis(),
+    loadDetailedData()
+  ])
 }
 
 // 加载销售趋势数据
 const loadSalesTrendData = () => {
-  console.log('加载销售趋势数据，类型:', salesTrendType.value)
-  // 这里应该根据类型加载不同的数据并更新图表
+  loadSalesTrend()
 }
 
 // 加载菜品排行数据
 const loadDishRankingData = () => {
-  console.log('加载菜品排行数据，类型:', dishRankingType.value)
-  // 这里应该根据类型加载不同的数据并更新图表
+  loadDishRanking()
 }
 
 // 导出数据
@@ -452,17 +562,18 @@ const exportData = () => {
 // 处理分页大小变化
 const handleSizeChange = (val: number) => {
   pagination.pageSize = val
-  console.log('分页大小变化:', val)
+  pagination.currentPage = 1
+  loadDetailedData()
 }
 
 // 处理当前页变化
 const handleCurrentChange = (val: number) => {
   pagination.currentPage = val
-  console.log('当前页变化:', val)
+  loadDetailedData()
 }
 
 onMounted(() => {
-  console.log('统计页面初始化完成')
+  loadAllData()
 })
 </script>
 

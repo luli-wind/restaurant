@@ -4,31 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="下单，接单状态改变时，发送通知">
-      <change afterPath="$PROJECT_DIR$/src/api/modules/statistics.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/api-design.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/architecture.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/component-design.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/ChartPlaceholder.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/ProfitAnalysisChart.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/SimpleBarChart.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/SimplePieChart.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/design.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/file-structure.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/implementation-plan.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/styles/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/styles/statistics.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/statistics/summary.md" afterDir="false" />
+    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="查询统计页面初始化">
+      <change afterPath="$PROJECT_DIR$/src/api/modules/statistics/statistics.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/types/statistics/statistics.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/StatisticsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/mapper/StatisticsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/StatisticsQueryDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/CoreIndicatorsVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DetailedDataVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishProfitRankingVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishRankingVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/OrderStatusVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ProfitAnalysisVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/SalesTrendVO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/StatisticsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/framework/V2.6__20250828_Update_DDL.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__create_third_party_user_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__update_dish_recipe_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/StatisticsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/db.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/modules/statistics.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/components/Footer/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/components/Footer/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/restaurant/expense/components/ExpenseForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/restaurant/expense/components/ExpenseForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/statistics/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/statistics/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/statistics/styles/README.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseCreateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseImportDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseImportDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseListDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseListDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseUpdateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/Expense.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ExpenseVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ExpenseVO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,8 +48,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="Vue Composition API Component" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -127,7 +137,7 @@
       <workItem from="1755844938208" duration="8880000" />
       <workItem from="1756016798742" duration="13869000" />
       <workItem from="1756084285596" duration="58058000" />
-      <workItem from="1756518180917" duration="23062000" />
+      <workItem from="1756518180917" duration="31402000" />
     </task>
     <task id="LOCAL-00001" summary="服务员点单页面初始化">
       <option name="closed" value="true" />
@@ -177,7 +187,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756627328371</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="查询统计页面初始化">
+      <option name="closed" value="true" />
+      <created>1756641477935</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1756641477935</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +219,7 @@
     <MESSAGE value="库存不足提醒服务员，管理员。" />
     <MESSAGE value="加单功能实现。" />
     <MESSAGE value="下单，接单状态改变时，发送通知" />
-    <option name="LAST_COMMIT_MESSAGE" value="下单，接单状态改变时，发送通知" />
+    <MESSAGE value="查询统计页面初始化" />
+    <option name="LAST_COMMIT_MESSAGE" value="查询统计页面初始化" />
   </component>
 </project>

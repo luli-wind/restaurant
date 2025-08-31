@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class ExpenseListDTO extends PageQuery {
 
     @Schema(description =  "费用种类")
-    private Integer expenseCategory;
+    private String expenseCategory;
 
     @Schema(description =  "费用开始")
     private BigDecimal amountStart;

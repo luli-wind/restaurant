@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class ExpenseCreateDTO {
 
    @Schema(description =  "费用种类")
-   private Integer expenseCategory;
+   private String expenseCategory;
 
    @Schema(description =  "费用")
    private BigDecimal amount;

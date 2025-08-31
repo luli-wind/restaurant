@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.admin.restaurant.mapper.StatisticsMapper">
+
+    <!-- 查询核心指标数据 -->
+    <select id="queryCoreIndicators" resultType="com.sz.admin.restaurant.pojo.vo.CoreIndicatorsVO">
+        SELECT
+            COALESCE(SUM(o.total_amount), 0) as totalSales,
+            COUNT(DISTINCT o.order_id) as totalOrders,
+            COUNT(DISTINCT o.order_id ) + SUM(dine.number_of_guests) as totalCustomers,
+            CASE 
+                WHEN COUNT(DISTINCT o.order_id) > 0 THEN ROUND(SUM(o.total_amount) / COUNT(DISTINCT o.order_id), 2)
+                ELSE 0
+            END as averageOrderValue
+        FROM orders o
+        JOIN dine_in_orders dine on dine.order_id = o.order_id
+        WHERE o.status IN ('2005005', '2004005')
+        <if test="query.startDate != null">
+            AND DATE(o.create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(o.create_time) &lt;= #{query.endDate}
+        </if>
+    </select>
+
+    <!-- 查询销售趋势数据 -->
+    <select id="querySalesTrend" resultType="com.sz.admin.restaurant.pojo.vo.SalesTrendVO$TrendData">
+        SELECT
+            <choose>
+                <when test="query.dimension == 'day'">
+                    DATE_FORMAT(create_time, '%Y-%m-%d') as date
+                </when>
+                <when test="query.dimension == 'week'">
+                    CONCAT(YEAR(create_time), '-', WEEK(create_time)) as date
+                </when>
+                <when test="query.dimension == 'month'">
+                    DATE_FORMAT(create_time, '%Y-%m') as date
+                </when>
+                <otherwise>
+                    DATE_FORMAT(create_time, '%Y-%m-%d') as date
+                </otherwise>
+            </choose>,
+            SUM(total_amount) as salesAmount,
+            COUNT(order_id) as orderCount
+        FROM dining_hall.orders
+        WHERE status IN ('2005005', '2004005')
+        <if test="query.startDate != null">
+            AND DATE(create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(create_time) &lt;= #{query.endDate}
+        </if>
+        GROUP BY date
+        ORDER BY date ASC
+    </select>
+
+    <!-- 查询菜品排行数据 -->
+    <select id="queryDishRanking" resultType="com.sz.admin.restaurant.pojo.vo.DishRankingVO">
+        SELECT
+            d.dish_id as dishId,
+            d.dish_name as dishName,
+            SUM(od.number) as salesCount,
+            SUM(od.number * d.price) as salesAmount
+        FROM dining_hall.dish d
+        JOIN dining_hall.order_detail od ON d.dish_id = od.dish_id
+        JOIN dining_hall.orders o ON od.order_id = o.order_id
+        WHERE o.status IN ('2005005', '2004005')
+        <if test="query.startDate != null">
+            AND DATE(o.create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(o.create_time) &lt;= #{query.endDate}
+        </if>
+        <if test="query.categoryId != null">
+            AND d.category = #{query.categoryId}
+        </if>
+        GROUP BY d.dish_id, d.dish_name
+        ORDER BY salesAmount DESC
+        LIMIT 10
+    </select>
+
+    <!-- 查询订单状态分布数据 -->
+    <select id="queryOrderStatusDistribution" resultType="com.sz.admin.restaurant.pojo.vo.OrderStatusVO">
+        SELECT
+            status as status,
+            COUNT(*) as count,
+            ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM dining_hall.orders 
+                WHERE status IN ('2004005', '2005005', '2005006', '2004004','2005002','2004002')
+                <if test="query.startDate != null">
+                    AND DATE(create_time) >= #{query.startDate}
+                </if>
+                <if test="query.endDate != null">
+                    AND DATE(create_time) &lt;= #{query.endDate}
+                </if>
+            ), 2) as percentage
+        FROM dining_hall.orders
+        WHERE status IN ('进行中', '已完成', '已取消', '已送达')
+        <if test="query.startDate != null">
+            AND DATE(create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(create_time) &lt;= #{query.endDate}
+        </if>
+        GROUP BY status
+    </select>
+
+    <!-- 查询利润分析数据 -->
+    <select id="queryProfitAnalysis" resultType="com.sz.admin.restaurant.pojo.vo.ProfitAnalysisVO$ProfitData">
+        SELECT
+            <choose>
+                <when test="query.dimension == 'day'">
+                    DATE_FORMAT(create_time, '%Y-%m-%d')
+                </when>
+                <when test="query.dimension == 'week'">
+                    CONCAT(YEAR(create_time), '-', WEEK(create_time))
+                </when>
+                <when test="query.dimension == 'month'">
+                    DATE_FORMAT(create_time, '%Y-%m')
+                </when>
+                <otherwise>
+                    DATE_FORMAT(create_time, '%Y-%m-%d')
+                </otherwise>
+            </choose> as date,
+            SUM(total_amount) as revenue,
+            SUM(total_amount * 0.5) as cost,
+            SUM(total_amount * 0.5) as profit,
+            50.0 as profitMargin
+        FROM dining_hall.orders
+        WHERE status IN ('2004005', '2005005')
+        <if test="query.startDate != null">
+            AND DATE(create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(create_time) &lt;= #{query.endDate}
+        </if>
+        GROUP BY date
+        ORDER BY date ASC
+    </select>
+
+    <!-- 查询详细数据列表 -->
+    <select id="queryDetailedData" resultType="com.sz.admin.restaurant.pojo.vo.DetailedDataVO">
+        SELECT
+            o.order_id as orderId,
+            o.order_number as orderNumber,
+            o.create_time as orderTime,
+            o.total_amount as totalAmount,
+            o.status as orderStatus,
+            GROUP_CONCAT(d.dish_name) as dishNames
+        FROM dining_hall.orders o
+        LEFT JOIN dining_hall.order_detail od ON o.order_id = od.order_id
+        LEFT JOIN dining_hall.dish d ON od.dish_id = d.dish_id
+        WHERE 1=1
+        <if test="query.startDate != null">
+            AND DATE(o.create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(o.create_time) &lt;= #{query.endDate}
+        </if>
+        GROUP BY o.order_id, o.order_number, o.create_time, o.total_amount, o.status
+        ORDER BY o.create_time DESC
+        LIMIT #{query.pageSize} OFFSET ${(query.pageNum - 1) * query.pageSize}
+    </select>
+
+    <!-- 查询详细数据总数 -->
+    <select id="countDetailedData" resultType="java.lang.Long">
+        SELECT COUNT(DISTINCT o.order_id)
+        FROM dining_hall.orders o
+        WHERE 1=1
+        <if test="query.startDate != null">
+            AND DATE(o.create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(o.create_time) &lt;=#{query.endDate}
+        </if>
+    </select>
+
+    <!-- 查询菜品利润排行数据 -->
+    <select id="queryDishProfitRanking" resultType="com.sz.admin.restaurant.pojo.vo.DishProfitRankingVO">
+        SELECT
+            d.dish_id as dishId,
+            d.dish_name as dishName,
+            SUM(od.number) as salesCount,
+            SUM(od.number * d.price) as salesAmount,
+            SUM(od.number * d.price * 0.4) as cost,
+            SUM(od.number * d.price * 0.6) as profit,
+            60.0 as profitMargin,
+            0 as rank
+        FROM dining_hall.dish d
+        JOIN dining_hall.order_detail od ON d.dish_id = od.dish_id
+        JOIN dining_hall.orders o ON od.order_id = o.order_id
+        WHERE o.status IN ('2005005', '20040005')
+        <if test="query.startDate != null">
+            AND DATE(o.create_time) >= #{query.startDate}
+        </if>
+        <if test="query.endDate != null">
+            AND DATE(o.create_time) &lt;=#{query.endDate}
+        </if>
+        <if test="query.categoryId != null">
+            AND d.category = #{query.categoryId}
+        </if>
+        GROUP BY d.dish_id, d.dish_name
+        ORDER BY profit DESC
+        LIMIT 10
+    </select>
+
+</mapper>

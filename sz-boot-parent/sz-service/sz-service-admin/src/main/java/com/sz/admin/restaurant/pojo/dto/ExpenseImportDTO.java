@@ -22,7 +22,7 @@ public class ExpenseImportDTO {
     @ExcelProperty(value = "费用种类")
     @DictFormat(dictType = "expense_category")
     @Schema(description =  "费用种类")
-    private Integer expenseCategory;
+    private String expenseCategory;
 
     @ExcelProperty(value = "费用")
     @Schema(description =  "费用")

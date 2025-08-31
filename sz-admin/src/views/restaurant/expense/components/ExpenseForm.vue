@@ -30,8 +30,8 @@
       <el-form-item label="日期" prop="expenseDate">
         <el-date-picker clearable
           v-model="paramsProps.row.expenseDate"
-          type="datetime"
-          value-format="YYYY-MM-DD HH:mm:ss"
+          type="date"
+          value-format="YYYY-MM-DD"
           placeholder="请选择日期">
         </el-date-picker>
       </el-form-item>
