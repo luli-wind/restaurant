@@ -4,7 +4,7 @@
     <el-header>
       <div class="logo flx-center">
         <img class="logo-img" src="@/assets/images/logo.svg" alt="logo" />
-        <span class="logo-text">{{ title }}</span>
+        <span class="logo-text">餐馆运营</span>
       </div>
       <el-menu mode="horizontal" :router="false" :default-active="activeMenu">
         <!-- 不能直接使用 SubMenu 组件，无法触发 el-menu 隐藏省略功能 -->

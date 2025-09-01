@@ -12,25 +12,6 @@
           <!-- 表格 header 按钮 -->
           <template #tableHeader="scope">
             <el-button
-                v-auth="'dish.remove'"
-                type="danger"
-                :icon="Delete"
-                plain
-                :disabled="!scope.isSelected"
-                @click="batchDelete(scope.selectedListIds)"
-            >
-              批量删除
-            </el-button>
-            <el-button
-                v-auth="'dish.import'"
-                type="primary"
-                :icon="Upload"
-                plain
-                @click="importData"
-            >
-              导入
-            </el-button>
-            <el-button
                 v-auth="'dish.export'"
                 type="primary"
                 :icon="Download"

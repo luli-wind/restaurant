@@ -3,75 +3,84 @@
   background-color: #f5f5f5;
   min-height: calc(100vh - 60px);
 
-  // 数据概览卡片样式
-  .dashboard-row {
-    margin-bottom: 20px;
+  // 欢迎横幅
+  .welcome-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 40px 30px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    color: white;
+    animation: fadeInUp 0.6s ease-out;
 
-    .dashboard-card {
-      border-radius: 8px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+    .welcome-content {
+      position: relative;
+      z-index: 2;
 
-      &:hover {
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
-        transform: translateY(-2px);
+      .welcome-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
 
-      .card-content {
-        display: flex;
-        align-items: center;
-        padding: 20px;
+      .welcome-subtitle {
+        font-size: 16px;
+        margin: 0 0 20px 0;
+        opacity: 0.9;
+      }
 
-        .card-icon {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
+      .welcome-stats {
+        display: flex;
+        gap: 30px;
+
+        .stat-item {
           display: flex;
           align-items: center;
-          justify-content: center;
-          margin-right: 20px;
-          font-size: 24px;
-          color: white;
-        }
+          gap: 8px;
 
-        .card-info {
-          .card-title {
+          .stat-text {
             font-size: 14px;
-            color: #999;
-            margin-bottom: 5px;
-          }
-
-          .card-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
           }
         }
       }
     }
 
-    // 不同类型的卡片颜色
-    .income-card {
-      .card-icon {
-        background-color: #ff6b35;
-      }
-    }
+    .welcome-decoration {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100%;
+      z-index: 1;
 
-    .order-card {
-      .card-icon {
-        background-color: #f7931e;
-      }
-    }
+      .decoration-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
 
-    .table-card {
-      .card-icon {
-        background-color: #2d936c;
-      }
-    }
+        &.circle-1 {
+          width: 120px;
+          height: 120px;
+          top: -30px;
+          right: -30px;
+        }
 
-    .customer-card {
-      .card-icon {
-        background-color: #1e88e5;
+        &.circle-2 {
+          width: 80px;
+          height: 80px;
+          top: 80px;
+          right: 40px;
+        }
+
+        &.circle-3 {
+          width: 60px;
+          height: 60px;
+          bottom: 20px;
+          right: 60px;
+        }
       }
     }
   }
@@ -79,9 +88,9 @@
   // 主要内容区域
   .main-content-row {
     .el-card {
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
     }
 
     .card-header {
@@ -93,63 +102,9 @@
       color: #333;
     }
 
-    // 快捷操作卡片
-    .quick-actions-card {
-      .quick-actions-content {
-        padding: 20px 0;
-
-        .action-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 20px 0;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          border-radius: 8px;
-
-          &:hover {
-            background-color: #f0f0f0;
-          }
-
-          .action-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            font-size: 20px;
-            color: white;
-
-            &.add-order-icon {
-              background-color: #ff6b35;
-            }
-
-            &.dish-icon {
-              background-color: #f7931e;
-            }
-
-            &.table-icon {
-              background-color: #2d936c;
-            }
-
-            &.staff-icon {
-              background-color: #1e88e5;
-            }
-          }
-
-          .action-title {
-            font-size: 14px;
-            color: #666;
-          }
-        }
-      }
-    }
-
     // 最近订单卡片
     .recent-orders-card {
+      animation: fadeIn 0.6s ease-out 0.3s both;
       .el-table {
         border: none;
 
@@ -169,6 +124,7 @@
 
     // 餐厅状态卡片
     .restaurant-status-card {
+      animation: fadeIn 0.6s ease-out 0.4s both;
       .status-content {
         .status-header {
           margin-bottom: 20px;
@@ -246,9 +202,63 @@
         }
       }
     }
+    
+    // 图片展示卡片
+    .gallery-card {
+      animation: fadeIn 0.6s ease-out 0.6s both;
+      
+      .gallery-content {
+        display: flex;
+        gap: 30px;
+        padding: 20px 0;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: space-between;
+        
+        .gallery-item {
+          flex: 1;
+          min-width: 300px;
+          max-width: 350px;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          background: white;
+          
+          &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+          }
+          
+          .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+          }
+          
+          .gallery-info {
+            padding: 15px;
+            
+            h3 {
+              margin: 0 0 10px 0;
+              font-size: 18px;
+              color: #333;
+            }
+            
+            p {
+              margin: 0;
+              font-size: 14px;
+              color: #666;
+              line-height: 1.5;
+            }
+          }
+        }
+      }
+    }
 
     // 通知中心卡片
     .notification-card {
+      animation: fadeIn 0.6s ease-out 0.5s both;
       .notification-content {
         max-height: 300px;
         overflow-y: auto;
@@ -310,52 +320,17 @@
 
   // 响应式设计
   @media (max-width: 768px) {
-    padding: 10px;
+    padding: 15px;
 
-    .dashboard-row {
-      .dashboard-card {
-        margin-bottom: 10px;
-
-        .card-content {
-          padding: 15px;
-
-          .card-icon {
-            width: 50px;
-            height: 50px;
-            margin-right: 15px;
-          }
-
-          .card-info {
-            .card-title {
-              font-size: 12px;
-            }
-
-            .card-number {
-              font-size: 20px;
-            }
-          }
-        }
+    .welcome-banner {
+      padding: 25px 20px;
+      
+      .welcome-stats {
+        gap: 20px;
       }
     }
 
     .main-content-row {
-      .quick-actions-card {
-        .quick-actions-content {
-          .action-item {
-            padding: 15px 0;
-
-            .action-icon {
-              width: 40px;
-              height: 40px;
-              font-size: 16px;
-            }
-
-            .action-title {
-              font-size: 12px;
-            }
-          }
-        }
-      }
 
       .restaurant-status-card {
         .status-content {
@@ -377,6 +352,27 @@
           }
         }
       }
+    }
+  }
+  
+  // 动画定义
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 }

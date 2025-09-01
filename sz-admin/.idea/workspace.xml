@@ -4,20 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="查询统计页面调试">
+    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="查询统计页面完善">
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/framework/V2.6__20250828_Update_DDL.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__create_third_party_user_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__update_dish_recipe_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/db.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/LayoutClassic/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/LayoutClassic/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/components/Header/ToolBarRight.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/components/Header/ToolBarRight.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/login/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/statistics/components/ProfitAnalysisChart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/statistics/components/ProfitAnalysisChart.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/statistics/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/statistics/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/LayoutTransverse/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/LayoutTransverse/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/LayoutVertical/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/LayoutVertical/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/home/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/home/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/home/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/home/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/dineInOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/dineInOrder/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/takeAwayOrder/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +102,7 @@
       <workItem from="1755844938208" duration="8880000" />
       <workItem from="1756016798742" duration="13869000" />
       <workItem from="1756084285596" duration="58058000" />
-      <workItem from="1756518180917" duration="41139000" />
+      <workItem from="1756518180917" duration="44823000" />
     </task>
     <task id="LOCAL-00001" summary="服务员点单页面初始化">
       <option name="closed" value="true" />
@@ -168,7 +168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756655466809</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="查询统计页面完善">
+      <option name="closed" value="true" />
+      <created>1756717523649</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1756717523649</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,6 +202,7 @@
     <MESSAGE value="下单，接单状态改变时，发送通知" />
     <MESSAGE value="查询统计页面初始化" />
     <MESSAGE value="查询统计页面调试" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询统计页面调试" />
+    <MESSAGE value="查询统计页面完善" />
+    <option name="LAST_COMMIT_MESSAGE" value="查询统计页面完善" />
   </component>
 </project>
