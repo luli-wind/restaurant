@@ -225,6 +225,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         if (dto.getStatus().equals("2005002")) {
             if(inventoryService.isEnough(dto.getOrderId())){
                 //扣除库存中的材料
+                messageService.sendMakeOrderAlert(orders);
                 inventoryService.subtractMatrials(dto.getOrderId());
             }else {
                 //告知管理员或服务员材料不足，让他们取消订单或者更换订单
@@ -250,31 +251,33 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
     }
 
     private static QueryWrapper buildQueryWrapper(TakeawayOrdersListDTO dto) {
-        QueryWrapper wrapper = QueryWrapper.create().from(TAKEAWAY_ORDERS);
-        
-        // 关联订单表进行查询
-        if (Utils.isNotNull(dto.getStatus()) || Utils.isNotNull(dto.getPayStatus())) {
+            QueryWrapper wrapper = QueryWrapper.create().from(TAKEAWAY_ORDERS);
+            
+            // 总是关联订单表，因为我们需要访问订单的创建时间字段
             wrapper.leftJoin(ORDERS).on(TAKEAWAY_ORDERS.ORDER_ID.eq(ORDERS.ORDER_ID));
+            
+            if (Utils.isNotNull(dto.getStatus())) {
+                wrapper.eq(Orders::getStatus, dto.getStatus());
+            }
+            if (Utils.isNotNull(dto.getPayStatus())) {
+                wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
+            }
+            if (Utils.isNotNull(dto.getCustomerPhone())) {
+                wrapper.like(TakeawayOrders::getCustomerPhone, dto.getCustomerPhone());
+            }
+            if (Utils.isNotNull(dto.getDeliveryAddress())) {
+                wrapper.like(TakeawayOrders::getDeliveryAddress, dto.getDeliveryAddress());
+            }
+    
+            if (Utils.isNotNull(dto.getCustomerName())) {
+                wrapper.like(TakeawayOrders::getCustomerName, dto.getCustomerName());
+            }
+            
+            // 按创建时间降序排序（最新创建的在前面）
+            wrapper.orderBy(Orders::getCreateTime, false);
+            
+            return wrapper;
         }
-        
-        if (Utils.isNotNull(dto.getStatus())) {
-            wrapper.eq(Orders::getStatus, dto.getStatus());
-        }
-        if (Utils.isNotNull(dto.getPayStatus())) {
-            wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
-        }
-        if (Utils.isNotNull(dto.getCustomerPhone())) {
-            wrapper.like(TakeawayOrders::getCustomerPhone, dto.getCustomerPhone());
-        }
-        if (Utils.isNotNull(dto.getDeliveryAddress())) {
-            wrapper.like(TakeawayOrders::getDeliveryAddress, dto.getDeliveryAddress());
-        }
-
-        if (Utils.isNotNull(dto.getCustomerName())) {
-            wrapper.like(TakeawayOrders::getCustomerName, dto.getCustomerName());
-        }
-        return wrapper;
-    }
 
     @Override
     public TakeawayOrdersVO createGuestOrder(TakeawayOrdersCreateDTO dto) {

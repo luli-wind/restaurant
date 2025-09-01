@@ -3,13 +3,13 @@
     <div class="page-header">
       <h1>访客下单</h1>
       <p>欢迎使用我们的在线订餐服务，请选择您喜欢的菜品</p>
-      <div class="third-party-login" v-if="!isThirdPartyUser">
-        <p>或使用第三方账号快速登录:</p>
-        <div class="login-buttons">
-          <button class="wechat-login" @click="loginWithWechat">微信登录</button>
-          <button class="alipay-login" @click="loginWithAlipay">支付宝登录</button>
-        </div>
-      </div>
+<!--      <div class="third-party-login" v-if="!isThirdPartyUser">-->
+<!--        <p>或使用第三方账号快速登录:</p>-->
+<!--        <div class="login-buttons">-->
+<!--          <button class="wechat-login" @click="loginWithWechat">微信登录</button>-->
+<!--          <button class="alipay-login" @click="loginWithAlipay">支付宝登录</button>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="header-actions">
         <button class="history-button" @click="goToOrderHistory" v-if="isThirdPartyUser">查看订单历史</button>
         <button class="exit-button" @click="exitToLogin">退出</button>

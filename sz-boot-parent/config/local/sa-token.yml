@@ -42,6 +42,6 @@ router:
     - "/swagger-ui.html"
     - "/www/**"
     - "/wechat/**"
-    - "/api/admin/takeaway-orders/guest"
+    - "/takeaway-orders/guest"
     - "/dish/all"
     - "/third-party-login"

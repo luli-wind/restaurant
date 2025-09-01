@@ -35,7 +35,7 @@
             </div>
           </template>
           <el-table :data="recentOrders" style="width: 100%">
-            <el-table-column prop="orderNumber" label="订单号" width="180" />
+            <el-table-column prop="orderNumber" label="订单号" width="300" />
             <el-table-column prop="tableName" label="桌号" width="80" />
             <el-table-column prop="totalAmount" label="金额" width="100">
               <template #default="scope">

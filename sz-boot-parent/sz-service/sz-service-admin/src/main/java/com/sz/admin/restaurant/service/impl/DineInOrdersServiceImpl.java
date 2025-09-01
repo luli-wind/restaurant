@@ -318,25 +318,27 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
     }
 
     private static QueryWrapper buildQueryWrapper(DineInOrdersListDTO dto) {
-        QueryWrapper wrapper = QueryWrapper.create().from(DineInOrders.class);
-        
-        // 关联订单表进行查询
-        if (Utils.isNotNull(dto.getStatus()) || Utils.isNotNull(dto.getPayStatus()) || Utils.isNotNull(dto.getOrderId())) {
+            QueryWrapper wrapper = QueryWrapper.create().from(DineInOrders.class);
+            
+            // 总是关联订单表，因为我们需要访问订单的创建时间字段
             wrapper.leftJoin(ORDERS).on(DINE_IN_ORDERS.ORDER_ID.eq(ORDERS.ORDER_ID));
+            
+            if (Utils.isNotNull(dto.getOrderId())) {
+                wrapper.eq(DineInOrders::getOrderId, dto.getOrderId());
+            }
+            if (Utils.isNotNull(dto.getTableId())) {
+                wrapper.eq(DineInOrders::getTableId, dto.getTableId());
+            }
+            if (Utils.isNotNull(dto.getStatus())) {
+                wrapper.eq(Orders::getStatus, dto.getStatus());
+            }
+            if (Utils.isNotNull(dto.getPayStatus())) {
+                wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
+            }
+            
+            // 按创建时间降序排序（最新创建的在前面）
+            wrapper.orderBy(Orders::getCreateTime, false);
+            
+            return wrapper;
         }
-        
-        if (Utils.isNotNull(dto.getOrderId())) {
-            wrapper.eq(DineInOrders::getOrderId, dto.getOrderId());
-        }
-        if (Utils.isNotNull(dto.getTableId())) {
-            wrapper.eq(DineInOrders::getTableId, dto.getTableId());
-        }
-        if (Utils.isNotNull(dto.getStatus())) {
-            wrapper.eq(Orders::getStatus, dto.getStatus());
-        }
-        if (Utils.isNotNull(dto.getPayStatus())) {
-            wrapper.eq(Orders::getPayStatus, dto.getPayStatus());
-        }
-        return wrapper;
-    }
 }

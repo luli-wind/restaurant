@@ -151,13 +151,6 @@
           接单
         </el-button>
         <el-button
-          v-if="orderData.status === '2005002'"
-          type="success"
-          @click="handleFinishCooking"
-        >
-          完成制作
-        </el-button>
-        <el-button
           v-if="orderData.status === '2005003'"
           type="success"
           @click="handleDelivery"
@@ -330,11 +323,6 @@ const handleStartCooking = () => {
   handleClose()
 }
 
-// 完成制作
-const handleFinishCooking = () => {
-  emit('updateStatus', props.orderData, { status: '2005003' })
-  handleClose()
-}
 
 // 开始配送
 const handleDelivery = () => {
