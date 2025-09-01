@@ -71,7 +71,7 @@
     <!-- 图表展示区域 -->
     <el-row :gutter="20" class="charts-row">
       <!-- 销售趋势图表 -->
-      <el-col :xs="24" :md="12">
+      <el-col :xs="24" :md="24">
         <el-card class="chart-card" v-loading="loading.salesTrend">
           <template #header>
             <div class="card-header">
@@ -94,19 +94,19 @@
         </el-card>
       </el-col>
 
-      <!-- 利润分析图表 -->
-      <el-col :xs="24" :md="12">
-        <el-card class="chart-card" v-loading="loading.profitAnalysis">
-          <template #header>
-            <div class="card-header">
-              <span>利润分析</span>
-            </div>
-          </template>
-          <div class="chart-container">
-            <ProfitAnalysisChart :data="profitAnalysisData" />
-          </div>
-        </el-card>
-      </el-col>
+<!--      &lt;!&ndash; 利润分析图表 &ndash;&gt;-->
+<!--      <el-col :xs="24" :md="12">-->
+<!--        <el-card class="chart-card" v-loading="loading.profitAnalysis">-->
+<!--          <template #header>-->
+<!--            <div class="card-header">-->
+<!--              <span>利润分析</span>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <div class="chart-container">-->
+<!--            <ProfitAnalysisChart :data="profitAnalysisData" />-->
+<!--          </div>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
 
       <!-- 菜品销售排行 -->
       <el-col :xs="24" :md="12">
@@ -179,15 +179,15 @@
         </el-table-column>
       </el-table>
       <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+<!--        <el-pagination-->
+<!--          v-model:current-page="pagination.currentPage"-->
+<!--          v-model:page-size="pagination.pageSize"-->
+<!--          :page-sizes="[10, 20, 50, 100]"-->
+<!--          :total="pagination.total"-->
+<!--          layout="total, sizes, prev, pager, next, jumper"-->
+<!--          @size-change="handleSizeChange"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--        />-->
       </div>
     </el-card>
   </div>
@@ -423,6 +423,7 @@ const loadProfitAnalysis = async () => {
     
     const response = await getProfitAnalysisApi(params)
     const data = response.data
+    console.log(data)
     
     profitAnalysisData.value = data
   } catch (err) {

@@ -10,66 +10,29 @@
         </div>
       </div>
       <div class="chart-content">
-        <div class="chart-bars">
-          <div 
-            v-for="(item, index) in chartData" 
-            :key="index" 
-            class="bar-container">
-            <div class="bar-group">
-              <div 
-                class="bar bar-revenue" 
-                :style="{ height: calculateBarHeight(item.revenue) }">
-                <div class="bar-value">¥{{ formatValue(item.revenue) }}</div>
-              </div>
-              <div 
-                class="bar bar-cost" 
-                :style="{ height: calculateBarHeight(item.cost) }">
-                <div class="bar-value">¥{{ formatValue(item.cost) }}</div>
-              </div>
-              <div 
-                class="bar bar-profit" 
-                :style="{ height: calculateBarHeight(item.profit) }">
-                <div class="bar-value">¥{{ formatValue(item.profit) }}</div>
-              </div>
-            </div>
-            <div class="bar-label">{{ item.date }}</div>
-          </div>
-        </div>
-        <div class="profit-line">
-          <div 
-            v-for="(item, index) in chartData" 
+        <svg class="chart-svg">
+          <!-- 利润折线 -->
+          <polyline
+            :points="profitLinePoints"
+            fill="none"
+            stroke="#409eff"
+            stroke-width="3" />
+        </svg>
+        <div class="x-axis">
+          <div
+            v-for="(item, index) in chartData"
             :key="index"
-            class="profit-point"
-            :style="{ left: `${(index / (chartData.length - 1)) * 100}%`, bottom: `${item.profitMargin}%` }">
-            <div class="profit-tooltip">{{ item.profitMargin }}%</div>
+            class="x-axis-label"
+            :style="{ left: `${(index / (chartData.length - 1)) * 100}%` }">
+            {{ item.date }}
           </div>
-          <svg class="profit-svg">
-            <polyline 
-              :points="profitLinePoints"
-              fill="none"
-              stroke="#ff6b35"
-              stroke-width="2" />
-          </svg>
         </div>
-        <div class="x-axis"></div>
       </div>
     </div>
     <div class="chart-legend">
       <div class="legend-item">
-        <div class="legend-color revenue-color"></div>
-        <span>收入</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color cost-color"></div>
-        <span>成本</span>
-      </div>
-      <div class="legend-item">
         <div class="legend-color profit-color"></div>
         <span>利润</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color margin-color"></div>
-        <span>利润率</span>
       </div>
     </div>
   </div>
@@ -90,9 +53,11 @@ const props = defineProps<{
   data: ProfitData[]
 }>()
 
+const chartData = props.data
+
 // 计算最大值
 const maxValue = computed(() => {
-  const values = props.data.flatMap(item => [item.revenue, item.cost, item.profit])
+  const values = props.data.map(item => item.profit) // 只获取利润数据的最大值
   return Math.max(...values) * 1.1 // 留出10%空间
 })
 
@@ -109,29 +74,14 @@ const yAxisLabels = computed(() => {
   ]
 })
 
-// 计算柱状图高度
-const calculateBarHeight = (value: number) => {
-  return `${(value / maxValue.value) * 100}%`
-}
-
-// 格式化数值
-const formatValue = (value: number) => {
-  if (value >= 10000) {
-    return `${(value / 10000).toFixed(1)}w`
-  } else if (value >= 1000) {
-    return `${(value / 1000).toFixed(1)}k`
-  }
-  return value.toFixed(0)
-}
-
-// 计算利润率折线图的点
+// 计算利润折线图的点
 const profitLinePoints = computed(() => {
   if (!props.data.length) return ''
   
   const points = props.data.map((item, index) => {
     const x = (index / (props.data.length - 1)) * 100
-    const y = 100 - (item.profitMargin / 100) * 100 // 反转Y轴
-    return `${x},${y}`
+    const y = (item.profit / maxValue.value) * 100
+    return `${x},${100 - y}` // 反转Y轴
   })
   return points.join(' ')
 })
@@ -139,6 +89,7 @@ const profitLinePoints = computed(() => {
 
 <style scoped lang="scss">
 .profit-analysis-chart {
+  width: 480px;
   .chart-header {
     margin-bottom: 20px;
 
@@ -151,7 +102,7 @@ const profitLinePoints = computed(() => {
 
   .chart-container {
     display: flex;
-    height: 350px;
+    height: 350px; /* 增加高度以提供更多空间 */
     position: relative;
 
     .y-axis {
@@ -175,125 +126,35 @@ const profitLinePoints = computed(() => {
       flex: 1;
       position: relative;
 
-      .chart-bars {
-        display: flex;
-        align-items: flex-end;
-        height: 300px;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        border-left: 1px solid #eee;
-
-        .bar-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 0 5px;
-
-          .bar-group {
-            display: flex;
-            align-items: flex-end;
-            height: 100%;
-            gap: 2px;
-
-            .bar {
-              width: 20px;
-              position: relative;
-              transition: all 0.3s ease;
-              border-radius: 2px 2px 0 0;
-
-              &:hover {
-                opacity: 0.8;
-                transform: scale(1.05);
-              }
-
-              .bar-value {
-                position: absolute;
-                top: -25px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 11px;
-                color: #666;
-                white-space: nowrap;
-              }
-
-              &.bar-revenue {
-                background-color: #67c23a;
-              }
-
-              &.bar-cost {
-                background-color: #f56c6c;
-              }
-
-              &.bar-profit {
-                background-color: #409eff;
-              }
-            }
-          }
-
-          .bar-label {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-          }
-        }
-      }
-
-      .profit-line {
+      .chart-svg {
         position: absolute;
         top: 10px;
         left: 0;
-        right: 0;
-        bottom: 30px;
+        width: 100%;
+        height: 300px;
         pointer-events: none;
-
-        .profit-point {
-          position: absolute;
-          width: 8px;
-          height: 8px;
-          background-color: #ff6b35;
-          border-radius: 50%;
-          transform: translate(-50%, 50%);
-          transition: all 0.3s ease;
-
-          &:hover {
-            transform: translate(-50%, 50%) scale(1.5);
-          }
-
-          .profit-tooltip {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-
-            .profit-point:hover & {
-              opacity: 1;
-            }
-          }
-        }
-
-        .profit-svg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-        }
       }
 
       .x-axis {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         height: 30px;
         border-top: 1px solid #eee;
+
+        .x-axis-label {
+          position: absolute;
+          bottom: 0;
+          transform: translateX(-50%) rotate(-45deg); /* 旋转标签以节省空间 */
+          transform-origin: center bottom;
+          font-size: 11px; /* 减小字体大小 */
+          color: #666;
+          white-space: nowrap;
+          max-width: 80px; /* 限制标签宽度 */
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

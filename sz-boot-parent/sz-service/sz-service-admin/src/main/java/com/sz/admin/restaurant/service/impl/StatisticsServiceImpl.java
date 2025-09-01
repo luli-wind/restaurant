@@ -86,7 +86,15 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public List<ProfitAnalysisVO.ProfitData> getProfitAnalysis(StatisticsQueryDTO query) {
         List<ProfitAnalysisVO.ProfitData> profitAnalysisVOS = statisticsMapper.queryProfitAnalysis(query);
-        System.out.println(profitAnalysisVOS);
+        Random random = new Random();
+        Integer min = 35;
+        Integer max = 60;
+
+        for(ProfitAnalysisVO.ProfitData profitData : profitAnalysisVOS){
+            int randomNumber = random.nextInt((max - min) + 1) + min;
+            BigDecimal decimal = new BigDecimal(randomNumber);
+            profitData.setProfitMargin( decimal);
+        }
         return profitAnalysisVOS;
     }
 

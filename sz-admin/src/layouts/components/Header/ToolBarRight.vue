@@ -1,12 +1,12 @@
 <template>
   <div class="tool-bar-ri">
     <div class="header-icon">
-      <AssemblySize id="assemblySize" />
-      <Language id="language" />
-      <SearchMenu id="searchMenu" />
-      <ThemeSetting id="themeSetting" />
+<!--      <AssemblySize id="assemblySize" />-->
+<!--      <Language id="language" />-->
+<!--      <SearchMenu id="searchMenu" />-->
+<!--      <ThemeSetting id="themeSetting" />-->
       <Message id="message" />
-      <Fullscreen id="fullscreen" />
+<!--      <Fullscreen id="fullscreen" />-->
     </div>
     <span class="username">{{ nickname }}</span>
     <Avatar />
