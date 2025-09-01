@@ -4,18 +4,16 @@ export interface CoreIndicatorsResponse {
     orderCount: number
     customerCount: number
     avgOrderAmount: number
-    tableUsageRate: number
 }
 
 // 销售趋势数据
 export interface SalesTrendData {
     date: string
     amount: number
+    count: number
 }
 
-export interface SalesTrendResponse {
-    trendData: SalesTrendData[]
-}
+export type SalesTrendResponse = SalesTrendData[]
 
 // 菜品排行数据
 export interface DishRankingData {
@@ -25,9 +23,7 @@ export interface DishRankingData {
     amount: number
 }
 
-export interface DishRankingResponse {
-    rankingData: DishRankingData[]
-}
+export type DishRankingResponse = DishRankingData[]
 
 // 订单状态数据
 export interface OrderStatusData {
@@ -37,9 +33,7 @@ export interface OrderStatusData {
     percentage: number
 }
 
-export interface OrderStatusResponse {
-    statusData: OrderStatusData[]
-}
+export type OrderStatusResponse = OrderStatusData[]
 
 // 利润分析数据
 export interface ProfitAnalysisData {
@@ -50,25 +44,27 @@ export interface ProfitAnalysisData {
     profitMargin: number
 }
 
-export interface ProfitAnalysisResponse {
-    profitData: ProfitAnalysisData[]
-}
+export type ProfitAnalysisResponse = ProfitAnalysisData[]
 
 // 详细数据
 export interface DetailedRecord {
-    date: string
-    orderCount: number
-    customerCount: number
-    totalSales: number
-    avgOrderAmount: number
-    tableUsageRate: number
+    orderId: number
+    orderNumber: string
+    orderTime: string
+    totalAmount: number
+    orderStatus: string
+    orderCount:number
+    customerCount:number
+    profitMargin:number
+    dishNames: string
 }
 
 export interface DetailedDataResponse {
-    records: DetailedRecord[]
+    rows: DetailedRecord[]
     total: number
-    page: number
-    size: number
+    current: number
+    limit: number
+    totalPage: number
 }
 
 // 请求参数接口

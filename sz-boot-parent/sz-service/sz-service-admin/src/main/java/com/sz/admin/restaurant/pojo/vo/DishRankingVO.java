@@ -10,12 +10,6 @@ import java.util.List;
 @Schema(description = "菜品排行响应")
 public class DishRankingVO {
 
-    @Schema(description = "排行数据列表")
-    private List<RankingData> rankingData;
-
-    @Data
-    @Schema(description = "排行数据项")
-    public static class RankingData {
         @Schema(description = "菜品ID")
         private Long dishId;
 
@@ -27,5 +21,5 @@ public class DishRankingVO {
 
         @Schema(description = "销售金额")
         private BigDecimal amount;
-    }
+
 }

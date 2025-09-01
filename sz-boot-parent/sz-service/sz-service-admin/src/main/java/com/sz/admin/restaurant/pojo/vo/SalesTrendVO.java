@@ -20,7 +20,7 @@ public class SalesTrendVO {
         private String date;
 
         @Schema(description = "销售额")
-        private BigDecimal amount;
+        private Double amount;
 
         @Schema(description = "订单数")
         private Integer count;

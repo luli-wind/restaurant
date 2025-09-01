@@ -6,12 +6,12 @@
     <select id="queryCoreIndicators" resultType="com.sz.admin.restaurant.pojo.vo.CoreIndicatorsVO">
         SELECT
             COALESCE(SUM(o.total_amount), 0) as totalSales,
-            COUNT(DISTINCT o.order_id) as totalOrders,
-            COUNT(DISTINCT o.order_id ) + SUM(dine.number_of_guests) as totalCustomers,
-            CASE 
+            COUNT(DISTINCT o.order_id) as orderCount,
+            COUNT(DISTINCT o.order_id ) + SUM(dine.number_of_guests) as customerCount,
+            CASE
                 WHEN COUNT(DISTINCT o.order_id) > 0 THEN ROUND(SUM(o.total_amount) / COUNT(DISTINCT o.order_id), 2)
                 ELSE 0
-            END as averageOrderValue
+            END as avgOrderAmount
         FROM orders o
         JOIN dine_in_orders dine on dine.order_id = o.order_id
         WHERE o.status IN ('2005005', '2004005')
@@ -40,8 +40,8 @@
                     DATE_FORMAT(create_time, '%Y-%m-%d') as date
                 </otherwise>
             </choose>,
-            SUM(total_amount) as salesAmount,
-            COUNT(order_id) as orderCount
+            SUM(total_amount) as amount,
+            COUNT(order_id) as count
         FROM dining_hall.orders
         WHERE status IN ('2005005', '2004005')
         <if test="query.startDate != null">
@@ -59,8 +59,8 @@
         SELECT
             d.dish_id as dishId,
             d.dish_name as dishName,
-            SUM(od.number) as salesCount,
-            SUM(od.number * d.price) as salesAmount
+            SUM(od.number) as quantity,
+            SUM(od.number * d.price) as amount
         FROM dining_hall.dish d
         JOIN dining_hall.order_detail od ON d.dish_id = od.dish_id
         JOIN dining_hall.orders o ON od.order_id = o.order_id
@@ -75,7 +75,7 @@
             AND d.category = #{query.categoryId}
         </if>
         GROUP BY d.dish_id, d.dish_name
-        ORDER BY salesAmount DESC
+        ORDER BY amount DESC
         LIMIT 10
     </select>
 
@@ -85,7 +85,7 @@
             status as status,
             COUNT(*) as count,
             ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM dining_hall.orders 
-                WHERE status IN ('2004005', '2005005', '2005006', '2004004','2005002','2004002')
+                WHERE status IN ('2005005', '2004005','2004004','2005006','2005002','2005004','2004002','2004003')
                 <if test="query.startDate != null">
                     AND DATE(create_time) >= #{query.startDate}
                 </if>
@@ -93,8 +93,8 @@
                     AND DATE(create_time) &lt;= #{query.endDate}
                 </if>
             ), 2) as percentage
-        FROM dining_hall.orders
-        WHERE status IN ('进行中', '已完成', '已取消', '已送达')
+        FROM orders
+        WHERE status IN ('2005005', '2004005','2004004','2005006','2005002','2005004','2004002','2004003')
         <if test="query.startDate != null">
             AND DATE(create_time) >= #{query.startDate}
         </if>
@@ -125,7 +125,7 @@
             SUM(total_amount * 0.5) as cost,
             SUM(total_amount * 0.5) as profit,
             50.0 as profitMargin
-        FROM dining_hall.orders
+        FROM orders
         WHERE status IN ('2004005', '2005005')
         <if test="query.startDate != null">
             AND DATE(create_time) >= #{query.startDate}
@@ -140,31 +140,28 @@
     <!-- 查询详细数据列表 -->
     <select id="queryDetailedData" resultType="com.sz.admin.restaurant.pojo.vo.DetailedDataVO">
         SELECT
-            o.order_id as orderId,
-            o.order_number as orderNumber,
-            o.create_time as orderTime,
-            o.total_amount as totalAmount,
-            o.status as orderStatus,
-            GROUP_CONCAT(d.dish_name) as dishNames
-        FROM dining_hall.orders o
+            MIN(o.order_id) as orderId,
+            GROUP_CONCAT(o.order_number) as orderNumber,
+            DATE_FORMAT(o.create_time, '%Y-%m-%d') as orderTime,
+            SUM(o.total_amount) as totalAmount,
+            GROUP_CONCAT(o.status) as orderStatus,
+            GROUP_CONCAT(d.dish_name) as dishNames,
+            COUNT(DISTINCT o.order_id) as orderCount,
+            COUNT(DISTINCT o.order_id)+SUM(dine.number_of_guests) as customerCount
+        FROM orders o
         LEFT JOIN dining_hall.order_detail od ON o.order_id = od.order_id
         LEFT JOIN dining_hall.dish d ON od.dish_id = d.dish_id
+        LEFT JOIN dining_hall.dine_in_orders dine on dine.order_id = o.order_id
         WHERE 1=1
-        <if test="query.startDate != null">
-            AND DATE(o.create_time) >= #{query.startDate}
-        </if>
-        <if test="query.endDate != null">
-            AND DATE(o.create_time) &lt;= #{query.endDate}
-        </if>
-        GROUP BY o.order_id, o.order_number, o.create_time, o.total_amount, o.status
-        ORDER BY o.create_time DESC
+        GROUP BY DATE_FORMAT(o.create_time, '%Y-%m-%d')
+        ORDER BY orderTime DESC
         LIMIT #{query.pageSize} OFFSET ${(query.pageNum - 1) * query.pageSize}
     </select>
 
     <!-- 查询详细数据总数 -->
     <select id="countDetailedData" resultType="java.lang.Long">
         SELECT COUNT(DISTINCT o.order_id)
-        FROM dining_hall.orders o
+        FROM orders o
         WHERE 1=1
         <if test="query.startDate != null">
             AND DATE(o.create_time) >= #{query.startDate}
@@ -179,15 +176,15 @@
         SELECT
             d.dish_id as dishId,
             d.dish_name as dishName,
-            SUM(od.number) as salesCount,
-            SUM(od.number * d.price) as salesAmount,
+            SUM(od.number) as quantity,
+            SUM(od.number * d.price) as amount,
             SUM(od.number * d.price * 0.4) as cost,
             SUM(od.number * d.price * 0.6) as profit,
             60.0 as profitMargin,
             0 as rank
-        FROM dining_hall.dish d
-        JOIN dining_hall.order_detail od ON d.dish_id = od.dish_id
-        JOIN dining_hall.orders o ON od.order_id = o.order_id
+        FROM dish d
+        JOIN order_detail od ON d.dish_id = od.dish_id
+        JOIN orders o ON od.order_id = o.order_id
         WHERE o.status IN ('2005005', '20040005')
         <if test="query.startDate != null">
             AND DATE(o.create_time) >= #{query.startDate}

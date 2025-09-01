@@ -20,6 +20,7 @@
     "@vueuse/core": "^10.11.1",
     "alipay-sdk": "^4.14.0",
     "axios": "^1.9.0",
+    "echarts": "^6.0.0",
     "element-plus": "^2.9.9",
     "eslint-plugin-prettier": "^5.4.0",
     "eslint-plugin-vue": "^10.1.0",

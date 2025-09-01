@@ -2,29 +2,41 @@ package com.sz.admin.restaurant.pojo.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-@Data
+@Slf4j
+@Getter
+@Setter
 @Schema(description = "订单状态分布响应")
 public class OrderStatusVO {
 
-    @Schema(description = "状态数据列表")
-    private List<StatusData> statusData;
+  private String status;
+  private String statusName;
+  private Long count;
+  private Double percentage;
 
-    @Data
-    @Schema(description = "状态数据项")
-    public static class StatusData {
-        @Schema(description = "状态码", example = "2004001")
-        private String status;
+  public OrderStatusVO() {
+    this.count=0L;
+    this.percentage=0.0;
+  }
 
-        @Schema(description = "状态名称", example = "已下单")
-        private String statusName;
+  public OrderStatusVO(String status, String statusName, Long count, Double percentage) {
+    this.status = status;
+    this.statusName = statusName;
+    this.count = count;
+    this.percentage = percentage;
+  }
 
-        @Schema(description = "数量", example = "10")
-        private Integer count;
+  public void plusCount(Long count){
+    this.count +=count;
+  }
 
-        @Schema(description = "百分比", example = "7.8")
-        private Double percentage;
-    }
+  public void plusPercentage(Double percentage){
+    this.percentage +=percentage;
+  }
+
 }

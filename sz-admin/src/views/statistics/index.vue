@@ -13,9 +13,6 @@
               <p class="card-title">销售总额</p>
               <p class="card-number">¥{{ formatNumber(coreMetrics.totalSales) }}</p>
               <p class="card-change" :class="getChangeClass(coreMetrics.salesChange)">
-                <el-icon v-if="coreMetrics.salesChange > 0"><Top /></el-icon>
-                <el-icon v-else-if="coreMetrics.salesChange < 0"><Bottom /></el-icon>
-                {{ Math.abs(coreMetrics.salesChange) }}% 同比
               </p>
             </div>
           </div>
@@ -32,9 +29,6 @@
               <p class="card-title">订单数量</p>
               <p class="card-number">{{ coreMetrics.orderCount }}</p>
               <p class="card-change" :class="getChangeClass(coreMetrics.orderChange)">
-                <el-icon v-if="coreMetrics.orderChange > 0"><Top /></el-icon>
-                <el-icon v-else-if="coreMetrics.orderChange < 0"><Bottom /></el-icon>
-                {{ Math.abs(coreMetrics.orderChange) }}% 同比
               </p>
             </div>
           </div>
@@ -51,9 +45,6 @@
               <p class="card-title">客户数量</p>
               <p class="card-number">{{ coreMetrics.customerCount }}</p>
               <p class="card-change" :class="getChangeClass(coreMetrics.customerChange)">
-                <el-icon v-if="coreMetrics.customerChange > 0"><Top /></el-icon>
-                <el-icon v-else-if="coreMetrics.customerChange < 0"><Bottom /></el-icon>
-                {{ Math.abs(coreMetrics.customerChange) }}% 同比
               </p>
             </div>
           </div>
@@ -70,9 +61,6 @@
               <p class="card-title">平均客单价</p>
               <p class="card-number">¥{{ formatNumber(coreMetrics.avgOrderAmount) }}</p>
               <p class="card-change" :class="getChangeClass(coreMetrics.avgChange)">
-                <el-icon v-if="coreMetrics.avgChange > 0"><Top /></el-icon>
-                <el-icon v-else-if="coreMetrics.avgChange < 0"><Bottom /></el-icon>
-                {{ Math.abs(coreMetrics.avgChange) }}% 同比
               </p>
             </div>
           </div>
@@ -91,13 +79,13 @@
               <div class="chart-controls">
                 <el-radio-group v-model="salesTrendType" @change="loadSalesTrendData">
                   <el-radio-button label="amount">销售额</el-radio-button>
-                  <el-radio-button label="count">订单数</el-radio-button>
+                  <el-radio-button label="quantity">订单数</el-radio-button>
                 </el-radio-group>
               </div>
             </div>
           </template>
           <div class="chart-container">
-            <SimpleBarChart
+            <EChartsLineChart
               title="销售趋势"
               :data="salesTrendData"
               :max-value="salesTrendMaxValue"
@@ -135,7 +123,7 @@
             </div>
           </template>
           <div class="chart-container">
-            <SimpleBarChart
+            <EChartsBarChart
               title="菜品销售排行"
               :data="dishRankingData"
               horizontal
@@ -168,9 +156,6 @@
       <template #header>
         <div class="card-header">
           <span>详细统计数据</span>
-          <div class="table-controls">
-            <el-button @click="exportData">导出数据</el-button>
-          </div>
         </div>
       </template>
       <el-table :data="detailData" style="width: 100%" border>
@@ -219,9 +204,10 @@ import {
   Top,
   Bottom
 } from '@element-plus/icons-vue'
-import SimpleBarChart from './components/SimpleBarChart.vue'
 import SimplePieChart from './components/SimplePieChart.vue'
 import ProfitAnalysisChart from './components/ProfitAnalysisChart.vue'
+import EChartsBarChart from './components/EChartsBarChart.vue'
+import EChartsLineChart from './components/EChartsLineChart.vue'
 import type {StatisticsQueryParams} from "@/api/types/statistics/statistics";
 import {
   getCoreIndicatorsApi,
@@ -260,19 +246,10 @@ const salesTrendMaxValue = ref(3500)
 
 // 菜品销售排行数据
 const dishRankingData = ref([
-  { label: '宫保鸡丁', value: 120 },
-  { label: '麻婆豆腐', value: 95 },
-  { label: '红烧肉', value: 80 },
-  { label: '糖醋里脊', value: 70 },
-  { label: '鱼香肉丝', value: 65 }
 ])
 
 // 订单状态分布数据
 const orderStatusData = ref([
-  { label: '已完成', value: 120, percentage: 60 },
-  { label: '制作中', value: 40, percentage: 20 },
-  { label: '待处理', value: 25, percentage: 12.5 },
-  { label: '已取消', value: 15, percentage: 7.5 }
 ])
 
 // 利润分析数据
@@ -291,53 +268,7 @@ const salesTrendType = ref('amount')
 const dishRankingType = ref('quantity')
 
 // 详细数据表格
-const detailData = ref([
-  { 
-    id: 1, 
-    date: '2023-08-01', 
-    salesAmount: 1200.00, 
-    orderCount: 25, 
-    customerCount: 30, 
-    avgOrderAmount: 48.00, 
-    profitMargin: 48 
-  },
-  { 
-    id: 2, 
-    date: '2023-08-02', 
-    salesAmount: 1500.00, 
-    orderCount: 32, 
-    customerCount: 38, 
-    avgOrderAmount: 46.88, 
-    profitMargin: 45 
-  },
-  { 
-    id: 3, 
-    date: '2023-08-03', 
-    salesAmount: 890.00, 
-    orderCount: 18, 
-    customerCount: 22, 
-    avgOrderAmount: 49.44, 
-    profitMargin: 50 
-  },
-  { 
-    id: 4,
-    date: '2023-08-04', 
-    salesAmount: 2100.00, 
-    orderCount: 42, 
-    customerCount: 50, 
-    avgOrderAmount: 50.00, 
-    profitMargin: 52 
-  },
-  { 
-    id: 5, 
-    date: '2023-08-05', 
-    salesAmount: 3200.00, 
-    orderCount: 65, 
-    customerCount: 75, 
-    avgOrderAmount: 49.23, 
-    profitMargin: 50 
-  }
-])
+const detailData = ref([])
 
 // 分页数据
 const pagination = reactive({
@@ -414,14 +345,14 @@ const loadSalesTrend = async () => {
     loading.salesTrend = true
     error.value = null
     const params = getQueryParams()
-    params.type = salesTrendType.value as 'amount' | 'count'
+    params.type = salesTrendType.value as 'amount' | 'quantity'
     
     const response = await getSalesTrendApi(params)
     const data = response.data
     
-    salesTrendData.value = data.trendData.map(item => ({
+    salesTrendData.value = data.map(item => ({
       label: item.date,
-      value: salesTrendType.value === 'amount' ? item.amount : item.count || 0
+      value: salesTrendType.value === 'amount' ? Math.round(item.amount * 100) / 100 : item.count || 0
     }))
     
     salesTrendMaxValue.value = Math.max(...salesTrendData.value.map(item => item.value)) * 1.2
@@ -446,7 +377,7 @@ const loadDishRanking = async () => {
     const response = await getDishRankingApi(params)
     const data = response.data
     
-    dishRankingData.value = data.rankingData.map(item => ({
+    dishRankingData.value = data.map(item => ({
       label: item.dishName,
       value: dishRankingType.value === 'quantity' ? item.quantity : item.amount
     }))
@@ -469,7 +400,7 @@ const loadOrderStatusDistribution = async () => {
     const response = await getOrderStatusDistributionApi(params)
     const data = response.data
     
-    orderStatusData.value = data.statusData.map(item => ({
+    orderStatusData.value = data.map(item => ({
       label: item.statusName,
       value: item.count,
       percentage: item.percentage
@@ -493,7 +424,7 @@ const loadProfitAnalysis = async () => {
     const response = await getProfitAnalysisApi(params)
     const data = response.data
     
-    profitAnalysisData.value = data.profitData
+    profitAnalysisData.value = data
   } catch (err) {
     console.error('加载利润分析失败:', err)
     error.value = '加载利润分析失败'
@@ -513,13 +444,14 @@ const loadDetailedData = async () => {
     const response = await getDetailedDataApi(params)
     const data = response.data
     
-    detailData.value = data.records.map(item => ({
-      date: item.date,
-      salesAmount: item.totalSales,
+    detailData.value = data.rows.map((item, index) => ({
+      id: index + 1,
+      date: item.orderTime,
+      salesAmount: item.totalAmount,
       orderCount: item.orderCount,
       customerCount: item.customerCount,
-      avgOrderAmount: item.avgOrderAmount,
-      profitMargin: Math.round((item.profit || 0) * 100)
+      avgOrderAmount: item.totalAmount/item.orderCount,
+      profitMargin: item.profitMargin
     }))
     
     pagination.total = data.total

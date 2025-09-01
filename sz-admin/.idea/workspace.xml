@@ -4,41 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="查询统计页面初始化">
-      <change afterPath="$PROJECT_DIR$/src/api/modules/statistics/statistics.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/types/statistics/statistics.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/StatisticsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/mapper/StatisticsMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/StatisticsQueryDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/CoreIndicatorsVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DetailedDataVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishProfitRankingVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishRankingVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/OrderStatusVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ProfitAnalysisVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/SalesTrendVO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/StatisticsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" afterDir="false" />
+    <list default="true" id="4dcf903a-66d1-417b-a5f9-b8843f396efd" name="更改" comment="查询统计页面调试">
+      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/EChartsBarChart.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/statistics/components/EChartsLineChart.vue" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/framework/V2.6__20250828_Update_DDL.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__create_third_party_user_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_1__update_dish_recipe_table.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/StatisticsMapper.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/db.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/modules/statistics.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/layouts/components/Footer/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/components/Footer/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/restaurant/expense/components/ExpenseForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/restaurant/expense/components/ExpenseForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.vite/deps/_metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/types/statistics/statistics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/types/statistics/statistics.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/statistics/components/SimpleBarChart.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/statistics/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/statistics/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/statistics/styles/README.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseImportDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseImportDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseListDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseListDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/dto/ExpenseUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/po/Expense.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ExpenseVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/ExpenseVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DetailedDataVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DetailedDataVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishRankingVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/DishRankingVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/OrderStatusVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/OrderStatusVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/SalesTrendVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/pojo/vo/SalesTrendVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/StatisticsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/StatisticsMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/StatisticsMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,20 +82,6 @@
     ]
   }
 }</component>
-  <component name="RunAnythingCache">
-    <myKeys>
-      <visibility group="Gradle 任务" flag="true" />
-      <visibility group="Grunt" flag="true" />
-      <visibility group="Gulp" flag="true" />
-      <visibility group="HTTP 请求" flag="true" />
-      <visibility group="Maven 目标" flag="true" />
-      <visibility group="Node.js" flag="true" />
-      <visibility group="npm" flag="true" />
-      <visibility group="yarn" flag="true" />
-      <visibility group="最近的项目" flag="true" />
-      <visibility group="运行配置" flag="true" />
-    </myKeys>
-  </component>
   <component name="RunManager">
     <configuration name="serve" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/package.json" />
@@ -137,7 +113,7 @@
       <workItem from="1755844938208" duration="8880000" />
       <workItem from="1756016798742" duration="13869000" />
       <workItem from="1756084285596" duration="58058000" />
-      <workItem from="1756518180917" duration="31402000" />
+      <workItem from="1756518180917" duration="38128000" />
     </task>
     <task id="LOCAL-00001" summary="服务员点单页面初始化">
       <option name="closed" value="true" />
@@ -195,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756641477935</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="查询统计页面调试">
+      <option name="closed" value="true" />
+      <created>1756655466809</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1756655466809</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +204,7 @@
     <MESSAGE value="加单功能实现。" />
     <MESSAGE value="下单，接单状态改变时，发送通知" />
     <MESSAGE value="查询统计页面初始化" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询统计页面初始化" />
+    <MESSAGE value="查询统计页面调试" />
+    <option name="LAST_COMMIT_MESSAGE" value="查询统计页面调试" />
   </component>
 </project>
