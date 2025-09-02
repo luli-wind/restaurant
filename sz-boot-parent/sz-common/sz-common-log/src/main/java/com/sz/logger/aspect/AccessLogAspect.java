@@ -53,7 +53,15 @@ public class AccessLogAspect {
             AccessRequestLog requestLog = buildRequestLog(joinPoint, request);
             CopyOnWriteArraySet<String> whitelist = whitelistProperties.getWhitelist();
             if (isNotSaIgnoreInterface(joinPoint) && isNotWhitelist(request.getRequestURI(), request.getContextPath(), whitelist)) {
-                requestLog.setUserId(StpUtil.getLoginIdAsString());
+                try {
+                    requestLog.setUserId(StpUtil.getLoginIdAsString());
+                } catch (Exception e) {
+                    // 如果无法获取用户ID（例如访客请求），则忽略异常
+                    requestLog.setUserId("guest");
+                }
+            } else {
+                // 对于白名单接口（如访客接口），直接设置为访客
+                requestLog.setUserId("guest");
             }
             log.info(" [aop] request log : {}", JsonUtils.toJsonString(requestLog));
             request.setAttribute(SEND_TIME, System.currentTimeMillis());
@@ -69,8 +77,17 @@ public class AccessLogAspect {
             AccessResponseLog responseLog = buildResponseLog(joinPoint, returnValue, request);
             CopyOnWriteArraySet<String> whitelist = whitelistProperties.getWhitelist();
             whitelist.add("/auth/logout"); // 登出接口会清除 session，无法获取到用户id。加入白名单中
+            
             if (isNotSaIgnoreInterface(joinPoint) && isNotWhitelist(request.getRequestURI(), request.getContextPath(), whitelist)) {
-                responseLog.setUserId(StpUtil.getLoginIdAsString());
+                try {
+                    responseLog.setUserId(StpUtil.getLoginIdAsString());
+                } catch (Exception e) {
+                    // 如果无法获取用户ID（例如访客请求），则忽略异常
+                    responseLog.setUserId("guest");
+                }
+            } else {
+                // 对于白名单接口（如访客接口），直接设置为访客
+                responseLog.setUserId("guest");
             }
 
             if (responseLog.getMs() >= SLOW_QUERY_THRESHOLD) { // 慢查询日志打印

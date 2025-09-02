@@ -11,13 +11,20 @@
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/db/migration/V1_0_2__add_third_party_user_to_takeaway_orders.sql" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/resources/mapper/restaurant/db.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/home/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/home/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/guestOrder/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/order/takeAwayOrder/components/orderDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/order/takeAwayOrder/components/orderDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/modules/order/guestOrder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/modules/order/guestOrder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/modules/order/takeAwayOrder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/chef/order/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/chef/order/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/dev/sa-token.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/oss.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/local/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/preview/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/config/prod/sa-token.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-db-mysql/src/main/java/com/sz/mysql/EntityChangeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-db-mysql/src/main/java/com/sz/mysql/EntityChangeListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-log/src/main/java/com/sz/logger/aspect/AccessLogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-log/src/main/java/com/sz/logger/aspect/AccessLogAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/java/com/sz/security/config/SaTokenConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-common/sz-common-security/src/main/java/com/sz/security/config/SaTokenConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/controller/TakeawayOrdersController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/DineInOrdersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/DineInOrdersServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/restaurant/service/impl/TakeawayOrdersServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/SysMessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../sz-boot-parent/sz-service/sz-service-admin/src/main/java/com/sz/admin/system/service/impl/SysMessageServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +109,7 @@
       <workItem from="1755844938208" duration="8880000" />
       <workItem from="1756016798742" duration="13869000" />
       <workItem from="1756084285596" duration="58058000" />
-      <workItem from="1756518180917" duration="47369000" />
+      <workItem from="1756518180917" duration="53662000" />
     </task>
     <task id="LOCAL-00001" summary="服务员点单页面初始化">
       <option name="closed" value="true" />

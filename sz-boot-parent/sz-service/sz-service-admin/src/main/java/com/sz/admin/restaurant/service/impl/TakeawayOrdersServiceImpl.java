@@ -1,5 +1,6 @@
 package com.sz.admin.restaurant.service.impl;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.restaurant.pojo.po.OrderDetail;
 import com.sz.admin.restaurant.pojo.po.Orders;
@@ -57,6 +58,7 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
     private final InventoryService inventoryService;
     private final SysMessageService messageService;
     @Override
+    @SaIgnore
     public void create(TakeawayOrdersCreateDTO dto){
         // 创建基本订单记录
         Orders orders = new Orders();
@@ -88,6 +90,13 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
             orderDetail.setOrderId(orders.getOrderId());
         }
         orderDetailService.saveBatch(detailList);
+
+        //查看库存
+        if(!inventoryService.isEnough(dto.getOrderId())){
+            //告知管理员或服务员材料不足，让他们取消订单或者更换订单
+            List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
+            messageService.sendInventoryInsufficient(orderDetailList,orders);
+        }
 
         //发送通知提醒服务员
         messageService.sendOrderAlert(orders);
@@ -280,7 +289,9 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         }
 
     @Override
+    @SaIgnore
     public TakeawayOrdersVO createGuestOrder(TakeawayOrdersCreateDTO dto) {
+
         // 创建订单
         create(dto);
         
@@ -290,7 +301,9 @@ public class TakeawayOrdersServiceImpl extends ServiceImpl<TakeawayOrdersMapper,
         List<TakeawayOrdersVO> orders = list(queryDto);
         
         // 返回最新创建的订单
-        return orders.get(orders.size() - 1);
+        TakeawayOrdersVO result = orders.get(orders.size() - 1);
+
+        return result;
     }
 
     @Override

@@ -33,26 +33,52 @@ public class EntityChangeListener implements InsertListener, UpdateListener, Set
 
     @Override
     public void onInsert(Object o) {
+        log.debug("EntityChangeListener.onInsert called for entity: {}", o.getClass().getSimpleName());
         setPropertyIfPresent(o, "createTime", LocalDateTime.now());
         setPropertyIfPresent(o, "updateTime", LocalDateTime.now());
         if (isNotLogin()) {
+            log.debug("User is not logged in, skipping user ID setting for entity: {}", o.getClass().getSimpleName());
             return;
         }
-        setPropertyIfPresent(o, "createId", StpUtil.getLoginIdAsLong());
-        setPropertyIfPresent(o, "updateId", StpUtil.getLoginIdAsLong());
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        List<Long> deptOptions = loginUser.getDepts();
-        if (deptOptions.isEmpty())
-            return;
-        setPropertyIfPresent(o, "deptScope", deptOptions);
+        try {
+            Long userId = StpUtil.getLoginIdAsLong();
+            log.debug("Setting createId and updateId to {} for entity: {}", userId, o.getClass().getSimpleName());
+            setPropertyIfPresent(o, "createId", userId);
+            setPropertyIfPresent(o, "updateId", userId);
+        } catch (Exception e) {
+            // 访客请求时无法获取用户ID，忽略异常
+            log.debug("Guest request, unable to get user ID: {}", e.getMessage());
+        }
+        try {
+            LoginUser loginUser = LoginUtils.getLoginUser();
+            if (loginUser != null) {
+                List<Long> deptOptions = loginUser.getDepts();
+                if (!deptOptions.isEmpty()) {
+                    setPropertyIfPresent(o, "deptScope", deptOptions);
+                }
+            }
+        } catch (Exception e) {
+            // 访客请求时无法获取登录用户信息，忽略异常
+            log.debug("Guest request, unable to get login user info: {}", e.getMessage());
+        }
     }
 
     @Override
     public void onUpdate(Object o) {
+        log.debug("EntityChangeListener.onUpdate called for entity: {}", o.getClass().getSimpleName());
         setPropertyIfPresent(o, "updateTime", LocalDateTime.now());
-        if (isNotLogin())
+        if (isNotLogin()) {
+            log.debug("User is not logged in, skipping updateId setting for entity: {}", o.getClass().getSimpleName());
             return;
-        setPropertyIfPresent(o, "updateId", StpUtil.getLoginIdAsLong());
+        }
+        try {
+            Long userId = StpUtil.getLoginIdAsLong();
+            log.debug("Setting updateId to {} for entity: {}", userId, o.getClass().getSimpleName());
+            setPropertyIfPresent(o, "updateId", userId);
+        } catch (Exception e) {
+            // 访客请求时无法获取用户ID，忽略异常
+            log.debug("Guest request, unable to get user ID: {}", e.getMessage());
+        }
     }
 
     @Override

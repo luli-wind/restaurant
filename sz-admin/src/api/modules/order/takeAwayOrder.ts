@@ -1,4 +1,5 @@
 import http from '@/api';
+import guestHttp from '@/api/guestHttp';
 import { ADMIN_MODULE } from '@/api/helper/prefix';
 import type {IPage, IResultData} from '@/api/types';
 import type {

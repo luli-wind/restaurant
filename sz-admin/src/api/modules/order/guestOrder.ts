@@ -1,4 +1,4 @@
-import http from '@/api/guestHttp';
+import guestHttp from '@/api/guestHttp';
 import { ADMIN_MODULE } from '@/api/helper/prefix';
 import type { TakeAwayOrderForm, TakeAwayOrderRow } from '@/api/types/order/takeAwayOrder'
 
@@ -8,5 +8,5 @@ import type { TakeAwayOrderForm, TakeAwayOrderRow } from '@/api/types/order/take
  * @returns {*}
  */
 export const createGuestTakeAwayOrderApi = (params: TakeAwayOrderForm) => {
-    return http.post<TakeAwayOrderRow>(ADMIN_MODULE + `/takeaway-orders/guest`, params);
+    return guestHttp.post<TakeAwayOrderRow>(ADMIN_MODULE + `/takeaway-orders/guest`, params);
 };

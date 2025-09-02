@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
 import org.springframework.web.bind.annotation.*;
 import com.sz.core.common.entity.ApiPageResult;
 import com.sz.core.common.entity.ApiResult;
@@ -110,6 +111,7 @@ public class TakeawayOrdersController  {
 
     @Operation(summary = "访客下单")
     @PostMapping("/guest")
+    @SaIgnore
     public ApiResult<TakeawayOrdersVO> guestOrder(@RequestBody TakeawayOrdersCreateDTO dto) {
         TakeawayOrdersVO order = takeawayOrdersService.createGuestOrder(dto);
         return ApiResult.success(order);

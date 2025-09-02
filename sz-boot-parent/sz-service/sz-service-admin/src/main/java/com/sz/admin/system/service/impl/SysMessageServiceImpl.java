@@ -38,6 +38,7 @@ import java.util.Objects;
 
 import com.sz.security.core.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.sz.admin.system.pojo.po.table.SysMessageTableDef.SYS_MESSAGE;
@@ -51,6 +52,7 @@ import static com.sz.admin.system.pojo.po.table.SysMessageUserTableDef.SYS_MESSA
  * @author sz-admin
  * @since 2025-04-21
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMessage> implements SysMessageService {
@@ -113,47 +115,65 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
     }
 
     @Override
-    public void sendInventoryAlert() {
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        Long userId = loginUser.getUserInfo().getId();
-        Message message =new Message();
-        message.setMessageTypeCd("msg");
-        message.setSenderId(userId);
-        message.setTitle("库存警告!!!");
-        message.setContent("部分库存即将不足，请及时联系供应商，补充库存");
-        List receiverIds =new ArrayList<>();
-        receiverIds.add("1");
-        message.setReceiverIds(receiverIds);
-        create(message);
-    }
+        public void sendInventoryAlert() {
+            Long userId = 1L; // 默认使用管理员ID
+            try {
+                LoginUser loginUser = LoginUtils.getLoginUser();
+                if (loginUser != null) {
+                    userId = loginUser.getUserInfo().getId();
+                }
+            } catch (Exception e) {
+                // 访客请求时无法获取登录用户信息，使用默认管理员ID
+                log.debug("Guest request, using default admin user ID: {}", e.getMessage());
+            }
+            
+            Message message =new Message();
+            message.setMessageTypeCd("msg");
+            message.setSenderId(userId);
+            message.setTitle("库存警告!!!");
+            message.setContent("部分库存即将不足，请及时联系供应商，补充库存");
+            List receiverIds =new ArrayList<>();
+            receiverIds.add("1");
+            message.setReceiverIds(receiverIds);
+            create(message);
+        }
 
     @Override
-    public void sendInventoryInsufficient(List<OrderDetail> orderDetailList,Orders orders) {
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        Long userId = loginUser.getUserInfo().getId();
-        Message message =new Message();
-        message.setMessageTypeCd("msg");
-        message.setSenderId(userId);
-        message.setTitle("库存不足，无法完成订单!!!");
-        StringBuilder msg = new StringBuilder();
-        msg.append("订单号为:"+orders.getOrderNumber()+"，以下菜品:");
-        for (OrderDetail orderDetail : orderDetailList) {
-            msg.append(orderDetail.getDishName()+" ");
-        }
-        msg.append(",库存不足，无法制作，请向客户致歉，请客户更换订单。谢谢配合工作");
-        message.setContent(msg.toString());
-        List<SysUserRole> allUserRole = sysUserRoleService.list();
-
-        List<Object> receiverIds = new ArrayList<>();
-        for (SysUserRole sysUserRole : allUserRole) {
-            if(sysUserRole.getRoleId().equals(4L)){
-                receiverIds.add(sysUserRole.getUserId());
+        public void sendInventoryInsufficient(List<OrderDetail> orderDetailList,Orders orders) {
+            Long userId = 1L; // 默认使用管理员ID
+            try {
+                LoginUser loginUser = LoginUtils.getLoginUser();
+                if (loginUser != null) {
+                    userId = loginUser.getUserInfo().getId();
+                }
+            } catch (Exception e) {
+                // 访客请求时无法获取登录用户信息，使用默认管理员ID
+                log.debug("Guest request, using default admin user ID: {}", e.getMessage());
             }
+            
+            Message message =new Message();
+            message.setMessageTypeCd("msg");
+            message.setSenderId(userId);
+            message.setTitle("库存不足，无法完成订单!!!");
+            StringBuilder msg = new StringBuilder();
+            msg.append("订单号为:"+orders.getOrderNumber()+"，以下菜品:");
+            for (OrderDetail orderDetail : orderDetailList) {
+                msg.append(orderDetail.getDishName()+" ");
+            }
+            msg.append(",库存不足，无法制作，请向客户致歉，请客户更换订单。谢谢配合工作");
+            message.setContent(msg.toString());
+            List<SysUserRole> allUserRole = sysUserRoleService.list();
+    
+            List<Object> receiverIds = new ArrayList<>();
+            for (SysUserRole sysUserRole : allUserRole) {
+                if(sysUserRole.getRoleId().equals(4L)){
+                    receiverIds.add(sysUserRole.getUserId());
+                }
+            }
+            receiverIds.add("1");//添加管理员
+            message.setReceiverIds(receiverIds);
+            create(message);
         }
-        receiverIds.add("1");//添加管理员
-        message.setReceiverIds(receiverIds);
-        create(message);
-    }
 
     @Override
     public void sendOrderAlert(Orders orders) {
@@ -175,45 +195,63 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
     }
 
     @Override
-    public void sendMakeOrderAlert(Orders orders) {
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        Long userId = loginUser.getUserInfo().getId();
-        Message message =new Message();
-        message.setMessageTypeCd("msg");
-        message.setSenderId(userId);//管理员
-        message.setTitle("有新的订单需要制作，请及时处理!!!");
-        message.setContent("订单号为:"+orders.getOrderNumber()+",请及时制作处理!!!");
-        List<SysUserRole> allUserRole = sysUserRoleService.list();
-
-        List<Object> receiverIds = new ArrayList<>();
-        for (SysUserRole sysUserRole : allUserRole) {
-            if(sysUserRole.getRoleId().equals(5L)){
-                receiverIds.add(sysUserRole.getUserId());
+        public void sendMakeOrderAlert(Orders orders) {
+            Long userId = 1L; // 默认使用管理员ID
+            try {
+                LoginUser loginUser = LoginUtils.getLoginUser();
+                if (loginUser != null) {
+                    userId = loginUser.getUserInfo().getId();
+                }
+            } catch (Exception e) {
+                // 访客请求时无法获取登录用户信息，使用默认管理员ID
+                log.debug("Guest request, using default admin user ID: {}", e.getMessage());
             }
+            
+            Message message =new Message();
+            message.setMessageTypeCd("msg");
+            message.setSenderId(userId);//管理员
+            message.setTitle("有新的订单需要制作，请及时处理!!!");
+            message.setContent("订单号为:"+orders.getOrderNumber()+",请及时制作处理!!!");
+            List<SysUserRole> allUserRole = sysUserRoleService.list();
+    
+            List<Object> receiverIds = new ArrayList<>();
+            for (SysUserRole sysUserRole : allUserRole) {
+                if(sysUserRole.getRoleId().equals(5L)){
+                    receiverIds.add(sysUserRole.getUserId());
+                }
+            }
+            message.setReceiverIds(receiverIds);
+            create(message);
         }
-        message.setReceiverIds(receiverIds);
-        create(message);
-    }
 
     @Override
-    public void sendChangeOrderAlert(Orders orders) {
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        Long userId = loginUser.getUserInfo().getId();
-        Message message =new Message();
-        message.setMessageTypeCd("msg");
-        message.setSenderId(userId);
-        message.setTitle("有订单更改，请注意，及时处理!!!");
-        message.setContent("订单号为:"+orders.getOrderNumber()+",请及时查看处理!!!");
-        List<SysUserRole> allUserRole = sysUserRoleService.list();
-        List<Object> receiverIds = new ArrayList<>();
-        for (SysUserRole sysUserRole : allUserRole) {
-            if(sysUserRole.getRoleId().equals(5L)){
-                receiverIds.add(sysUserRole.getUserId());
+        public void sendChangeOrderAlert(Orders orders) {
+            Long userId = 1L; // 默认使用管理员ID
+            try {
+                LoginUser loginUser = LoginUtils.getLoginUser();
+                if (loginUser != null) {
+                    userId = loginUser.getUserInfo().getId();
+                }
+            } catch (Exception e) {
+                // 访客请求时无法获取登录用户信息，使用默认管理员ID
+                log.debug("Guest request, using default admin user ID: {}", e.getMessage());
             }
+            
+            Message message =new Message();
+            message.setMessageTypeCd("msg");
+            message.setSenderId(userId);
+            message.setTitle("有订单更改，请注意，及时处理!!!");
+            message.setContent("订单号为:"+orders.getOrderNumber()+",请及时查看处理!!!");
+            List<SysUserRole> allUserRole = sysUserRoleService.list();
+            List<Object> receiverIds = new ArrayList<>();
+            for (SysUserRole sysUserRole : allUserRole) {
+                if(sysUserRole.getRoleId().equals(5L)){
+                    receiverIds.add(sysUserRole.getUserId());
+                }
+            }
+            message.setReceiverIds(receiverIds);
+            create(message);
         }
-        message.setReceiverIds(receiverIds);
-        create(message);
-    }
 
     private static QueryWrapper buildQueryWrapper(SysMessageListDTO dto) {
         Long userId = Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo().getId();

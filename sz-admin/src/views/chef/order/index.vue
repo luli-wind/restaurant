@@ -106,15 +106,15 @@
 
             <div class="order-footer">
               <div class="order-actions">
-<!--                <el-button-->
-<!--                  v-if="order.status == '2005007' || order.status =='2004001'"-->
-<!--                  type="primary"-->
-<!--                  size="large"-->
-<!--                  @click="startCooking(order)"-->
-<!--                  :disabled="!order.orderId && !order.id"-->
-<!--                >-->
-<!--                  开始制作-->
-<!--                </el-button>-->
+                <el-button
+                  v-if="order.status == '2005007' || order.status =='2004001'"
+                  type="primary"
+                  size="large"
+                  @click="startCooking(order)"
+                  :disabled="!order.orderId && !order.id"
+                >
+                  开始制作
+                </el-button>
                 <el-button
                   v-if="order.status == '2005002'|| order.status =='2004002'"
                   type="success"

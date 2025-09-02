@@ -99,6 +99,16 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         }
         orderDetailService.saveBatch(detailList);
 
+        //查看库存
+        if(!inventoryService.isEnough(dto.getOrderId())){
+            //选择制作时，不扣除原材料，制作完成后再扣除。
+            //告知管理员或服务员材料不足，让他们取消订单或者更换订单
+            List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
+            orders.setStatus("2004001");
+            ordersService.updateById(orders);
+            messageService.sendInventoryInsufficient(orderDetailList,orders);
+        }
+
         //通知厨师制作
         messageService.sendMakeOrderAlert(orders);
     }
@@ -126,15 +136,16 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
             orders.setCreateTime(LocalDateTime.now());
             orders.setTotalAmount(totalAmount);
             ordersService.updateById(orders);
-            //查看库存
-            dto.setStatus("2004002");
-            updateStatus(dto);
+
         }
         for (OrderDetail orderDetail : detailList) {
             orderDetail.setOrderId(orders.getOrderId());
         }
         orderDetailService.removeByOrderId(orders.getOrderId());
         orderDetailService.saveBatch(detailList);
+        //查看库存
+        dto.setStatus("2004002");
+        updateStatus(dto);
 
         //通知厨师制作
         messageService.sendChangeOrderAlert(orders);
@@ -258,13 +269,14 @@ public class DineInOrdersServiceImpl extends ServiceImpl<DineInOrdersMapper, Din
         Orders orders = ordersService.getById(dto.getOrderId());
         orders.setStatus(dto.getStatus());
         if (dto.getStatus().equals("2004002")) {
-            if(inventoryService.isEnough(dto.getOrderId())){
+            if(!inventoryService.isEnough(dto.getOrderId())){
                 //选择制作时，不扣除原材料，制作完成后再扣除。
-            }else {
+
                 //告知管理员或服务员材料不足，让他们取消订单或者更换订单
                 List<OrderDetail> orderDetailList = inventoryService.InsufficientInventory(dto.getOrderId());
                 messageService.sendInventoryInsufficient(orderDetailList,orders);
                 orders.setStatus("2004001");
+                ordersService.updateById(orders);
             }
         }
         if(dto.getStatus().equals("2004005")){
